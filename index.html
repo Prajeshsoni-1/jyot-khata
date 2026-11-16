@@ -41,6 +41,15 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:4px;backgroun
 .empty-logo{width:104px;height:104px;display:block;margin:0 auto 12px}
 .about{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:18px;color:var(--muted);font-size:13px}
 .about img{width:30px;height:30px}
+.brand-logo{object-fit:contain}
+.mono{display:grid;place-items:center;font-weight:800;color:var(--primary);background:linear-gradient(#fff,#fff) padding-box,var(--brand-grad) border-box;border:3px solid transparent;border-radius:50%}
+.brand-logo.mono{font-size:22px}
+.logo-row{display:flex;gap:12px;align-items:center}
+.logo-prev{width:72px;height:72px;object-fit:contain;border-radius:14px;border:1px solid var(--line);background:#fff;padding:4px;display:block;flex:none}
+.logo-prev.mono{display:grid;place-items:center;font-size:30px;border-radius:50%;padding:0;border:4px solid transparent;background:linear-gradient(#fff,#fff) padding-box,var(--brand-grad) border-box}
+.onb{text-align:center;padding-top:calc(24px + env(safe-area-inset-top))}
+.onb h1{font-size:24px}
+#nav:empty{display:none}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Devanagari","Noto Sans Gujarati","Nirmala UI",sans-serif;min-height:100vh}
@@ -550,9 +559,9 @@ let storageOK = true;
 function defaultDB() {
   return {
     v: 1,
-    settings: { business: 'Jyot Enterprise', owner: '', phone: '', upi: '', address: '', cc: '91', lang: 'hi', prefix: 'JE', receiptNote: '' },
+    settings: { business: '', owner: '', phone: '', upi: '', address: '', cc: '91', lang: 'hi', prefix: 'RC', receiptNote: '' },
     clients: [], entries: [], templates: [],
-    meta: { nextReceipt: 1, lastBackup: null, lastMode: 'upi', created: Date.now() },
+    meta: { nextReceipt: 1, lastBackup: null, lastMode: 'upi', onboarded: false, created: Date.now() },
   };
 }
 function syncTemplates(d) {
@@ -565,8 +574,10 @@ function syncTemplates(d) {
 }
 function migrate(d) {
   const base = defaultDB();
+  const legacy = !!(d.meta && d.meta.onboarded === undefined);   // saved by an earlier version: already set up
   d.settings = { ...base.settings, ...(d.settings || {}) };
   d.meta = { ...base.meta, ...(d.meta || {}) };
+  if (legacy) d.meta.onboarded = true;
   d.clients = Array.isArray(d.clients) ? d.clients : [];
   d.entries = Array.isArray(d.entries) ? d.entries : [];
   d.templates = Array.isArray(d.templates) ? d.templates : [];
@@ -827,7 +838,7 @@ function pageHome() {
   for (const c of db.clients) { const b = bal.get(c.id); if (b && b.pending > 0) { pend += b.pending; pc++; } }
   for (const e of db.entries) if (e.type === 'received') { if (e.date === t) tin += e.amount; if (e.date.slice(0, 7) === month) min += e.amount; }
   return `
-  <header class="topbar"><img class="brand-logo" src="icons/logo.png" alt="Jyot logo" width="46" height="46"><div class="tb-title"><h1>${esc(db.settings.business || 'Khata')}</h1><div class="sub">Khata · हिसाब-किताब</div></div></header>
+  <header class="topbar">${brandMarkHTML(db.settings)}<div class="tb-title"><h1>${esc(db.settings.business || 'Khata')}</h1><div class="sub">Khata · हिसाब-किताब</div></div></header>
   ${storageOK ? '' : '<div class="banner">Storage is blocked in this browser — data will not be saved. Open in Chrome/Safari normally.</div>'}
   <section class="summary">
     <div class="sum main"><span>To receive · बाकी</span><b class="due">${fmtR(pend)}</b><em>${pc} client${pc === 1 ? '' : 's'} pending</em></div>
@@ -943,6 +954,10 @@ function pageSettings() {
     <h2>Business profile · आपकी जानकारी</h2>
     <p class="sub" style="margin-top:-8px">Shown at the end of every message (and on receipts later).</p>
     ${field('business', 'Business name', s.business, 'autocomplete="organization"')}
+    <div class="field"><span>Your logo (shown on receipts &amp; statements)</span>
+      <div class="logo-row"><div data-logo-prev>${logoPrevHTML(ui.logoDraft !== undefined ? ui.logoDraft : logoUrl(s), s.business)}</div>
+        <div class="stack" style="gap:8px;flex:1"><button type="button" class="btn sm" data-act="logoPick">${ic('upload')} Upload logo</button><button type="button" class="btn sm" data-act="logoClear">Remove logo</button></div></div>
+      <input type="file" data-change="logo" accept="image/*" hidden></div>
     ${field('owner', 'Your name (optional)', s.owner, 'autocomplete="name"')}
     ${field('phone', 'Your phone (shown in messages)', s.phone, 'type="tel" inputmode="tel"')}
     ${field('upi', 'Your UPI ID (optional, for reminders)', s.upi, 'autocapitalize="off" placeholder="name@bank"')}
@@ -977,6 +992,13 @@ function pageSettings() {
   </div>
 
   <div class="card stack" style="margin-top:14px">
+    <h2>Invite others · दूसरों को भेजें</h2>
+    <p class="sub" style="margin-top:-8px">Anyone with the link can open the app and set up their own business with their own name and logo. Each person's data stays on their own phone.</p>
+    <button class="btn wa block" data-act="shareApp">${ic('share')} Share app link</button>
+    <button class="btn block" data-act="copyAppLink">${ic('copy')} Copy link</button>
+  </div>
+
+  <div class="card stack" style="margin-top:14px">
     <h2>Danger zone</h2>
     <button class="btn danger block" data-act="wipe">${ic('trash')} Delete all data on this phone</button>
   </div>
@@ -988,10 +1010,12 @@ const ROUTES = { '': pageHome, client: pageClient, daybook: pageDayBook, templat
 const routeName = () => location.hash.replace(/^#\/?/, '').split('/')[0] || '';
 let lastKey = null;
 function render() {
+  if (!db.meta.onboarded) { $('#app').innerHTML = pageOnboarding(); $('#nav').innerHTML = ''; lastKey = 'onboard'; window.scrollTo(0, 0); return; }
   const parts = location.hash.replace(/^#\/?/, '').split('/');
   const name = parts[0] || '', arg = parts[1];
   const fn = ROUTES[name] || pageHome;
   const key = name + '/' + (arg || '');
+  if (name === 'settings' && key !== lastKey) ui.logoDraft = undefined;
   const y = key === lastKey ? window.scrollY : 0;
   const html = fn(arg);
   if (html === null) { location.replace('#/'); return; }
@@ -1367,6 +1391,97 @@ async function shareFile(file, text) {
   } catch (err) { if (err && err.name === 'AbortError') return; }
   download(file.name, file, file.type); toast('Downloaded ✓ — attach it in WhatsApp');
 }
+/* ---------- multi-user: own business name + logo ---------- */
+// settings.logo: a data: URL (uploaded), '' (none -> monogram) or undefined (older installs -> the Jyot logo)
+const logoUrl = s => s.logo === undefined ? 'icons/logo.png' : (s.logo || '');
+const initialLetter = name => ([...String(name || '').trim()][0] || '₹').toUpperCase();
+function initialsPrefix(name) {            // "Sharma Traders" -> "ST", "Jyot Enterprise" -> "JE"
+  const words = String(name).match(/[A-Za-z]+/g) || [];
+  const letters = words.slice(0, 3).map(w => w[0].toUpperCase()).join('');
+  return letters.length >= 2 ? letters : ((words[0] || '').slice(0, 3).toUpperCase() || 'RC');
+}
+const brandMarkHTML = s => {
+  const src = logoUrl(s);
+  return src ? `<img class="brand-logo" src="${esc(src)}" alt="" width="46" height="46">`
+             : `<div class="brand-logo mono" aria-hidden="true">${esc(initialLetter(s.business))}</div>`;
+};
+const logoPrevHTML = (src, name) => src ? `<img class="logo-prev" src="${esc(src)}" alt="Logo preview">` : `<div class="logo-prev mono" aria-hidden="true">${esc(initialLetter(name))}</div>`;
+function paintLogoPrev() {
+  const src = ui.logoDraft !== undefined ? ui.logoDraft : (db.meta.onboarded ? logoUrl(db.settings) : '');
+  const nm = ($('[name=business]') || {}).value || db.settings.business || '';
+  $$('[data-logo-prev]').forEach(el => { el.innerHTML = logoPrevHTML(src, nm); });
+}
+function clearImgCache() { for (const k of Object.keys(imgCache)) delete imgCache[k]; }
+function readLogo(file) {                  // -> small data: URL (max 320px, kept under ~350 KB)
+  return new Promise((res, rej) => {
+    if (!file || !/^image\//.test(file.type)) return rej(new Error('Please choose an image file'));
+    const fr = new FileReader();
+    fr.onerror = () => rej(new Error('Could not read that image'));
+    fr.onload = () => {
+      const img = new Image();
+      img.onerror = () => rej(new Error('Could not open that image'));
+      img.onload = () => {
+        const type = file.type === 'image/jpeg' ? 'image/jpeg' : 'image/png';
+        let out = '';
+        for (const max of [320, 240, 160]) {
+          const k = Math.min(1, max / Math.max(img.width, img.height));
+          const cv = document.createElement('canvas');
+          cv.width = Math.max(1, Math.round(img.width * k)); cv.height = Math.max(1, Math.round(img.height * k));
+          cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+          out = cv.toDataURL(type, 0.9);
+          if (out.length < 350000) break;
+        }
+        res(out);
+      };
+      img.src = fr.result;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+function pageOnboarding() {
+  const s = db.settings;
+  return `
+  <div class="onb">
+    <img class="empty-logo" src="icons/logo.png" alt="Jyot Khata" width="104" height="104">
+    <h1>Welcome to Jyot Khata</h1>
+    <p class="sub" style="margin:4px 0 12px">स्वागत है · સ્વાગત છે</p>
+    <p class="muted" style="margin-bottom:16px">Set up your business in 30 seconds. Your clients and payments stay <b>on this phone</b> — nothing is uploaded anywhere.</p>
+    <form class="card stack" data-form="onboard" style="text-align:left">
+      ${field('business', 'Business / shop name · व्यवसाय का नाम', '', 'required maxlength="60" autocomplete="organization" placeholder="e.g. Sharma Traders"')}
+      ${field('owner', 'Your name (optional)', '', 'maxlength="40" autocomplete="name"')}
+      ${field('phone', 'Your phone (shown on receipts, optional)', '', 'type="tel" inputmode="tel"')}
+      <div class="field"><span>Your logo (optional)</span>
+        <div class="logo-row"><div data-logo-prev>${logoPrevHTML(ui.logoDraft || '', '')}</div>
+          <div class="stack" style="gap:8px;flex:1"><button type="button" class="btn sm" data-act="logoPick">${ic('upload')} Upload logo</button><button type="button" class="btn sm" data-act="logoClear">Remove</button></div></div>
+        <input type="file" data-change="logo" accept="image/*" hidden></div>
+      <div class="field"><span>Message language · भाषा</span><input type="hidden" name="lang" value="${esc(s.lang)}">
+        <div class="chips wrap">${LANG_KEYS.map(k => `<button type="button" class="chip ${s.lang === k ? 'on' : ''}" data-act="prefLang" data-v="${k}">${LANGS[k].name}</button>`).join('')}</div></div>
+      <button class="btn primary block" type="submit">Start · शुरू करें</button>
+    </form>
+  </div>`;
+}
+async function drawBrandMark(p, s, bx, by, size) {     // the user's logo (fitted inside the box) or a monogram
+  const src = logoUrl(s);
+  if (src) {
+    try {
+      const img = await loadImg(src), k = Math.min(size / img.width, size / img.height), w = img.width * k, h = img.height * k;
+      p.x.drawImage(img, bx + (size - w) / 2, by + (size - h) / 2, w, h); return;
+    } catch {}
+  }
+  monogram(p.x, bx + size / 2, by + size / 2, size / 2, initialLetter(s.business));
+}
+function monogram(x, cx, cy, r, letter) {
+  const g = x.createLinearGradient(cx - r, cy - r, cx + r, cy + r); g.addColorStop(0, '#e8160c'); g.addColorStop(.55, '#f86c00'); g.addColorStop(1, '#f9d306');
+  x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fillStyle = g; x.fill();
+  x.beginPath(); x.arc(cx, cy, r * 0.88, 0, Math.PI * 2); x.fillStyle = '#fff'; x.fill();
+  x.fillStyle = BR.red; x.font = `800 ${r * 1.05}px ${RFONT}`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(letter, cx, cy + r * 0.04);
+}
+const INVITE = {
+  en: 'Jyot Khata: keep all your client payments in one khata and send thank-you messages and PDF receipts on WhatsApp — in Hindi, English or Gujarati. Open it here:',
+  hi: 'Jyot Khata: क्लाइंट का पूरा हिसाब एक जगह रखें और WhatsApp पर धन्यवाद मैसेज व PDF रसीद भेजें — हिंदी, English या ગુજરાતી में। यहाँ खोलें:',
+  gu: 'Jyot Khata: ક્લાયન્ટનો આખો હિસાબ એક જગ્યાએ રાખો અને WhatsApp પર આભાર મેસેજ તથા PDF રસીદ મોકલો — હિન્દી, English કે ગુજરાતીમાં. અહીં ખોલો:',
+};
+
 /* ---------- shared drawing helpers (receipt + statement) ---------- */
 const BR = { ink: '#2b1511', muted: '#7a5d52', line: '#ecd9c6', red: '#d4260e', amber: '#a8480a', green: '#12683c' };
 function makePen(W, H, K) {
@@ -1380,7 +1495,7 @@ function makePen(W, H, K) {
 }
 async function letterhead(p, s, M, W) {      // logo + business name/address/contact + divider (ends at y=118)
   const { x, F, T, fit } = p;
-  try { x.drawImage(await loadImg('icons/logo.png'), M, 28, 76, 76); } catch {}
+  await drawBrandMark(p, s, M, 28, 76);
   const hx = M + 92, hw = W - hx - M, biz = s.business || '';
   T(biz, hx, 58, { w: 700, size: fit(biz, 700, 26, 15, hw), color: BR.red });
   F(400, 12); let hy = 78;
@@ -1463,7 +1578,7 @@ async function renderStatement(c, lang, period) {
         T(val, bx + 12, 288, { w: 700, size: fit(val, 700, 17, 10, bw - 24), color: colr });
       });
     } else {
-      try { x.drawImage(await loadImg('icons/logo.png'), M, 16, 38, 38); } catch {}
+      await drawBrandMark(p, s, M, 16, 38);
       const biz = s.business || '';
       T(biz, M + 48, 33, { w: 700, size: fit(biz, 700, 16, 10, CW - 60), color: BR.red });
       const sub = `${S.title} · ${c.name}`;
@@ -1643,6 +1758,14 @@ const ACT = {
   openEntry: t => entrySheet(t.dataset.id),
   msgClient: t => messageSheet({ clientId: t.dataset.id }),
   stmtClient: t => statementSheet(t.dataset.id),
+  logoPick: () => $('[data-change=logo]').click(),
+  logoClear: () => { ui.logoDraft = ''; paintLogoPrev(); },
+  shareApp: async () => {
+    const url = location.origin + location.pathname, text = INVITE[db.settings.lang] || INVITE.en;
+    if (navigator.share) { try { await navigator.share({ title: 'Jyot Khata', text, url }); return; } catch (err) { if (err && err.name === 'AbortError') return; } }
+    openUrl('https://wa.me/?text=' + encodeURIComponent(text + '\n' + url));
+  },
+  copyAppLink: async () => { toast((await copyText(location.origin + location.pathname)) ? 'Link copied ✓' : 'Could not copy the link'); },
   waChat: t => { const c = client(t.dataset.id); if (c) openUrl(waLink(c.phone, '')); },
   setFilter: t => { ui.filter = t.dataset.v; render(); },
   setPeriod: t => { ui.period = t.dataset.v; render(); },
@@ -1675,17 +1798,33 @@ document.addEventListener('change', e => {
   const t = e.target;
   if (t.matches('[data-change=dbType]')) { ui.type = t.value; render(); }
   else if (t.matches('[data-change=dbMode]')) { ui.mode = t.value; render(); }
+  else if (t.matches('[data-change=logo]')) {
+    const f = t.files[0]; t.value = '';
+    if (f) readLogo(f).then(url => { ui.logoDraft = url; paintLogoPrev(); }).catch(err => toast(err.message));
+  }
   else if (t.matches('[data-change=import]')) { if (t.files[0]) importBackup(t.files[0]); t.value = ''; }
 });
 document.addEventListener('submit', e => {
   const f = e.target;
+  if (f.matches('[data-form=onboard]')) {
+    e.preventDefault();
+    const v = f.elements, name = v.business.value.trim();
+    if (!name) { toast('Enter your business name'); v.business.focus(); return; }
+    const s = db.settings;
+    s.business = name; s.owner = v.owner.value.trim(); s.phone = v.phone.value.trim(); s.lang = v.lang.value;
+    s.logo = ui.logoDraft || ''; s.prefix = initialsPrefix(name);
+    db.meta.onboarded = true; ui.logoDraft = undefined; clearImgCache();
+    save(); goto('#/'); toast('Welcome, ' + name + ' ✓');
+    return;
+  }
   if (f.matches('[data-form=settings]')) {
     e.preventDefault();
     const v = f.elements, s = db.settings;
     s.business = v.business.value.trim(); s.owner = v.owner.value.trim(); s.phone = v.phone.value.trim();
     s.upi = v.upi.value.trim(); s.address = v.address.value.trim(); s.receiptNote = v.receiptNote.value.trim(); s.lang = v.lang.value;
     s.prefix = (v.prefix.value.trim() || 'RC').toUpperCase(); s.cc = v.cc.value.replace(/\D/g, '') || '91';
-    save(); toast('Settings saved ✓');
+    if (ui.logoDraft !== undefined) { s.logo = ui.logoDraft; ui.logoDraft = undefined; clearImgCache(); }
+    save(); toast('Settings saved ✓'); render();
   }
 });
 

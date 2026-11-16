@@ -26,6 +26,16 @@ Then open the link on the phone:
 - **Android (Chrome):** menu ⋮ → Install app / Add to Home screen
 - **iPhone (Safari):** Share → Add to Home Screen
 
+## More than one user (your own business, your own name)
+Anyone who opens the link gets **their own private khata**. On first open they see a short setup screen
+(business name, optional logo, language). Their name and logo then appear in the app header, on receipts and on statements,
+and receipts are numbered from their own initials (e.g. `ST-0001` for "Sharma Traders").
+- **Settings → Invite others** shares the app link (WhatsApp / any app) in the owner's chosen language.
+- **Settings → Your logo** changes or removes the logo (without a logo, a monogram of the business initial is used).
+- There is **no login and no server**: each person's data lives only on their own phone and is never uploaded.
+  That also means no sync between a person's phones — they move data with Backup / Restore.
+- Installs made before this feature keep their data, their Jyot Enterprise details and the Jyot logo untouched.
+
 ## Where is the data?
 On the phone only (browser storage). Nothing is uploaded anywhere.
 Use **Settings → Download backup** regularly. To move to a new phone (Android → iPhone),
