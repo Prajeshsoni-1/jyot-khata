@@ -52,7 +52,16 @@ mode / reference / note, and the account summary **as it stood right after that 
 - The receipt is drawn on a canvas and wrapped in a one-page PDF — no library, works offline, and Hindi/Gujarati text is shaped by the phone's own fonts.
   The PDF is an image, so the text can't be selected.
 
+## Statements (PDF)
+On a client's page tap **Statement PDF** for an A4 account statement in Hindi, English or Gujarati:
+every entry with date, type, mode, reference / note, charges, received and the **running balance**, plus totals.
+- Pick the period: **All time**, **This FY** (1 Apr – 31 Mar), **This month** or **Last month**.
+  For a period, an **Opening balance** row carries over what was pending before it started.
+- Long statements run to as many pages as needed; each page repeats the table header and shows "Page x / y".
+- **Share PDF** opens the phone's share sheet (WhatsApp etc.). If the client still owes money, the caption is the
+  reminder message in the chosen language; otherwise a thank-you greeting.
+- Same Settings as receipts (business name, address, phone, UPI, footer note).
+
 ## Next steps (not built yet)
-- Client statement PDF (all entries with running balance)
 - Cloud sync so Android and iPhone share one live ledger
 - App lock (PIN / fingerprint)

@@ -866,6 +866,7 @@ function pageClient(id) {
     <button class="btn out" data-act="addEntry" data-client="${c.id}" data-type="given"><b>Given</b><small>मैंने दिया</small></button>
   </div>
   <button class="btn soft block" data-act="msgClient" data-id="${c.id}">${ic('chat')} Send message · मैसेज भेजें</button>
+  <button class="btn block" style="margin-top:8px" data-act="stmtClient" data-id="${c.id}">${ic('file')} Statement PDF · खाता विवरण</button>
   <div class="sec"><h2>Ledger · खाता</h2><span class="sub">${rows.length} entr${rows.length === 1 ? 'y' : 'ies'}</span></div>
   ${rows.length ? rows.map(({ e, run }) => {
     const T = TYPES[e.type], [y, m, d] = e.date.split('-');
@@ -884,6 +885,7 @@ function periodRange(p) {
   if (p === 'week') { const d = new Date(now); d.setDate(d.getDate() - 6); return [ymd(d), t]; }
   if (p === 'month') return [t.slice(0, 7) + '-01', t.slice(0, 7) + '-31'];
   if (p === 'lastmonth') { const d = new Date(now.getFullYear(), now.getMonth() - 1, 1); const ym = ymd(d).slice(0, 7); return [ym + '-01', ym + '-31']; }
+  if (p === 'fy') { const fy = now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1; return [`${fy}-04-01`, `${fy + 1}-03-31`]; }
   return ['0000-00-00', '9999-99-99'];
 }
 function dayBookEntries() {
@@ -945,7 +947,7 @@ function pageSettings() {
     ${field('phone', 'Your phone (shown in messages)', s.phone, 'type="tel" inputmode="tel"')}
     ${field('upi', 'Your UPI ID (optional, for reminders)', s.upi, 'autocapitalize="off" placeholder="name@bank"')}
     ${field('address', 'Address (optional, shown on receipt)', s.address)}
-    ${field('receiptNote', 'Receipt footer note (optional)', s.receiptNote || '', 'maxlength="140" placeholder="e.g. Please keep this receipt for your records"')}
+    ${field('receiptNote', 'Footer note on receipts & statements (optional)', s.receiptNote || '', 'maxlength="140" placeholder="e.g. Please keep this receipt for your records"')}
     <div class="row2">
       ${field('prefix', 'Receipt prefix', s.prefix, 'maxlength="6" autocapitalize="characters"')}
       ${field('cc', 'Country code', s.cc, 'inputmode="numeric" maxlength="4"')}
@@ -1266,27 +1268,14 @@ function clampLines(ctx, lines, max, maxW) {     // keep `max` lines; end the la
 async function renderReceipt(e, lang) {
   const c = client(e.clientId), s = db.settings, L = RL[lang], b = calcAsOf(c.id, e);
   const W = 600, H = 851, K = 2.5, M = 36, INK = '#2b1511', MUTED = '#7a5d52', LINE = '#ecd9c6', RED = '#d4260e';
-  const cv = document.createElement('canvas'); cv.width = Math.round(W * K); cv.height = Math.round(H * K);
-  const x = cv.getContext('2d'); x.scale(K, K);
-  const F = (w, size) => { x.font = `${w} ${size}px ${RFONT}`; };
-  const T = (str, px, py, o = {}) => { F(o.w || 400, o.size || 14); x.fillStyle = o.color || INK; x.textAlign = o.align || 'left'; x.textBaseline = 'alphabetic'; x.fillText(str, px, py); };
-  const fit = (str, w, max, min, maxW) => { let z = max; for (; z > min; z--) { F(w, z); if (x.measureText(str).width <= maxW) break; } return z; };
-  const rr = (rx, ry, rw, rh, r) => { x.beginPath(); x.moveTo(rx + r, ry); x.arcTo(rx + rw, ry, rx + rw, ry + rh, r); x.arcTo(rx + rw, ry + rh, rx, ry + rh, r); x.arcTo(rx, ry + rh, rx, ry, r); x.arcTo(rx, ry, rx + rw, ry, r); x.closePath(); };
+  const pen = makePen(W, H, K), { cv, x, F, T, fit, rr } = pen;
   const rule = (ry, rx = M, rw = W - 2 * M) => { x.fillStyle = LINE; x.fillRect(rx, ry, rw, 1); };
 
   x.fillStyle = '#fff'; x.fillRect(0, 0, W, H);
   const g = x.createLinearGradient(0, 0, W, 0); g.addColorStop(0, '#e8160c'); g.addColorStop(.55, '#f86c00'); g.addColorStop(1, '#f9d306');
   x.fillStyle = g; x.fillRect(0, 0, W, 8); x.fillRect(0, H - 8, W, 8);
 
-  // header: logo + business details
-  try { x.drawImage(await loadImg('icons/logo.png'), M, 28, 76, 76); } catch {}
-  const hx = M + 92, hw = W - hx - M, biz = s.business || 'Receipt';
-  T(biz, hx, 58, { w: 700, size: fit(biz, 700, 26, 15, hw), color: RED });
-  F(400, 12); let hy = 78;
-  for (const ln of clampLines(x, wrapLines(x, s.address || '', hw), 2, hw)) { T(ln, hx, hy, { size: 12, color: MUTED }); hy += 16; }
-  const contact = [s.phone && `Mob: ${s.phone}`, s.upi && `UPI: ${s.upi}`].filter(Boolean).join('  ·  ');
-  if (contact) T(contact, hx, hy + 1, { size: 12, color: MUTED });
-  rule(118);
+  await letterhead(pen, s, M, W);
   rr(M, 130, W - 2 * M, 36, 10); x.fillStyle = RED; x.fill();
   T(L.title, W / 2, 154, { w: 700, size: 17, color: '#fff', align: 'center' });
 
@@ -1344,26 +1333,30 @@ async function renderReceipt(e, lang) {
   const blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', 0.92));
   return { canvas: cv, jpeg: new Uint8Array(await blob.arrayBuffer()) };
 }
-function buildPDF(jpeg, wPx, hPx, title) {      // one A5 page that shows the JPEG full-bleed
-  const PW = 419.53, PH = 595.28, enc = new TextEncoder(), chunks = [], xref = [];
+function buildPDF(pages, title, PW = 419.53, PH = 595.28) {   // each page = one full-bleed JPEG {jpeg, w, h}
+  const enc = new TextEncoder(), chunks = [], xref = [], n = pages.length;
   let pos = 0;
   const add = b => { const u = typeof b === 'string' ? enc.encode(b) : b; chunks.push(u); pos += u.length; };
-  const obj = (n, body) => { xref[n] = pos; add(`${n} 0 obj\n${body}\nendobj\n`); };
+  const obj = (id, body) => { xref[id] = pos; add(`${id} 0 obj\n${body}\nendobj\n`); };
   const safe = String(title).replace(/[^A-Za-z0-9 ._-]/g, '');
   add('%PDF-1.4\n');
   obj(1, '<< /Type /Catalog /Pages 2 0 R >>');
-  obj(2, '<< /Type /Pages /Kids [3 0 R] /Count 1 >>');
-  obj(3, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>`);
-  xref[4] = pos;
-  add(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${wPx} /Height ${hPx} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpeg.length} >>\nstream\n`);
-  add(jpeg); add('\nendstream\nendobj\n');
-  const content = `q ${PW} 0 0 ${PH} 0 0 cm /Im0 Do Q`;
-  obj(5, `<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
-  obj(6, `<< /Title (${safe}) /Producer (Jyot Khata) >>`);
+  obj(2, `<< /Type /Pages /Kids [${pages.map((_, i) => `${3 + 3 * i} 0 R`).join(' ')}] /Count ${n} >>`);
+  pages.forEach((p, i) => {                       // page = 3+3i, image = 4+3i, content = 5+3i
+    const pg = 3 + 3 * i, im = pg + 1, ct = pg + 2;
+    obj(pg, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources << /XObject << /Im0 ${im} 0 R >> >> /Contents ${ct} 0 R >>`);
+    xref[im] = pos;
+    add(`${im} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${p.w} /Height ${p.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${p.jpeg.length} >>\nstream\n`);
+    add(p.jpeg); add('\nendstream\nendobj\n');
+    const content = `q ${PW} 0 0 ${PH} 0 0 cm /Im0 Do Q`;
+    obj(ct, `<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
+  });
+  const info = 3 + 3 * n, size = info + 1;
+  obj(info, `<< /Title (${safe}) /Producer (Jyot Khata) >>`);
   const xpos = pos;
-  let xr = 'xref\n0 7\n0000000000 65535 f \n';
-  for (let i = 1; i <= 6; i++) xr += String(xref[i]).padStart(10, '0') + ' 00000 n \n';
-  add(xr + `trailer\n<< /Size 7 /Root 1 0 R /Info 6 0 R >>\nstartxref\n${xpos}\n%%EOF`);
+  let xr = `xref\n0 ${size}\n0000000000 65535 f \n`;
+  for (let i = 1; i < size; i++) xr += String(xref[i]).padStart(10, '0') + ' 00000 n \n';
+  add(xr + `trailer\n<< /Size ${size} /Root 1 0 R /Info ${info} 0 R >>\nstartxref\n${xpos}\n%%EOF`);
   return new Blob(chunks, { type: 'application/pdf' });
 }
 async function shareFile(file, text) {
@@ -1374,6 +1367,194 @@ async function shareFile(file, text) {
   } catch (err) { if (err && err.name === 'AbortError') return; }
   download(file.name, file, file.type); toast('Downloaded ✓ — attach it in WhatsApp');
 }
+/* ---------- shared drawing helpers (receipt + statement) ---------- */
+const BR = { ink: '#2b1511', muted: '#7a5d52', line: '#ecd9c6', red: '#d4260e', amber: '#a8480a', green: '#12683c' };
+function makePen(W, H, K) {
+  const cv = document.createElement('canvas'); cv.width = Math.round(W * K); cv.height = Math.round(H * K);
+  const x = cv.getContext('2d'); x.scale(K, K);
+  const F = (w, size) => { x.font = `${w} ${size}px ${RFONT}`; };
+  const T = (str, px, py, o = {}) => { F(o.w || 400, o.size || 14); x.fillStyle = o.color || BR.ink; x.textAlign = o.align || 'left'; x.textBaseline = 'alphabetic'; x.fillText(str, px, py); };
+  const fit = (str, w, max, min, maxW) => { let z = max; for (; z > min; z--) { F(w, z); if (x.measureText(str).width <= maxW) break; } return z; };
+  const rr = (rx, ry, rw, rh, r) => { x.beginPath(); x.moveTo(rx + r, ry); x.arcTo(rx + rw, ry, rx + rw, ry + rh, r); x.arcTo(rx + rw, ry + rh, rx, ry + rh, r); x.arcTo(rx, ry + rh, rx, ry, r); x.arcTo(rx, ry, rx + rw, ry, r); x.closePath(); };
+  return { cv, x, F, T, fit, rr };
+}
+async function letterhead(p, s, M, W) {      // logo + business name/address/contact + divider (ends at y=118)
+  const { x, F, T, fit } = p;
+  try { x.drawImage(await loadImg('icons/logo.png'), M, 28, 76, 76); } catch {}
+  const hx = M + 92, hw = W - hx - M, biz = s.business || '';
+  T(biz, hx, 58, { w: 700, size: fit(biz, 700, 26, 15, hw), color: BR.red });
+  F(400, 12); let hy = 78;
+  for (const ln of clampLines(x, wrapLines(x, s.address || '', hw), 2, hw)) { T(ln, hx, hy, { size: 12, color: BR.muted }); hy += 16; }
+  const contact = [s.phone && `Mob: ${s.phone}`, s.upi && `UPI: ${s.upi}`].filter(Boolean).join('  ·  ');
+  if (contact) T(contact, hx, hy + 1, { size: 12, color: BR.muted });
+  x.fillStyle = BR.line; x.fillRect(M, 118, W - 2 * M, 1);
+}
+function strips(x, W, H) {
+  const g = x.createLinearGradient(0, 0, W, 0); g.addColorStop(0, '#e8160c'); g.addColorStop(.55, '#f86c00'); g.addColorStop(1, '#f9d306');
+  x.fillStyle = g; x.fillRect(0, 0, W, 8); x.fillRect(0, H - 8, W, 8);
+}
+
+/* ---------- statement (multi-page A4 PDF) ---------- */
+const SL = {
+  en: { title: 'ACCOUNT STATEMENT', for: 'Statement for', period: 'Period', all: 'All transactions', gen: 'Generated on', date: 'Date', details: 'Details', debit: 'Charges / Given', credit: 'Received', bal: 'Balance', open: 'Opening balance', total: 'Total', sumDr: 'Charges / Given', sumCr: 'Received', close: 'Closing balance', adv: 'Advance balance', advShort: 'Adv', page: 'Page', none: 'No transactions in this period.', auto: 'This is a computer generated statement.' },
+  hi: { title: 'खाता विवरण', for: 'ग्राहक', period: 'अवधि', all: 'सभी लेन-देन', gen: 'तैयार किया गया', date: 'दिनांक', details: 'विवरण', debit: 'बिल / दिया', credit: 'प्राप्त', bal: 'बाकी', open: 'शुरुआती बाकी', total: 'कुल', sumDr: 'बिल / दिया (कुल)', sumCr: 'प्राप्त (कुल)', close: 'अंतिम बाकी', adv: 'एडवांस राशि', advShort: 'एडवांस', page: 'पृष्ठ', none: 'इस अवधि में कोई लेन-देन नहीं।', auto: 'यह कंप्यूटर द्वारा बनाया गया विवरण है।' },
+  gu: { title: 'હિસાબ વિવરણ', for: 'ગ્રાહક', period: 'સમયગાળો', all: 'બધા વ્યવહારો', gen: 'તૈયાર કર્યું', date: 'તારીખ', details: 'વિગત', debit: 'બિલ / આપ્યા', credit: 'મળ્યા', bal: 'બાકી', open: 'શરૂઆતનું બાકી', total: 'કુલ', sumDr: 'બિલ / આપ્યા (કુલ)', sumCr: 'મળેલ (કુલ)', close: 'અંતિમ બાકી', adv: 'એડવાન્સ રકમ', advShort: 'એડવાન્સ', page: 'પાનું', none: 'આ સમયગાળામાં કોઈ વ્યવહાર નથી.', auto: 'આ કમ્પ્યુટર દ્વારા બનાવેલ વિવરણ છે.' },
+};
+const dYY = s => { const [y, m, d] = s.split('-'); return `${d}/${m}/${y.slice(2)}`; };
+async function renderStatement(c, lang, period) {
+  const s = db.settings, S = SL[lang];
+  const W = 595, H = 842, K = 2.5, M = 36, CW = W - 2 * M, DET_W = 190;
+  const col = { c0: M, c1: M + 60, c2: M + 258, c3: M + 344, c4: M + 430, end: M + CW };
+  const [a, bRaw] = periodRange(period);
+  let bEnd = bRaw;
+  if (period === 'month' || period === 'lastmonth') { const [yy, mm] = a.split('-').map(Number); bEnd = `${yy}-${pad(mm)}-${pad(new Date(yy, mm, 0).getDate())}`; }
+
+  // 1) figures: opening balance, rows in the period with running balance, totals
+  let open = 0, bal = 0, dr = 0, cr = 0; const rows = [];
+  for (const e of entriesOf(c.id)) {
+    const delta = e.type === 'received' ? -e.amount : e.amount;
+    if (e.date < a) { open += delta; bal = open; continue; }
+    if (e.date > bRaw) continue;
+    bal += delta; if (e.type === 'received') cr += e.amount; else dr += e.amount;
+    rows.push({ e, bal });
+  }
+  const close = bal;
+
+  // 2) layout: measure every row, then split into pages
+  const mp = makePen(10, 10, 1);
+  const items = [];
+  if (!rows.length && open === 0) items.push({ kind: 'none', h: 46 });
+  else {
+    if (period !== 'all' && open !== 0) items.push({ kind: 'open', h: 28 });
+    for (const r of rows) {
+      mp.F(400, 11);
+      const extra = clampLines(mp.x, wrapLines(mp.x, [r.e.ref, r.e.note, r.e.receiptNo].filter(Boolean).join(' · '), DET_W), 2, DET_W);
+      items.push({ kind: 'row', r, extra, h: 30 + 13 * extra.length });
+    }
+    items.push({ kind: 'total', h: 32 });
+  }
+  const Y1 = 344, Y2 = 98, YMAX = H - 56;
+  const pages = [[]]; let yy = Y1;
+  for (const it of items) {
+    if (yy + it.h > YMAX && pages[pages.length - 1].length) { pages.push([]); yy = Y2; }
+    pages[pages.length - 1].push(it); yy += it.h;
+  }
+
+  // 3) draw each page, turn it into a JPEG straight away (keeps memory low for long statements)
+  const out = []; let preview = null;
+  for (let pi = 0; pi < pages.length; pi++) {
+    const p = makePen(W, H, K), { cv, x, F, T, fit, rr } = p;
+    x.fillStyle = '#fff'; x.fillRect(0, 0, W, H); strips(x, W, H);
+    if (pi === 0) {
+      await letterhead(p, s, M, W);
+      rr(M, 130, CW, 34, 10); x.fillStyle = BR.red; x.fill();
+      T(S.title, W / 2, 153, { w: 700, size: 16, color: '#fff', align: 'center' });
+      T(S.for, M, 190, { size: 11, color: BR.muted });
+      T(c.name, M, 212, { w: 700, size: fit(c.name, 700, 20, 12, 300) });
+      if (c.phone) T(c.phone, M, 229, { size: 12.5, color: BR.muted });
+      T(S.period, W - M, 190, { size: 11, color: BR.muted, align: 'right' });
+      T(period === 'all' ? S.all : `${dMsg(a)} – ${dMsg(bEnd)}`, W - M, 208, { w: 700, size: 13, align: 'right' });
+      T(`${S.gen} ${dMsg(todayStr())}`, W - M, 226, { size: 11, color: BR.muted, align: 'right' });
+      const bw = (CW - 20) / 3;
+      [[S.sumDr, fmtR(dr), BR.amber], [S.sumCr, fmtR(cr), BR.green], [close < 0 ? S.adv : S.close, fmtR(Math.abs(close)), close > 0 ? BR.amber : BR.green]].forEach(([lab, val, colr], i) => {
+        const bx = M + i * (bw + 10);
+        rr(bx, 244, bw, 58, 10); x.fillStyle = '#fffaf4'; x.fill(); x.strokeStyle = BR.line; x.lineWidth = 1.2; x.stroke();
+        T(lab, bx + 12, 263, { size: 11, color: BR.muted });
+        T(val, bx + 12, 288, { w: 700, size: fit(val, 700, 17, 10, bw - 24), color: colr });
+      });
+    } else {
+      try { x.drawImage(await loadImg('icons/logo.png'), M, 16, 38, 38); } catch {}
+      const biz = s.business || '';
+      T(biz, M + 48, 33, { w: 700, size: fit(biz, 700, 16, 10, CW - 60), color: BR.red });
+      const sub = `${S.title} · ${c.name}`;
+      T(sub, M + 48, 50, { size: fit(sub, 400, 11.5, 8, CW - 60), color: BR.muted });
+      x.fillStyle = BR.line; x.fillRect(M, 62, CW, 1);
+    }
+    // table head
+    const hy = pi === 0 ? 318 : 72;
+    rr(M, hy, CW, 26, 6); x.fillStyle = BR.red; x.fill();
+    const hd = (t, px, align, mw) => T(t, px, hy + 17, { w: 700, size: fit(t, 700, 11.5, 8, mw), color: '#fff', align });
+    hd(S.date, col.c0 + 6, 'left', 50); hd(S.details, col.c1 + 4, 'left', DET_W);
+    hd(S.debit, col.c3 - 6, 'right', 76); hd(S.credit, col.c4 - 6, 'right', 76); hd(S.bal, col.end - 6, 'right', 80);
+    // rows
+    const balCell = (ry, v, w = 700, size = 12) => {
+      const t = v < 0 ? `${S.advShort} ${fmtN(-v)}` : fmtN(v);
+      T(t, col.end - 6, ry, { w, size: fit(t, w, size, 8, 82), color: v > 0 ? BR.amber : BR.green, align: 'right' });
+    };
+    let y = pi === 0 ? Y1 : Y2;
+    pages[pi].forEach((it, ri) => {
+      if (it.kind === 'none') { T(S.none, W / 2, y + 28, { size: 13, color: BR.muted, align: 'center' }); y += it.h; return; }
+      if (it.kind === 'row' && ri % 2 === 0) { x.fillStyle = '#fffaf4'; x.fillRect(M, y, CW, it.h); }
+      if (it.kind === 'open') {
+        T(S.open, col.c1 + 4, y + 18, { w: 600, size: 12.5, color: BR.muted }); balCell(y + 18, open);
+      } else if (it.kind === 'total') {
+        x.fillStyle = '#fff4e8'; x.fillRect(M, y, CW, it.h); x.fillStyle = BR.red; x.fillRect(M, y, CW, 1.5);
+        T(S.total, col.c1 + 4, y + 21, { w: 700, size: 13 });
+        T(fmtN(dr), col.c3 - 6, y + 21, { w: 700, size: fit(fmtN(dr), 700, 12, 8, 76), color: BR.amber, align: 'right' });
+        T(fmtN(cr), col.c4 - 6, y + 21, { w: 700, size: fit(fmtN(cr), 700, 12, 8, 76), color: BR.green, align: 'right' });
+        balCell(y + 21, close, 800, 13);
+      } else {
+        const e = it.r.e, line1 = e.mode ? `${TYPE_MSG[e.type][lang]} · ${modeLabel(e.mode, lang)}` : TYPE_MSG[e.type][lang];
+        T(dYY(e.date), col.c0 + 6, y + 19, { size: 11 });
+        T(line1, col.c1 + 4, y + 19, { w: 600, size: fit(line1, 600, 12.5, 9, DET_W) });
+        it.extra.forEach((ln, i) => T(ln, col.c1 + 4, y + 33 + i * 13, { size: 11, color: BR.muted }));
+        const amt = fmtN(e.amount);
+        T(amt, (e.type === 'received' ? col.c4 : col.c3) - 6, y + 19, { w: 600, size: fit(amt, 600, 12, 8, 76), color: e.type === 'received' ? BR.green : BR.amber, align: 'right' });
+        balCell(y + 19, it.r.bal);
+      }
+      x.fillStyle = BR.line; x.fillRect(M, y + it.h - 1, CW, 1);
+      y += it.h;
+    });
+    // footer
+    if (pi === pages.length - 1 && s.receiptNote) { F(400, 11); T(clampLines(x, wrapLines(x, s.receiptNote, CW - 20), 1, CW - 20)[0] || '', W / 2, H - 40, { size: 11, color: BR.muted, align: 'center' }); }
+    T(S.auto, M, H - 22, { size: 9.5, color: BR.muted });
+    T(`${S.page} ${pi + 1} / ${pages.length}`, W - M, H - 22, { size: 9.5, color: BR.muted, align: 'right' });
+    const blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', 0.9));
+    out.push({ jpeg: new Uint8Array(await blob.arrayBuffer()), w: cv.width, h: cv.height });
+    if (pi === 0) preview = cv;
+  }
+  return { pages: out, preview, entries: rows.length };
+}
+function statementSheet(clientId, lang0 = null) {
+  const c = client(clientId); if (!c) return;
+  const st = { lang: lang0 || c.lang || db.settings.lang, period: 'all', n: 0, pdf: null, text: '' };
+  const periods = [['all', 'All time'], ['fy', 'This FY'], ['month', 'This month'], ['lastmonth', 'Last month']];
+  const nameSlug = c.name.replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'client';
+  const sh = openSheet(`
+    <div class="shead"><h2>Statement · ${esc(c.name)}</h2><button class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
+    <div class="field"><span>Period · अवधि</span><div class="chips wrap">${periods.map(([k, l]) => `<button class="chip" data-s="period" data-v="${k}">${l}</button>`).join('')}</div></div>
+    <div class="field"><span>Language · भाषा</span><div class="chips wrap">${LANG_KEYS.map(l => `<button class="chip" data-s="lang" data-v="${l}">${LANGS[l].name}</button>`).join('')}</div></div>
+    <div class="rcpt-prev" data-prev></div>
+    <p class="sub" data-info style="margin-top:-6px"></p>
+    <div class="row2"><button class="btn wa" data-s="share" disabled>${ic('share')} Share PDF</button><button class="btn" data-s="dl" disabled>${ic('download')} Download</button></div>
+    <p class="sub">Tap <b>Share PDF</b> → choose WhatsApp → pick the client. A short message is added as the caption.</p>`, {
+    lang: t => { st.lang = t.dataset.v; paint(); },
+    period: t => { st.period = t.dataset.v; paint(); },
+    share: () => shareFile(st.pdf, st.text),
+    dl: () => { if (st.pdf) { download(st.pdf.name, st.pdf, 'application/pdf'); toast('PDF downloaded ✓'); } },
+  });
+  const prev = $('[data-prev]', sh.el), info = $('[data-info]', sh.el), btns = $$('[data-s=share],[data-s=dl]', sh.el);
+  async function paint() {
+    const n = ++st.n;
+    $$('[data-s=lang]', sh.el).forEach(b => b.classList.toggle('on', b.dataset.v === st.lang));
+    $$('[data-s=period]', sh.el).forEach(b => b.classList.toggle('on', b.dataset.v === st.period));
+    btns.forEach(b => { b.disabled = true; });
+    prev.innerHTML = '<p class="sub" style="padding:28px;text-align:center">Preparing statement…</p>'; info.textContent = '';
+    try {
+      const r = await renderStatement(c, st.lang, st.period);
+      if (n !== st.n || !sh.el.isConnected) return;
+      r.preview.className = 'rcpt-canvas'; prev.replaceChildren(r.preview);
+      const base = `Statement-${nameSlug}-${todayStr()}`;
+      st.pdf = new File([buildPDF(r.pages, base, 595.28, 841.89)], base + '.pdf', { type: 'application/pdf' });
+      info.textContent = `${r.entries} entr${r.entries === 1 ? 'y' : 'ies'} · ${r.pages.length} page${r.pages.length === 1 ? '' : 's'}${r.pages.length > 1 ? ' (first page shown)' : ''} · ${Math.round(st.pdf.size / 1024)} KB`;
+      const t = pickTpl(calc(c.id).pending > 0 ? 'reminder' : 'greeting', st.lang);
+      st.text = renderTemplate(t.text, vars(c, null, st.lang));
+      btns.forEach(x => { x.disabled = false; });
+    } catch (err) { console.error(err); prev.innerHTML = '<p class="sub" style="padding:28px;text-align:center">Could not create the statement on this device.</p>'; }
+  }
+  paint();
+}
+
 function receiptSheet(entryId, lang0 = null) {
   const e = db.entries.find(x => x.id === entryId);
   if (!e || e.type !== 'received') return;
@@ -1402,7 +1583,7 @@ function receiptSheet(entryId, lang0 = null) {
       const { canvas, jpeg } = await renderReceipt(e, st.lang);
       if (n !== st.n || !sh.el.isConnected) return;
       canvas.className = 'rcpt-canvas'; prev.replaceChildren(canvas);
-      st.pdf = new File([buildPDF(jpeg, canvas.width, canvas.height, base)], base + '.pdf', { type: 'application/pdf' });
+      st.pdf = new File([buildPDF([{ jpeg, w: canvas.width, h: canvas.height }], base)], base + '.pdf', { type: 'application/pdf' });
       st.img = new File([jpeg], base + '.jpg', { type: 'image/jpeg' });
       const b = calcAsOf(c.id, e), t = pickTpl(b.pending > 0 ? 'thanks_pending' : 'thanks_full', st.lang);
       st.text = renderTemplate(t.text, vars(c, e, st.lang, true));
@@ -1461,6 +1642,7 @@ const ACT = {
   addEntry: t => entryForm({ clientId: t.dataset.client, type: t.dataset.type }),
   openEntry: t => entrySheet(t.dataset.id),
   msgClient: t => messageSheet({ clientId: t.dataset.id }),
+  stmtClient: t => statementSheet(t.dataset.id),
   waChat: t => { const c = client(t.dataset.id); if (c) openUrl(waLink(c.phone, '')); },
   setFilter: t => { ui.filter = t.dataset.v; render(); },
   setPeriod: t => { ui.period = t.dataset.v; render(); },
