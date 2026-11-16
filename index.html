@@ -172,6 +172,10 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.8}
 .preview{white-space:pre-wrap;background:#e9fbd7;color:#16200f;border-radius:14px 14px 14px 4px;padding:12px 14px;font-size:15px;line-height:1.5;max-height:240px;overflow:auto}
 @media (prefers-color-scheme:dark){.preview{background:#1f3a2a;color:#e8f5ec}}
 
+/* receipt preview */
+.rcpt-prev{flex:none;background:var(--surface2);border-radius:14px;padding:10px;max-height:50vh;overflow:auto}
+.rcpt-canvas{display:block;width:100%;height:auto;border-radius:6px;box-shadow:var(--shadow);background:#fff}
+
 /* bottom nav */
 #nav{position:fixed;bottom:0;left:0;right:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
 #nav .in2{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
@@ -233,6 +237,7 @@ const hue = s => { let h = 0; for (const ch of String(s)) h = (h * 31 + ch.codeP
 const initial = s => ([...String(s).trim()][0] || '?').toUpperCase();
 
 const IC = {
+  file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/>',
   back:'<path d="M15 18l-6-6 6-6"/>', x:'<path d="M18 6L6 18M6 6l12 12"/>', plus:'<path d="M12 5v14M5 12h14"/>',
   book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M20 17v4H6.5A2.5 2.5 0 0 1 4 18.5"/>',
   list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
@@ -545,7 +550,7 @@ let storageOK = true;
 function defaultDB() {
   return {
     v: 1,
-    settings: { business: 'Jyot Enterprise', owner: '', phone: '', upi: '', address: '', cc: '91', lang: 'hi', prefix: 'JE' },
+    settings: { business: 'Jyot Enterprise', owner: '', phone: '', upi: '', address: '', cc: '91', lang: 'hi', prefix: 'JE', receiptNote: '' },
     clients: [], entries: [], templates: [],
     meta: { nextReceipt: 1, lastBackup: null, lastMode: 'upi', created: Date.now() },
   };
@@ -607,6 +612,16 @@ function balances() {
 }
 const EMPTY_BAL = { bill: 0, rec: 0, giv: 0, last: '', count: 0, total: 0, pending: 0 };
 const calc = id => balances().get(id) || EMPTY_BAL;
+// Balance as it stood right after `entry` (entries ordered by date, then creation time).
+function calcAsOf(id, entry) {
+  const b = { bill: 0, rec: 0, giv: 0 };
+  for (const x of entriesOf(id)) {
+    if (x.type === 'received') b.rec += x.amount; else if (x.type === 'bill') b.bill += x.amount; else b.giv += x.amount;
+    if (x.id === entry.id) break;
+  }
+  b.total = b.bill + b.giv; b.pending = b.total - b.rec;
+  return b;
+}
 const latestReceived = id => entriesOf(id).filter(e => e.type === 'received').pop() || null;
 function nextReceipt() {
   const n = db.meta.nextReceipt++;
@@ -618,8 +633,8 @@ function buildStatement(c, lang) {
   return entriesOf(c.id).slice(-12).map(e =>
     `${dMsg(e.date)} • ${TYPE_MSG[e.type][lang]} • ₹${fmtN(e.amount)}${e.mode ? ` (${modeLabel(e.mode, lang)})` : ''}`).join('\n');
 }
-function vars(c, e, lang) {
-  const b = calc(c.id), s = db.settings;
+function vars(c, e, lang, asOf = false) {
+  const b = asOf && e ? calcAsOf(c.id, e) : calc(c.id), s = db.settings;
   return {
     name: c.name, business: s.business, owner: s.owner, phone: s.phone, upi: s.upi, address: s.address,
     amount: e ? fmtN(e.amount) : '', mode: e && e.mode ? modeLabel(e.mode, lang) : '',
@@ -929,7 +944,8 @@ function pageSettings() {
     ${field('owner', 'Your name (optional)', s.owner, 'autocomplete="name"')}
     ${field('phone', 'Your phone (shown in messages)', s.phone, 'type="tel" inputmode="tel"')}
     ${field('upi', 'Your UPI ID (optional, for reminders)', s.upi, 'autocapitalize="off" placeholder="name@bank"')}
-    ${field('address', 'Address (optional)', s.address)}
+    ${field('address', 'Address (optional, shown on receipt)', s.address)}
+    ${field('receiptNote', 'Receipt footer note (optional)', s.receiptNote || '', 'maxlength="140" placeholder="e.g. Please keep this receipt for your records"')}
     <div class="row2">
       ${field('prefix', 'Receipt prefix', s.prefix, 'maxlength="6" autocapitalize="characters"')}
       ${field('cc', 'Country code', s.cc, 'inputmode="numeric" maxlength="4"')}
@@ -1096,8 +1112,10 @@ function entrySheet(id) {
     <div class="bigamt ${T.cls}">${e.type === 'received' ? '+' : ''}${fmtR(e.amount)}</div>
     <dl class="kv" style="margin:0">${rows}</dl>
     <button class="btn wa block" data-s="msg">${ic('wa')} Send message${e.type === 'bill' ? ' (reminder)' : ''}</button>
+    ${e.type === 'received' ? `<button class="btn primary block" data-s="receipt">${ic('file')} Receipt PDF · रसीद</button>` : ''}
     <div class="row2"><button class="btn" data-s="edit">${ic('edit')} Edit</button><button class="btn danger" data-s="del">${ic('trash')} Delete</button></div>`, {
     msg: () => { sh.close(); messageSheet({ clientId: e.clientId, entryId: e.type === 'bill' ? null : e.id }); },
+    receipt: () => { sh.close(); receiptSheet(e.id); },
     edit: () => { sh.close(); entryForm({ clientId: e.clientId, entryId: e.id }); },
     del: async () => {
       if (await askConfirm({ title: 'Delete this entry?', text: `${T.label} ${fmtR(e.amount)} on ${dUI(e.date)} will be removed from the ledger.` })) {
@@ -1110,7 +1128,7 @@ function entrySheet(id) {
 function messageSheet({ clientId, entryId = null, kind = null, lang = null }) {
   const c = client(clientId); if (!c) return;
   const ex = entryId ? db.entries.find(e => e.id === entryId) : null;
-  const b = calc(clientId);
+  const b = ex ? calcAsOf(clientId, ex) : calc(clientId);
   const ctx = ex || latestReceived(clientId);
   const st = { lang: lang || c.lang || db.settings.lang };
   const k = kind || (ex ? (ex.type === 'given' ? 'paid_out' : b.pending > 0 ? 'thanks_pending' : 'thanks_full') : (b.pending > 0 ? 'reminder' : 'greeting'));
@@ -1126,7 +1144,9 @@ function messageSheet({ clientId, entryId = null, kind = null, lang = null }) {
       <button class="btn wa" data-s="wa">${ic('wa')} WhatsApp</button>
       <button class="btn ${navigator.share ? '' : 'hidden'}" data-s="share">${ic('share')} Share</button>
     </div>
+    ${ex && ex.type === 'received' ? `<button class="btn primary block" data-s="receipt">${ic('file')} Receipt PDF · रसीद</button>` : ''}
     <button class="btn block" data-s="tpls">Edit templates</button>`, {
+    receipt: (t, ev, api) => { api.close(); receiptSheet(ex.id, st.lang); },
     lang: t => {
       const cur = tplById(st.tpl); st.lang = t.dataset.v;
       st.tpl = pickTpl(cur ? cur.kind : k, st.lang).id; paint();
@@ -1143,7 +1163,7 @@ function messageSheet({ clientId, entryId = null, kind = null, lang = null }) {
     const opts = db.templates.filter(t => t.lang === st.lang);
     sel.innerHTML = opts.map(t => `<option value="${esc(t.id)}" ${t.id === st.tpl ? 'selected' : ''}>${esc(t.builtin ? tplName(t) : '★ ' + tplName(t))}</option>`).join('');
     const t = tplById(st.tpl);
-    ta.value = renderTemplate(t ? t.text : '', vars(c, ctx, st.lang));
+    ta.value = renderTemplate(t ? t.text : '', vars(c, ctx, st.lang, !!ex));
     grow();
   }
   const grow = () => { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight + 2, 380) + 'px'; };
@@ -1193,6 +1213,203 @@ function templateEditor(id = null) {
     else db.templates.push({ id: 'custom.' + uid(), kind: 'custom', lang: st.lang, name: form.elements.name.value.trim(), text, builtin: false });
     save(); sh.close(); render(); toast('Template saved ✓');
   });
+}
+
+/* ---------- receipt (PDF) ----------
+   The receipt is drawn on a canvas (so Hindi / Gujarati text and the ₹ sign are shaped correctly by the
+   phone's own fonts), saved as JPEG and wrapped in a one-page A5 PDF. No library, works offline. */
+const RL = {
+  en: { title: 'PAYMENT RECEIPT', no: 'Receipt no.', date: 'Date', from: 'Received from', amount: 'Amount received', words: 'In words', mode: 'Payment mode', ref: 'Reference', note: 'Towards / Note', summary: 'Account summary', total: 'Total amount', received: 'Received till date', pending: 'Balance pending', advance: 'Advance balance', thanks: 'Thank you for your payment.', sign: 'Authorised signatory', auto: 'This is a computer generated receipt.', cheque: 'Subject to realisation of cheque.', paid: 'PAID IN FULL' },
+  hi: { title: 'भुगतान रसीद', no: 'रसीद नं.', date: 'दिनांक', from: 'भुगतानकर्ता', amount: 'प्राप्त राशि', words: 'शब्दों में', mode: 'भुगतान का माध्यम', ref: 'संदर्भ', note: 'विवरण / नोट', summary: 'हिसाब', total: 'कुल राशि', received: 'अब तक प्राप्त', pending: 'बाकी राशि', advance: 'एडवांस राशि', thanks: 'आपके भुगतान के लिए धन्यवाद।', sign: 'अधिकृत हस्ताक्षर', auto: 'यह कंप्यूटर द्वारा बनाई गई रसीद है।', cheque: 'चेक की वसूली के अधीन।', paid: 'पूर्ण भुगतान' },
+  gu: { title: 'ચુકવણી રસીદ', no: 'રસીદ નં.', date: 'તારીખ', from: 'ચૂકવનાર', amount: 'પ્રાપ્ત રકમ', words: 'શબ્દોમાં', mode: 'ચુકવણીની રીત', ref: 'સંદર્ભ', note: 'વિગત / નોંધ', summary: 'હિસાબ', total: 'કુલ રકમ', received: 'અત્યાર સુધી મળેલ', pending: 'બાકી રકમ', advance: 'એડવાન્સ રકમ', thanks: 'આપની ચુકવણી બદલ આભાર.', sign: 'અધિકૃત સહી', auto: 'આ કમ્પ્યુટર દ્વારા બનાવેલ રસીદ છે.', cheque: 'ચેક વસૂલાતને આધીન.', paid: 'સંપૂર્ણ ચુકવણી' },
+};
+const ONES = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+const TENS = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+const w99 = n => n < 20 ? ONES[n] : TENS[Math.floor(n / 10)] + (n % 10 ? ' ' + ONES[n % 10] : '');
+const w999 = n => [n >= 100 ? ONES[Math.floor(n / 100)] + ' Hundred' : '', n % 100 ? w99(n % 100) : ''].filter(Boolean).join(' ');
+function amountInWords(paise) {      // Indian system: Crore / Lakh / Thousand
+  let r = Math.floor(paise / 100); const p = paise % 100, parts = [];
+  const cr = Math.floor(r / 1e7); r %= 1e7;
+  const lk = Math.floor(r / 1e5); r %= 1e5;
+  const th = Math.floor(r / 1e3); r %= 1e3;
+  if (cr) parts.push(w99(cr) + ' Crore');
+  if (lk) parts.push(w99(lk) + ' Lakh');
+  if (th) parts.push(w99(th) + ' Thousand');
+  if (r) parts.push(w999(r));
+  const rupees = parts.join(' '), ps = p ? w99(p) + ' Paise' : '';
+  if (rupees && ps) return `Rupees ${rupees} and ${ps} Only`;
+  if (rupees) return `Rupees ${rupees} Only`;
+  return ps ? `${ps} Only` : 'Zero';
+}
+const imgCache = {};
+const loadImg = src => imgCache[src] || (imgCache[src] = new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; }));
+const RFONT = 'system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Devanagari","Noto Sans Gujarati","Nirmala UI",sans-serif';
+function wrapLines(ctx, text, maxW) {
+  const out = [];
+  for (const para of String(text).split('\n')) {
+    let line = '';
+    for (const word of para.split(/\s+/).filter(Boolean)) {
+      const t = line ? line + ' ' + word : word;
+      if (!line || ctx.measureText(t).width <= maxW) line = t; else { out.push(line); line = word; }
+    }
+    if (line) out.push(line);
+  }
+  return out;
+}
+function clampLines(ctx, lines, max, maxW) {     // keep `max` lines; end the last one with … if text was cut
+  if (lines.length <= max) return lines;
+  const out = lines.slice(0, max); let last = out[max - 1];
+  while (last.length > 1 && ctx.measureText(last + '…').width > maxW) last = last.slice(0, -1);
+  out[max - 1] = last.replace(/\s+$/, '') + '…';
+  return out;
+}
+async function renderReceipt(e, lang) {
+  const c = client(e.clientId), s = db.settings, L = RL[lang], b = calcAsOf(c.id, e);
+  const W = 600, H = 851, K = 2.5, M = 36, INK = '#2b1511', MUTED = '#7a5d52', LINE = '#ecd9c6', RED = '#d4260e';
+  const cv = document.createElement('canvas'); cv.width = Math.round(W * K); cv.height = Math.round(H * K);
+  const x = cv.getContext('2d'); x.scale(K, K);
+  const F = (w, size) => { x.font = `${w} ${size}px ${RFONT}`; };
+  const T = (str, px, py, o = {}) => { F(o.w || 400, o.size || 14); x.fillStyle = o.color || INK; x.textAlign = o.align || 'left'; x.textBaseline = 'alphabetic'; x.fillText(str, px, py); };
+  const fit = (str, w, max, min, maxW) => { let z = max; for (; z > min; z--) { F(w, z); if (x.measureText(str).width <= maxW) break; } return z; };
+  const rr = (rx, ry, rw, rh, r) => { x.beginPath(); x.moveTo(rx + r, ry); x.arcTo(rx + rw, ry, rx + rw, ry + rh, r); x.arcTo(rx + rw, ry + rh, rx, ry + rh, r); x.arcTo(rx, ry + rh, rx, ry, r); x.arcTo(rx, ry, rx + rw, ry, r); x.closePath(); };
+  const rule = (ry, rx = M, rw = W - 2 * M) => { x.fillStyle = LINE; x.fillRect(rx, ry, rw, 1); };
+
+  x.fillStyle = '#fff'; x.fillRect(0, 0, W, H);
+  const g = x.createLinearGradient(0, 0, W, 0); g.addColorStop(0, '#e8160c'); g.addColorStop(.55, '#f86c00'); g.addColorStop(1, '#f9d306');
+  x.fillStyle = g; x.fillRect(0, 0, W, 8); x.fillRect(0, H - 8, W, 8);
+
+  // header: logo + business details
+  try { x.drawImage(await loadImg('icons/logo.png'), M, 28, 76, 76); } catch {}
+  const hx = M + 92, hw = W - hx - M, biz = s.business || 'Receipt';
+  T(biz, hx, 58, { w: 700, size: fit(biz, 700, 26, 15, hw), color: RED });
+  F(400, 12); let hy = 78;
+  for (const ln of clampLines(x, wrapLines(x, s.address || '', hw), 2, hw)) { T(ln, hx, hy, { size: 12, color: MUTED }); hy += 16; }
+  const contact = [s.phone && `Mob: ${s.phone}`, s.upi && `UPI: ${s.upi}`].filter(Boolean).join('  ·  ');
+  if (contact) T(contact, hx, hy + 1, { size: 12, color: MUTED });
+  rule(118);
+  rr(M, 130, W - 2 * M, 36, 10); x.fillStyle = RED; x.fill();
+  T(L.title, W / 2, 154, { w: 700, size: 17, color: '#fff', align: 'center' });
+
+  // receipt no. / date / payer
+  T(L.no, M, 190, { size: 11, color: MUTED }); T(e.receiptNo || '—', M, 209, { w: 700, size: 16 });
+  T(L.date, W - M, 190, { size: 11, color: MUTED, align: 'right' }); T(dMsg(e.date), W - M, 209, { w: 700, size: 16, align: 'right' });
+  T(L.from, M, 238, { size: 11, color: MUTED });
+  T(c.name, M, 262, { w: 700, size: fit(c.name, 700, 22, 13, W - 2 * M) });
+  if (c.phone) T(c.phone, M, 280, { size: 13, color: MUTED });
+
+  // amount
+  rr(M, 296, W - 2 * M, 70, 12); x.fillStyle = '#fff4e8'; x.fill(); x.lineWidth = 1.2; x.strokeStyle = '#f4d3b4'; x.stroke();
+  T(L.amount, M + 18, 317, { size: 12, color: MUTED });
+  T('₹ ' + fmtN(e.amount), M + 18, 354, { w: 800, size: 34 });
+  if (b.pending <= 0) {
+    x.save(); x.translate(W - M - 92, 331); x.rotate(-0.2); F(800, 15);
+    const tw = x.measureText(L.paid).width + 24;
+    x.globalAlpha = .85; x.strokeStyle = '#12683c'; x.lineWidth = 2.5; rr(-tw / 2, -17, tw, 34, 8); x.stroke();
+    T(L.paid, 0, 6, { w: 800, size: 15, color: '#12683c', align: 'center' }); x.restore();
+  }
+  F(400, 12.5); let wy = 388;
+  for (const ln of clampLines(x, wrapLines(x, `${L.words}: ${amountInWords(e.amount)}`, W - 2 * M), 2, W - 2 * M)) { T(ln, M, wy, { size: 12.5, color: MUTED }); wy += 17; }
+
+  // details
+  let dy = wy + 6; rule(dy);
+  const rows = [e.mode && [L.mode, modeLabel(e.mode, lang)], e.ref && [L.ref, e.ref], e.note && [L.note, e.note]].filter(Boolean);
+  for (const [k, v] of rows) {
+    F(600, 14); const vl = clampLines(x, wrapLines(x, v, W - M - (M + 170)), 2, W - M - (M + 170));
+    T(k, M, dy + 21, { size: 13, color: MUTED });
+    vl.forEach((ln, i) => T(ln, M + 170, dy + 21 + i * 17, { w: 600, size: 14 }));
+    dy += 30 + (vl.length - 1) * 17; rule(dy);
+  }
+
+  // account summary (balance as it stood right after this payment)
+  const sy = dy + 16;
+  rr(M, sy, W - 2 * M, 116, 12); x.fillStyle = '#fffaf4'; x.fill(); x.strokeStyle = LINE; x.lineWidth = 1.2; x.stroke();
+  T(L.summary, M + 16, sy + 22, { w: 700, size: 13, color: MUTED });
+  const ry = i => sy + 44 + i * 26;
+  const line = (i, k, v, o = {}) => { T(k, M + 16, ry(i), { size: 14, w: o.w || 400 }); T(v, W - M - 16, ry(i), { w: o.w || 600, size: o.size || 14.5, color: o.color || INK, align: 'right' }); };
+  line(0, L.total, fmtR(b.total)); line(1, L.received, fmtR(b.rec)); rule(ry(1) + 9, M + 16, W - 2 * M - 32);
+  line(2, b.pending < 0 ? L.advance : L.pending, fmtR(Math.abs(b.pending)), { w: 700, size: 16, color: b.pending > 0 ? '#a8480a' : '#12683c' });
+
+  // footer
+  let fy = H - 150;
+  T(L.thanks, W / 2, fy, { w: 700, size: 15, align: 'center' }); fy += 18; F(400, 11.5);
+  for (const n of [e.mode === 'cheque' ? L.cheque : '', s.receiptNote].filter(Boolean))
+    for (const ln of clampLines(x, wrapLines(x, n, W - 2 * M - 40), 2, W - 2 * M - 40)) { T(ln, W / 2, fy, { size: 11.5, color: MUTED, align: 'center' }); fy += 15; }
+  const sw = 200, sx = W - M - sw, who = s.owner || s.business || '';
+  x.fillStyle = INK; x.fillRect(sx, H - 62, sw, 1);
+  T(L.sign, sx + sw / 2, H - 46, { size: 11, color: MUTED, align: 'center' });
+  F(600, 11);
+  clampLines(x, wrapLines(x, who, sw), 2, sw).forEach((ln, i) => T(ln, sx + sw / 2, H - 31 + i * 13, { w: 600, size: 11, align: 'center' }));
+  T(L.auto, M, H - 22, { size: 10, color: MUTED });
+
+  const blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', 0.92));
+  return { canvas: cv, jpeg: new Uint8Array(await blob.arrayBuffer()) };
+}
+function buildPDF(jpeg, wPx, hPx, title) {      // one A5 page that shows the JPEG full-bleed
+  const PW = 419.53, PH = 595.28, enc = new TextEncoder(), chunks = [], xref = [];
+  let pos = 0;
+  const add = b => { const u = typeof b === 'string' ? enc.encode(b) : b; chunks.push(u); pos += u.length; };
+  const obj = (n, body) => { xref[n] = pos; add(`${n} 0 obj\n${body}\nendobj\n`); };
+  const safe = String(title).replace(/[^A-Za-z0-9 ._-]/g, '');
+  add('%PDF-1.4\n');
+  obj(1, '<< /Type /Catalog /Pages 2 0 R >>');
+  obj(2, '<< /Type /Pages /Kids [3 0 R] /Count 1 >>');
+  obj(3, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>`);
+  xref[4] = pos;
+  add(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${wPx} /Height ${hPx} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpeg.length} >>\nstream\n`);
+  add(jpeg); add('\nendstream\nendobj\n');
+  const content = `q ${PW} 0 0 ${PH} 0 0 cm /Im0 Do Q`;
+  obj(5, `<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
+  obj(6, `<< /Title (${safe}) /Producer (Jyot Khata) >>`);
+  const xpos = pos;
+  let xr = 'xref\n0 7\n0000000000 65535 f \n';
+  for (let i = 1; i <= 6; i++) xr += String(xref[i]).padStart(10, '0') + ' 00000 n \n';
+  add(xr + `trailer\n<< /Size 7 /Root 1 0 R /Info 6 0 R >>\nstartxref\n${xpos}\n%%EOF`);
+  return new Blob(chunks, { type: 'application/pdf' });
+}
+async function shareFile(file, text) {
+  if (!file) return;
+  try {
+    if (navigator.canShare && navigator.canShare({ files: [file], text })) { await navigator.share({ files: [file], title: file.name, text }); return; }
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: file.name }); return; }
+  } catch (err) { if (err && err.name === 'AbortError') return; }
+  download(file.name, file, file.type); toast('Downloaded ✓ — attach it in WhatsApp');
+}
+function receiptSheet(entryId, lang0 = null) {
+  const e = db.entries.find(x => x.id === entryId);
+  if (!e || e.type !== 'received') return;
+  const c = client(e.clientId); if (!c) return;
+  const st = { lang: lang0 || c.lang || db.settings.lang, n: 0, pdf: null, img: null, text: '' };
+  const base = `Receipt-${String(e.receiptNo || 'payment').replace(/[^A-Za-z0-9_-]/g, '')}-${e.date}`;
+  const sh = openSheet(`
+    <div class="shead"><h2>Receipt · ${esc(e.receiptNo || '')}</h2><button class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
+    <div class="chips wrap">${LANG_KEYS.map(l => `<button class="chip" data-s="lang" data-v="${l}">${LANGS[l].name}</button>`).join('')}</div>
+    <div class="rcpt-prev" data-prev></div>
+    <div class="row2"><button class="btn wa" data-s="share" disabled>${ic('share')} Share PDF</button><button class="btn" data-s="dl" disabled>${ic('download')} Download</button></div>
+    <button class="btn soft block" data-s="img" disabled>${ic('share')} Share as image</button>
+    <p class="sub">Tap <b>Share PDF</b> → choose WhatsApp → pick the client. Your thank-you message is added as the caption.</p>`, {
+    lang: t => { st.lang = t.dataset.v; paint(); },
+    share: () => shareFile(st.pdf, st.text),
+    img: () => shareFile(st.img, st.text),
+    dl: () => { if (st.pdf) { download(st.pdf.name, st.pdf, 'application/pdf'); toast('PDF downloaded ✓'); } },
+  });
+  const prev = $('[data-prev]', sh.el), btns = $$('[data-s=share],[data-s=dl],[data-s=img]', sh.el);
+  async function paint() {
+    const n = ++st.n;
+    $$('[data-s=lang]', sh.el).forEach(b => b.classList.toggle('on', b.dataset.v === st.lang));
+    btns.forEach(b => { b.disabled = true; });
+    prev.innerHTML = '<p class="sub" style="padding:28px;text-align:center">Preparing receipt…</p>';
+    try {
+      const { canvas, jpeg } = await renderReceipt(e, st.lang);
+      if (n !== st.n || !sh.el.isConnected) return;
+      canvas.className = 'rcpt-canvas'; prev.replaceChildren(canvas);
+      st.pdf = new File([buildPDF(jpeg, canvas.width, canvas.height, base)], base + '.pdf', { type: 'application/pdf' });
+      st.img = new File([jpeg], base + '.jpg', { type: 'image/jpeg' });
+      const b = calcAsOf(c.id, e), t = pickTpl(b.pending > 0 ? 'thanks_pending' : 'thanks_full', st.lang);
+      st.text = renderTemplate(t.text, vars(c, e, st.lang, true));
+      btns.forEach(x => { x.disabled = false; });
+    } catch (err) { console.error(err); prev.innerHTML = '<p class="sub" style="padding:28px;text-align:center">Could not create the receipt on this device.</p>'; }
+  }
+  paint();
 }
 
 /* ---------- export / import ---------- */
@@ -1284,7 +1501,7 @@ document.addEventListener('submit', e => {
     e.preventDefault();
     const v = f.elements, s = db.settings;
     s.business = v.business.value.trim(); s.owner = v.owner.value.trim(); s.phone = v.phone.value.trim();
-    s.upi = v.upi.value.trim(); s.address = v.address.value.trim(); s.lang = v.lang.value;
+    s.upi = v.upi.value.trim(); s.address = v.address.value.trim(); s.receiptNote = v.receiptNote.value.trim(); s.lang = v.lang.value;
     s.prefix = (v.prefix.value.trim() || 'RC').toUpperCase(); s.cc = v.cc.value.replace(/\D/g, '') || '91';
     save(); toast('Settings saved ✓');
   }

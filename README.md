@@ -41,7 +41,18 @@ download a backup on the old phone and use **Restore from backup** on the new on
 `{name} {amount} {mode} {date} {receipt_no} {total} {received} {pending} {statement} {business} {owner} {phone} {upi} {address}`
 A line that contains a field with no value (for example `UPI: {upi}` when no UPI ID is saved) is dropped automatically.
 
+## Receipts (PDF)
+Open any **Received** entry (or tap **Receipt PDF** right after saving a payment) to get an A5 payment receipt
+in Hindi, English or Gujarati: logo, business details, receipt no., date, client, amount (with amount in words),
+mode / reference / note, and the account summary **as it stood right after that payment**.
+- **Share PDF** opens the phone's share sheet (pick WhatsApp, then the client). The thank-you message is added as the caption.
+- **Share as image** sends the same receipt as a picture, which WhatsApp shows inline.
+- **Download** saves the PDF (this is also what happens on a computer).
+- Business name, address, phone, UPI and an optional footer note come from **Settings**.
+- The receipt is drawn on a canvas and wrapped in a one-page PDF — no library, works offline, and Hindi/Gujarati text is shaped by the phone's own fonts.
+  The PDF is an image, so the text can't be selected.
+
 ## Next steps (not built yet)
-- PDF receipt (with Jyot Enterprise name, date, client, amount, mode, receipt no.) shared on WhatsApp
+- Client statement PDF (all entries with running balance)
 - Cloud sync so Android and iPhone share one live ledger
 - App lock (PIN / fingerprint)
