@@ -1,0 +1,1301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Jyot Khata</title>
+<meta name="description" content="Client ledger with ready Hindi, English and Gujarati WhatsApp payment messages.">
+<meta name="theme-color" content="#d4260e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a110f" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jyot Khata">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>
+/* Jyot brand: logo red #E42B13, orange #F86C00, yellow #F9D306 */
+:root{
+  --bg:#fff8f0; --surface:#ffffff; --surface2:#fdeedd; --text:#2b1511; --muted:#7a5d52; --line:#f1dfcd;
+  --primary:#d4260e; --primary-ink:#ffffff; --primary-soft:#fde5dc;
+  --in:#12683c; --in-bg:#157347; --in-soft:#e0f3e7;
+  --due:#a8480a; --due-bg:#c2570a; --due-soft:#fdecd2;
+  --out:#1d4ed8; --out-bg:#1d4ed8; --out-soft:#e3ebfd;
+  --wa-bg:#0f7a43; --danger:#b42318; --danger-soft:#fdeceb;
+  --brand-grad:linear-gradient(90deg,#e8160c,#f86c00 55%,#f9d306);
+  --shadow:0 1px 2px rgba(80,30,10,.06),0 6px 18px rgba(80,30,10,.08);
+  --r:16px;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#1a110f; --surface:#261a17; --surface2:#33241f; --text:#fbede6; --muted:#c4a89c; --line:#44322b;
+    --primary:#ff6a45; --primary-ink:#2a0a03; --primary-soft:#4a2219;
+    --in:#5fdc8f; --in-soft:#143a26; --due:#ffb454; --due-soft:#3d2a10; --out:#8fb0ff; --out-soft:#1a2748;
+    --danger:#ff8a80; --danger-soft:#3a1816;
+    --shadow:0 1px 2px rgba(0,0,0,.45);
+  }
+}
+body::before{content:"";position:fixed;top:0;left:0;right:0;height:4px;background:var(--brand-grad);z-index:60}
+.brand-logo{width:46px;height:46px;flex:none;display:block}
+.empty-logo{width:104px;height:104px;display:block;margin:0 auto 12px}
+.about{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:18px;color:var(--muted);font-size:13px}
+.about img{width:30px;height:30px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Devanagari","Noto Sans Gujarati","Nirmala UI",sans-serif;min-height:100vh}
+body.noscroll{overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+h1,h2,h3,p{margin:0}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--primary) 55%,transparent);outline-offset:2px}
+
+#app{max-width:560px;margin:0 auto;padding:0 16px calc(150px + env(safe-area-inset-bottom))}
+.topbar{display:flex;align-items:center;gap:6px;padding:calc(12px + env(safe-area-inset-top)) 0 10px;position:sticky;top:0;background:var(--bg);z-index:5}
+.topbar h1{font-size:21px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tb-title{min-width:0}
+.sub{font-size:13px;color:var(--muted)}
+.spacer{flex:1}
+.icon-btn{width:44px;height:44px;border-radius:12px;border:0;background:transparent;display:grid;place-items:center;flex:none}
+.icon-btn:hover{background:var(--surface2)}
+.card{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);padding:16px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.card h2{font-size:16px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+
+/* summary */
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 12px}
+.sum{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);padding:12px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.sum.main{grid-column:1/-1;padding:18px 16px 16px;background:var(--brand-grad) top left/100% 4px no-repeat,var(--surface)}
+.sum span{font-size:13px;color:var(--muted)}
+.sum b{font-size:22px;line-height:1.2}
+.sum.main b{font-size:30px}
+.sum em{font-style:normal;font-size:13px;color:var(--muted)}
+.in{color:var(--in)} .due{color:var(--due)} .out{color:var(--out)}
+.sumlist{display:flex;flex-direction:column;gap:8px;padding:14px 16px}
+.sumlist div{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.sumlist span{font-size:14px;color:var(--muted)}
+.sumlist b{font-size:19px}
+
+/* inputs */
+input,select,textarea{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-height:46px;font-size:16px}
+textarea{resize:vertical;line-height:1.5}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:.8}
+.searchrow{position:relative;margin-bottom:10px}
+.field{display:flex;flex-direction:column;gap:6px;border:0;padding:0;margin:0;min-width:0}
+.field>span{font-size:13px;font-weight:600;color:var(--muted)}
+.amt{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 14px}
+.amt i{font-style:normal;font-size:26px;font-weight:700;color:var(--muted)}
+.amt input{border:0;padding:10px 0;font-size:28px;font-weight:700;background:transparent;min-height:56px}
+.amt input:focus-visible{outline:none}
+.amt:focus-within{outline:3px solid color-mix(in srgb,var(--primary) 55%,transparent)}
+
+/* chips & seg */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px;margin-bottom:4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips.wrap{flex-wrap:wrap;overflow:visible;padding:0;margin:0}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:0 16px;min-height:42px;font-weight:600;white-space:nowrap;flex:none;display:inline-flex;align-items:center;gap:6px}
+.chip.on{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--surface2);border-radius:14px;padding:4px}
+.seg button{border:0;background:transparent;border-radius:11px;min-height:52px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.2}
+.seg button small{font-weight:500;font-size:12px;opacity:.85}
+.seg button.on{background:var(--surface);box-shadow:var(--shadow)}
+.seg button.on[data-v=received]{color:var(--in)} .seg button.on[data-v=bill]{color:var(--due)} .seg button.on[data-v=given]{color:var(--out)}
+
+/* buttons */
+.btn{min-height:48px;border-radius:13px;border:1px solid var(--line);background:var(--surface);padding:0 16px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;text-align:center;line-height:1.2}
+.btn.primary{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
+.btn.soft{background:var(--primary-soft);border-color:transparent;color:var(--text)}
+.btn.in{background:var(--in-bg);border-color:transparent;color:#fff}
+.btn.due{background:var(--due-bg);border-color:transparent;color:#fff}
+.btn.out{background:var(--out-bg);border-color:transparent;color:#fff}
+.btn.wa{background:var(--wa-bg);border-color:transparent;color:#fff}
+.btn.danger{background:var(--danger-soft);color:var(--danger);border-color:transparent}
+.btn.sm{min-height:40px;padding:0 12px;font-size:14px}
+.btn.block{width:100%}
+.btn:disabled{opacity:.5}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 8px}
+.actions .btn{flex-direction:column;gap:0;padding:8px 6px;min-height:58px}
+.actions .btn small{font-weight:500;font-size:12px;opacity:.9}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+
+/* client list */
+.list{display:flex;flex-direction:column;gap:8px}
+.crow{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);padding:12px 14px;text-decoration:none;min-height:68px}
+.avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:18px;background:hsl(var(--h) 55% 88%);color:hsl(var(--h) 60% 24%);flex:none}
+@media (prefers-color-scheme:dark){.avatar{background:hsl(var(--h) 35% 24%);color:hsl(var(--h) 70% 85%)}}
+.cmain{flex:1;min-width:0}
+.cname{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.csub{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.camt{text-align:right;font-weight:800;font-size:17px;flex:none}
+.camt small{display:block;font-weight:500;font-size:12px;color:var(--muted)}
+.empty{text-align:center;color:var(--muted);padding:28px 12px}
+.empty b{display:block;color:var(--text);font-size:18px;margin-bottom:6px}
+.empty .btn{margin-top:14px}
+.fab{position:fixed;bottom:calc(76px + env(safe-area-inset-bottom));right:calc(max(0px,(100vw - 560px)/2) + 16px);z-index:10;border:0;border-radius:999px;background:var(--primary);color:var(--primary-ink);min-height:54px;padding:0 20px;font-weight:700;box-shadow:0 8px 24px rgba(212,38,14,.35);display:inline-flex;align-items:center;gap:8px}
+
+/* client page */
+.balcard{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);padding:18px 16px;border-left:6px solid var(--line)}
+.balcard.due{border-left-color:var(--due-bg)} .balcard.in{border-left-color:var(--in-bg)}
+.balcard .bl{font-size:13px;color:var(--muted);font-weight:600}
+.balcard .bv{font-size:34px;font-weight:800;line-height:1.15}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.stats span{font-size:12px;color:var(--muted);display:block}
+.stats b{font-size:17px}
+.contact{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.sec{display:flex;align-items:baseline;justify-content:space-between;margin:20px 2px 8px}
+.sec h2{font-size:16px}
+.erow{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:var(--surface);border:0;border-radius:var(--r);box-shadow:var(--shadow);padding:12px 14px;min-height:64px;margin-bottom:8px}
+.edate{width:48px;font-size:12px;color:var(--muted);text-align:center;line-height:1.25;flex:none}
+.edate b{display:block;font-size:18px;color:var(--text)}
+.emain{flex:1;min-width:0}
+.etype{font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.enote{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eamt{text-align:right;font-weight:800;flex:none}
+.eamt small{display:block;font-weight:500;font-size:11.5px;color:var(--muted)}
+.pill{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--surface2);color:var(--muted)}
+.pill.in{background:var(--in-soft);color:var(--in)} .pill.due{background:var(--due-soft);color:var(--due)} .pill.out{background:var(--out-soft);color:var(--out)}
+.dgroup{font-size:13px;font-weight:700;color:var(--muted);margin:14px 2px 6px}
+
+/* templates */
+.tgroup{margin-top:14px}
+.tgroup h3{font-size:14px;margin:0 2px 6px}
+.trow{display:block;width:100%;text-align:left;background:var(--surface);border:0;border-radius:var(--r);box-shadow:var(--shadow);padding:12px 14px;margin-bottom:8px}
+.trow p{font-size:13.5px;color:var(--muted);margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.trow .th{display:flex;align-items:center;gap:8px;font-weight:700}
+.vars{display:flex;flex-wrap:wrap;gap:6px}
+.vars button{border:1px dashed var(--line);background:var(--surface2);border-radius:8px;min-height:34px;padding:0 10px;font-size:13px;font-family:ui-monospace,Menlo,monospace}
+.preview{white-space:pre-wrap;background:#e9fbd7;color:#16200f;border-radius:14px 14px 14px 4px;padding:12px 14px;font-size:15px;line-height:1.5;max-height:240px;overflow:auto}
+@media (prefers-color-scheme:dark){.preview{background:#1f3a2a;color:#e8f5ec}}
+
+/* bottom nav */
+#nav{position:fixed;bottom:0;left:0;right:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+#nav .in2{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+#nav a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 0 7px;font-size:12px;color:var(--muted);text-decoration:none;min-height:56px}
+#nav a.on{color:var(--primary);font-weight:700}
+
+/* banner */
+.banner{display:flex;align-items:center;gap:10px;background:var(--due-soft);color:var(--text);border-radius:14px;padding:10px 12px;margin:0 0 12px;font-size:14px}
+.banner .btn{margin-left:auto;flex:none;white-space:nowrap}
+
+/* sheets */
+.overlay{position:fixed;inset:0;background:rgba(30,12,8,.5);z-index:50;display:flex;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .18s}
+.overlay.show{opacity:1}
+.sheet{width:100%;max-width:560px;max-height:92vh;max-height:92dvh;overflow:auto;background:var(--bg);border-radius:22px 22px 0 0;padding:16px 16px calc(18px + env(safe-area-inset-bottom));transform:translateY(28px);transition:transform .22s;display:flex;flex-direction:column;gap:14px}
+.overlay.show .sheet{transform:none}
+@media (min-width:600px){.overlay{align-items:center}.sheet{border-radius:22px}}
+.shead{display:flex;align-items:center;gap:8px}
+.shead h2{font-size:18px;flex:1;min-width:0}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:8px 12px;font-size:15px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;word-break:break-word}
+.bigamt{font-size:34px;font-weight:800}
+
+#toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:#2b1511;color:#fff;padding:11px 18px;border-radius:999px;font-size:14.5px;z-index:100;opacity:0;pointer-events:none;transition:.2s;max-width:calc(100vw - 32px);text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+body.noscroll #toast{bottom:auto;top:calc(14px + env(safe-area-inset-top));transform:translate(-50%,-16px)}
+body.noscroll #toast.show{transform:translate(-50%,0)}
+.hidden{display:none!important}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<nav id="nav" aria-label="Main"></nav>
+<div id="layers"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+/* =====================================================================
+   Jyot Khata — client ledger + ready payment messages (HI / EN / GU)
+   Local-first: all data stays on this phone (localStorage). Backup/restore in Settings.
+   ===================================================================== */
+
+/* ---------- helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad = n => String(n).padStart(2, '0');
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const todayStr = () => ymd(new Date());
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const dUI = s => { const [y, m, d] = s.split('-').map(Number); return `${d} ${MON[m - 1]} ${y}`; };
+const dMsg = s => { const [y, m, d] = s.split('-'); return `${d}/${m}/${y}`; };
+const fmtN = p => (p / 100).toLocaleString('en-IN', { minimumFractionDigits: p % 100 ? 2 : 0, maximumFractionDigits: 2 });
+const fmtR = p => (p < 0 ? '-' : '') + '₹' + fmtN(Math.abs(p));
+const parseAmount = v => { const n = parseFloat(String(v).replace(/[₹,\s]/g, '')); return isFinite(n) && n > 0 && n < 1e9 ? Math.round(n * 100) : NaN; };
+const hue = s => { let h = 0; for (const ch of String(s)) h = (h * 31 + ch.codePointAt(0)) % 360; return h; };
+const initial = s => ([...String(s).trim()][0] || '?').toUpperCase();
+
+const IC = {
+  back:'<path d="M15 18l-6-6 6-6"/>', x:'<path d="M18 6L6 18M6 6l12 12"/>', plus:'<path d="M12 5v14M5 12h14"/>',
+  book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M20 17v4H6.5A2.5 2.5 0 0 1 4 18.5"/>',
+  list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+  phone:'<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>',
+  copy:'<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+  share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>',
+  edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  trash:'<path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>',
+  download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>',
+  upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>',
+  wa:'<path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.2-5.4A8.4 8.4 0 1 1 21 11.5z"/><path d="M9 9.2c.2 2.6 2.4 4.9 5.2 5.3l1.3-1.3-1.9-1-.8.7c-.9-.4-1.6-1.1-2-2l.7-.8-1-1.9z"/>',
+};
+const ic = n => `<svg viewBox="0 0 24 24" aria-hidden="true">${IC[n]}</svg>`;
+
+/* ---------- reference data ---------- */
+const LANGS = { hi: { name: 'हिंदी', tag: 'HI' }, en: { name: 'English', tag: 'EN' }, gu: { name: 'ગુજરાતી', tag: 'GU' } };
+const LANG_KEYS = ['hi', 'en', 'gu'];
+const MODES = {
+  cash:  { en: 'Cash',          hi: 'नकद',            gu: 'રોકડ',           ref: 'Reference (optional)' },
+  upi:   { en: 'UPI',           hi: 'UPI',            gu: 'UPI',            ref: 'UPI ref / UTR no.' },
+  bank:  { en: 'Bank transfer', hi: 'बैंक ट्रांसफर',    gu: 'બેંક ટ્રાન્સફર',   ref: 'UTR / transaction ID' },
+  cheque:{ en: 'Cheque',        hi: 'चेक',            gu: 'ચેક',            ref: 'Cheque no. / bank' },
+  card:  { en: 'Card',          hi: 'कार्ड',           gu: 'કાર્ડ',           ref: 'Transaction ID' },
+  other: { en: 'Other',         hi: 'अन्य माध्यम',     gu: 'અન્ય માધ્યમ',      ref: 'Reference (optional)' },
+};
+const MODE_KEYS = Object.keys(MODES);
+const modeLabel = (m, lang = 'en') => (MODES[m] || MODES.other)[lang];
+const TYPES = {
+  received: { label: 'Received', hi: 'मिला', cls: 'in' },
+  bill:     { label: 'Bill / Due', hi: 'बाकी जोड़ा', cls: 'due' },
+  given:    { label: 'Given', hi: 'दिया / वापसी', cls: 'out' },
+};
+const TYPE_MSG = {
+  received: { hi: 'मिला', en: 'Received', gu: 'મળ્યા' },
+  bill:     { hi: 'बिल', en: 'Bill', gu: 'બિલ' },
+  given:    { hi: 'दिया', en: 'Given', gu: 'આપ્યા' },
+};
+const KINDS = {
+  thanks_pending: { label: 'Thank you · balance pending', hint: 'Payment received, some amount still pending' },
+  thanks_full:    { label: 'Thank you · fully paid',      hint: 'Payment received, nothing pending' },
+  reminder:       { label: 'Payment reminder',            hint: 'Gentle reminder for the pending amount' },
+  paid_out:       { label: 'Payment given / refund',      hint: 'You paid the client' },
+  statement:      { label: 'Account statement',           hint: 'Recent entries and balance' },
+  greeting:       { label: 'Thank you / greeting',        hint: 'General thanks and best wishes' },
+  festival:       { label: 'Festival greeting',           hint: 'Diwali / New Year wishes' },
+  custom:         { label: 'My own templates',            hint: '' },
+};
+const VARS = [
+  ['name', 'Client name'], ['amount', 'This payment amount'], ['mode', 'Payment mode'], ['date', 'Entry date'],
+  ['receipt_no', 'Receipt number'], ['total', 'Total amount (bill + given)'], ['received', 'Total received'],
+  ['pending', 'Pending balance'], ['statement', 'Recent entries list'], ['business', 'Your business name'],
+  ['owner', 'Your name'], ['phone', 'Your phone'], ['upi', 'Your UPI ID'], ['address', 'Your address'],
+];
+
+/* ---------- ready-made templates ---------- */
+const TEXT = {
+thanks_pending: {
+hi: `नमस्ते {name} जी 🙏
+
+आपका ₹{amount} का भुगतान ({mode}) {date} को हमें प्राप्त हो गया है। हार्दिक धन्यवाद!
+रसीद नं.: {receipt_no}
+
+📒 हिसाब:
+कुल राशि: ₹{total}
+अब तक प्राप्त: ₹{received}
+बाकी राशि: ₹{pending}
+
+कृपया बाकी राशि का भुगतान जल्द करने की कृपा करें।
+UPI: {upi}
+
+धन्यवाद,
+{business}
+{phone}`,
+en: `Dear {name},
+
+Thank you! We have received your payment of ₹{amount} ({mode}) on {date}. 🙏
+Receipt no.: {receipt_no}
+
+📒 Account summary:
+Total amount: ₹{total}
+Received so far: ₹{received}
+Balance pending: ₹{pending}
+
+Kindly clear the remaining balance at your earliest convenience.
+UPI: {upi}
+
+Regards,
+{business}
+{phone}`,
+gu: `નમસ્તે {name} જી 🙏
+
+આપની ₹{amount} ની ચુકવણી ({mode}) {date} ના રોજ અમને પ્રાપ્ત થઈ ગઈ છે. હાર્દિક આભાર!
+રસીદ નં.: {receipt_no}
+
+📒 હિસાબ:
+કુલ રકમ: ₹{total}
+અત્યાર સુધી મળેલ: ₹{received}
+બાકી રકમ: ₹{pending}
+
+કૃપા કરીને બાકી રકમ વહેલી તકે જમા કરાવવા વિનંતી.
+UPI: {upi}
+
+આભાર,
+{business}
+{phone}`,
+},
+thanks_full: {
+hi: `नमस्ते {name} जी 🙏
+
+आपका ₹{amount} का भुगतान ({mode}) {date} को हमें प्राप्त हो गया है। हार्दिक धन्यवाद!
+रसीद नं.: {receipt_no}
+
+✅ आपका पूरा भुगतान हो चुका है। अब कोई राशि बाकी नहीं है।
+कुल राशि: ₹{total} | प्राप्त: ₹{received}
+
+हमारे साथ जुड़े रहने के लिए आभार। 🙏
+{business}
+{phone}`,
+en: `Dear {name},
+
+Thank you! We have received your payment of ₹{amount} ({mode}) on {date}. 🙏
+Receipt no.: {receipt_no}
+
+✅ Your account is fully settled. No amount is pending.
+Total: ₹{total} | Received: ₹{received}
+
+Thank you for your trust and for being with us.
+{business}
+{phone}`,
+gu: `નમસ્તે {name} જી 🙏
+
+આપની ₹{amount} ની ચુકવણી ({mode}) {date} ના રોજ અમને પ્રાપ્ત થઈ ગઈ છે. હાર્દિક આભાર!
+રસીદ નં.: {receipt_no}
+
+✅ આપનું સંપૂર્ણ ચુકવણું થઈ ગયું છે. હવે કોઈ રકમ બાકી નથી.
+કુલ રકમ: ₹{total} | મળેલ: ₹{received}
+
+અમારી સાથે જોડાયેલા રહેવા બદલ આભાર. 🙏
+{business}
+{phone}`,
+},
+reminder: {
+hi: `नमस्ते {name} जी 🙏
+
+यह एक विनम्र स्मरण है कि आपकी ₹{pending} की राशि बाकी है।
+
+📒 हिसाब:
+कुल राशि: ₹{total}
+अब तक प्राप्त: ₹{received}
+बाकी राशि: ₹{pending}
+
+कृपया सुविधा अनुसार जल्द भुगतान करने की कृपा करें।
+UPI: {upi}
+
+धन्यवाद,
+{business}
+{phone}`,
+en: `Dear {name},
+
+This is a gentle reminder that an amount of ₹{pending} is pending.
+
+📒 Account summary:
+Total amount: ₹{total}
+Received so far: ₹{received}
+Balance pending: ₹{pending}
+
+Kindly arrange the payment at your earliest convenience.
+UPI: {upi}
+
+Thank you,
+{business}
+{phone}`,
+gu: `નમસ્તે {name} જી 🙏
+
+આ એક નમ્ર રીમાઇન્ડર છે કે આપની ₹{pending} ની રકમ બાકી છે.
+
+📒 હિસાબ:
+કુલ રકમ: ₹{total}
+અત્યાર સુધી મળેલ: ₹{received}
+બાકી રકમ: ₹{pending}
+
+કૃપા કરીને અનુકૂળતા મુજબ વહેલી તકે ચુકવણી કરવા વિનંતી.
+UPI: {upi}
+
+આભાર,
+{business}
+{phone}`,
+},
+paid_out: {
+hi: `नमस्ते {name} जी 🙏
+
+हमने आपको ₹{amount} का भुगतान ({mode}) {date} को कर दिया है। कृपया प्राप्ति की पुष्टि करें।
+
+धन्यवाद,
+{business}
+{phone}`,
+en: `Dear {name},
+
+We have paid you ₹{amount} ({mode}) on {date}. Kindly confirm once received.
+
+Thank you,
+{business}
+{phone}`,
+gu: `નમસ્તે {name} જી 🙏
+
+અમે આપને ₹{amount} ની ચુકવણી ({mode}) {date} ના રોજ કરી દીધી છે. કૃપા કરીને પ્રાપ્તિની પુષ્ટિ કરશો.
+
+આભાર,
+{business}
+{phone}`,
+},
+statement: {
+hi: `नमस्ते {name} जी 🙏
+
+{business} की ओर से आपका हिसाब:
+
+{statement}
+
+कुल राशि: ₹{total}
+प्राप्त: ₹{received}
+बाकी राशि: ₹{pending}
+
+धन्यवाद,
+{business}
+{phone}`,
+en: `Dear {name},
+
+Here is your account statement from {business}:
+
+{statement}
+
+Total amount: ₹{total}
+Received: ₹{received}
+Balance pending: ₹{pending}
+
+Thank you,
+{business}
+{phone}`,
+gu: `નમસ્તે {name} જી 🙏
+
+{business} તરફથી આપનો હિસાબ:
+
+{statement}
+
+કુલ રકમ: ₹{total}
+મળેલ: ₹{received}
+બાકી રકમ: ₹{pending}
+
+આભાર,
+{business}
+{phone}`,
+},
+greeting: {
+hi: `नमस्ते {name} जी 🙏
+
+हमारे साथ जुड़ने और हम पर विश्वास रखने के लिए हृदय से धन्यवाद। आपका सहयोग हमारे लिए अमूल्य है।
+आपको और आपके परिवार को सुख, समृद्धि और अच्छे स्वास्थ्य की शुभकामनाएँ! 🌟
+
+{business}
+{phone}`,
+en: `Dear {name},
+
+Thank you for your trust and for doing business with us. We truly value your support.
+Wishing you and your family happiness, prosperity and good health! 🌟
+
+{business}
+{phone}`,
+gu: `નમસ્તે {name} જી 🙏
+
+અમારી સાથે વ્યવહાર કરવા બદલ હૃદયપૂર્વક આભાર. આપનો વિશ્વાસ અમારા માટે અમૂલ્ય છે.
+આપને અને આપના પરિવારને સુખ, સમૃદ્ધિ અને સ્વાસ્થ્યની શુભકામનાઓ! 🌟
+
+{business}
+{phone}`,
+},
+festival: {
+hi: `🪔 नमस्ते {name} जी 🪔
+
+आपको एवं आपके परिवार को दीपावली तथा नववर्ष की हार्दिक शुभकामनाएँ! ✨
+नया साल आपके जीवन में सुख, समृद्धि और सफलता लेकर आए।
+
+{business}
+{phone}`,
+en: `🪔 Dear {name} 🪔
+
+Wishing you and your family a very Happy Diwali and a prosperous New Year! ✨
+May the coming year bring you joy, success and good health.
+
+{business}
+{phone}`,
+gu: `🪔 નમસ્તે {name} જી 🪔
+
+આપને અને આપના પરિવારને દિવાળીની તથા નૂતન વર્ષની હાર્દિક શુભકામનાઓ! નૂતન વર્ષાભિનંદન! ✨
+નવું વર્ષ આપના જીવનમાં સુખ, સમૃદ્ધિ અને સફળતા લાવે.
+
+{business}
+{phone}`,
+},
+};
+const DEFAULT_TEMPLATES = [];
+for (const kind of Object.keys(TEXT)) for (const lang of LANG_KEYS)
+  DEFAULT_TEMPLATES.push({ id: `${kind}.${lang}`, kind, lang, text: TEXT[kind][lang], builtin: true });
+const DEFAULT_BY_ID = Object.fromEntries(DEFAULT_TEMPLATES.map(t => [t.id, t]));
+
+/* ---------- storage ---------- */
+const KEY = 'jyotkhata.v1';
+let storageOK = true;
+function defaultDB() {
+  return {
+    v: 1,
+    settings: { business: 'Jyot Enterprise', owner: '', phone: '', upi: '', address: '', cc: '91', lang: 'hi', prefix: 'JE' },
+    clients: [], entries: [], templates: [],
+    meta: { nextReceipt: 1, lastBackup: null, lastMode: 'upi', created: Date.now() },
+  };
+}
+function syncTemplates(d) {
+  const have = new Map(d.templates.map(t => [t.id, t]));
+  for (const t of DEFAULT_TEMPLATES) {
+    const cur = have.get(t.id);
+    if (!cur) d.templates.push({ ...t, edited: false });
+    else if (!cur.edited) cur.text = t.text;
+  }
+}
+function migrate(d) {
+  const base = defaultDB();
+  d.settings = { ...base.settings, ...(d.settings || {}) };
+  d.meta = { ...base.meta, ...(d.meta || {}) };
+  d.clients = Array.isArray(d.clients) ? d.clients : [];
+  d.entries = Array.isArray(d.entries) ? d.entries : [];
+  d.templates = Array.isArray(d.templates) ? d.templates : [];
+  syncTemplates(d);
+  return d;
+}
+function loadDB() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) return migrate(JSON.parse(raw));
+  } catch (e) { storageOK = false; console.warn('Storage unavailable', e); }
+  return migrate(defaultDB());
+}
+let db = loadDB();
+let warnedSave = false;
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(db)); storageOK = true; }
+  catch (e) {
+    storageOK = false;
+    if (!warnedSave) { warnedSave = true; toast('⚠️ Could not save on this device. Export a backup now.'); }
+  }
+}
+if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+
+/* ---------- ledger maths (all money in paise = integers) ---------- */
+const client = id => db.clients.find(c => c.id === id);
+function entriesOf(id) {
+  return db.entries.filter(e => e.clientId === id)
+    .sort((a, b) => a.date.localeCompare(b.date) || (a.createdAt || 0) - (b.createdAt || 0));
+}
+function balances() {
+  const m = new Map();
+  for (const e of db.entries) {
+    let b = m.get(e.clientId);
+    if (!b) { b = { bill: 0, rec: 0, giv: 0, last: '', count: 0 }; m.set(e.clientId, b); }
+    if (e.type === 'received') b.rec += e.amount; else if (e.type === 'bill') b.bill += e.amount; else b.giv += e.amount;
+    b.count++;
+    const k = e.date + '|' + String(e.createdAt || 0).padStart(14, '0');
+    if (k > b.last) b.last = k;
+  }
+  for (const b of m.values()) { b.total = b.bill + b.giv; b.pending = b.total - b.rec; }
+  return m;
+}
+const EMPTY_BAL = { bill: 0, rec: 0, giv: 0, last: '', count: 0, total: 0, pending: 0 };
+const calc = id => balances().get(id) || EMPTY_BAL;
+const latestReceived = id => entriesOf(id).filter(e => e.type === 'received').pop() || null;
+function nextReceipt() {
+  const n = db.meta.nextReceipt++;
+  return `${db.settings.prefix || 'RC'}-${String(n).padStart(4, '0')}`;
+}
+
+/* ---------- messages ---------- */
+function buildStatement(c, lang) {
+  return entriesOf(c.id).slice(-12).map(e =>
+    `${dMsg(e.date)} • ${TYPE_MSG[e.type][lang]} • ₹${fmtN(e.amount)}${e.mode ? ` (${modeLabel(e.mode, lang)})` : ''}`).join('\n');
+}
+function vars(c, e, lang) {
+  const b = calc(c.id), s = db.settings;
+  return {
+    name: c.name, business: s.business, owner: s.owner, phone: s.phone, upi: s.upi, address: s.address,
+    amount: e ? fmtN(e.amount) : '', mode: e && e.mode ? modeLabel(e.mode, lang) : '',
+    date: dMsg(e ? e.date : todayStr()), receipt_no: (e && e.receiptNo) || '',
+    total: fmtN(b.total), received: fmtN(b.rec), pending: fmtN(Math.max(0, b.pending)),
+    statement: buildStatement(c, lang),
+  };
+}
+function sampleVars(lang) {
+  const s = db.settings;
+  return {
+    name: lang === 'en' ? 'Ramesh Patel' : lang === 'hi' ? 'रमेश पटेल' : 'રમેશ પટેલ',
+    business: s.business, owner: s.owner, phone: s.phone, upi: s.upi, address: s.address,
+    amount: '5,000', mode: modeLabel('upi', lang), date: dMsg(todayStr()), receipt_no: `${s.prefix || 'RC'}-0001`,
+    total: '20,000', received: '12,000', pending: '8,000',
+    statement: `${dMsg(todayStr())} • ${TYPE_MSG.received[lang]} • ₹5,000 (${modeLabel('upi', lang)})`,
+  };
+}
+// A line that contains a variable with no value is dropped (e.g. "UPI: {upi}" when no UPI id is saved).
+function renderTemplate(text, v) {
+  const out = [];
+  for (const line of String(text).split('\n')) {
+    let empty = false;
+    const r = line.replace(/\{(\w+)\}/g, (m, k) => {
+      if (!(k in v)) return m;
+      const val = v[k];
+      if (val === '' || val == null) { empty = true; return ''; }
+      return String(val);
+    });
+    if (!empty) out.push(r.replace(/[ \t]+$/, ''));
+  }
+  return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+const tplById = id => db.templates.find(t => t.id === id);
+const tplName = t => t.builtin ? KINDS[t.kind].label : (t.name || 'Untitled');
+function pickTpl(kind, lang) {
+  return db.templates.find(t => t.lang === lang && t.kind === kind) || db.templates.find(t => t.lang === lang) || db.templates[0];
+}
+function waNumber(phone) {
+  let d = String(phone || '').replace(/\D/g, '').replace(/^0+/, '');
+  if (d.length === 10) d = (db.settings.cc || '91').replace(/\D/g, '') + d;
+  return d.length >= 8 ? d : '';
+}
+const waLink = (phone, text) => `https://wa.me/${waNumber(phone)}${text ? '?text=' + encodeURIComponent(text) : ''}`;
+function openUrl(url) {
+  const a = document.createElement('a');
+  a.href = url; a.target = '_blank'; a.rel = 'noopener';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+async function copyText(t) {
+  try { await navigator.clipboard.writeText(t); return true; }
+  catch {
+    const ta = document.createElement('textarea');
+    ta.value = t; ta.style.cssText = 'position:fixed;opacity:0;top:0';
+    document.body.appendChild(ta); ta.select();
+    let ok = false; try { ok = document.execCommand('copy'); } catch {}
+    ta.remove(); return ok;
+  }
+}
+
+/* ---------- toast ---------- */
+let toastT;
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+/* ---------- sheets (bottom dialogs) with Android back-button support ---------- */
+const layers = $('#layers');
+const stack = [];
+let depth = 0, skipPop = false, pendingHash = null, syncT = null;
+function syncHistory() {
+  clearTimeout(syncT);
+  syncT = setTimeout(() => {
+    const want = stack.length;
+    while (depth < want) { history.pushState({ sheet: depth + 1 }, '', location.href); depth++; }
+    if (depth > want) { const n = depth - want; depth = want; skipPop = true; history.go(-n); }
+  }, 0);
+}
+function openSheet(html, handlers = {}) {
+  const ov = document.createElement('div');
+  ov.className = 'overlay';
+  ov.innerHTML = `<div class="sheet" role="dialog" aria-modal="true">${html}</div>`;
+  layers.appendChild(ov);
+  document.body.classList.add('noscroll');
+  const sh = ov.firstElementChild;
+  const api = {
+    el: sh,
+    close(noSync) {
+      if (!ov.isConnected) return;
+      ov.remove();
+      const i = stack.indexOf(api); if (i >= 0) stack.splice(i, 1);
+      if (!stack.length) document.body.classList.remove('noscroll');
+      if (!noSync) syncHistory();
+    },
+  };
+  stack.push(api);
+  let downOnBackdrop = false;
+  ov.addEventListener('pointerdown', e => { downOnBackdrop = e.target === ov; });
+  ov.addEventListener('click', e => { if (e.target === ov && downOnBackdrop) api.close(); });
+  sh.addEventListener('click', e => {
+    const t = e.target.closest('[data-s]');
+    if (!t || !sh.contains(t)) return;
+    const name = t.dataset.s;
+    if (name === 'close') return api.close();
+    if (handlers[name]) handlers[name](t, e, api);
+  });
+  requestAnimationFrame(() => ov.classList.add('show'));
+  syncHistory();
+  return api;
+}
+window.addEventListener('popstate', () => {
+  if (skipPop) {
+    skipPop = false;
+    if (pendingHash) { const h = pendingHash; pendingHash = null; location.hash = h; }
+    return;
+  }
+  if (depth > 0) { depth--; const top = stack[stack.length - 1]; if (top) top.close(true); }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && stack.length) stack[stack.length - 1].close(); });
+// Navigate safely even while sheets are open (closes them and unwinds their history entries first).
+function goto(h) {
+  stack.slice().forEach(s => s.close(true));
+  if (depth > 0) { const n = depth; depth = 0; pendingHash = h; skipPop = true; history.go(-n); }
+  else if (location.hash === h) render();
+  else location.hash = h;
+}
+function askConfirm({ title, text, ok = 'Delete', danger = true }) {
+  return new Promise(res => {
+    let done = false;
+    const finish = v => { if (!done) { done = true; res(v); } };
+    const sh = openSheet(`
+      <div class="shead"><h2>${esc(title)}</h2></div>
+      <p class="muted">${esc(text)}</p>
+      <div class="row2"><button class="btn" data-s="no">Cancel</button><button class="btn ${danger ? 'danger' : 'primary'}" data-s="yes">${esc(ok)}</button></div>`,
+      { no: (t, e, api) => { finish(false); api.close(); }, yes: (t, e, api) => { finish(true); api.close(); } });
+    const orig = sh.close; sh.close = n => { finish(false); orig(n); };
+  });
+}
+
+/* ---------- UI state ---------- */
+const ui = { search: '', filter: 'all', period: 'month', type: 'all', mode: 'all', tplLang: 'all' };
+let deferredInstall = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; if (routeName() === 'settings') render(); });
+
+/* ---------- shared HTML bits ---------- */
+const topbar = (title, { sub = '', back = false, right = '' } = {}) => `
+  <header class="topbar">
+    ${back ? `<button class="icon-btn" data-act="back" aria-label="Back">${ic('back')}</button>` : ''}
+    <div class="tb-title"><h1>${esc(title)}</h1>${sub ? `<div class="sub">${esc(sub)}</div>` : ''}</div>
+    <div class="spacer"></div>${right}
+  </header>`;
+const chip = (act, v, label, on) => `<button class="chip ${on ? 'on' : ''}" data-act="${act}" data-v="${esc(v)}">${label}</button>`;
+const field = (name, label, value = '', attrs = '') => `<label class="field"><span>${label}</span><input name="${name}" value="${esc(value)}" ${attrs}></label>`;
+function stateOf(b) {
+  if (b.count === 0) return { cls: '', label: 'No entries', short: '—' };
+  if (b.pending > 0) return { cls: 'due', label: 'Pending · बाकी', short: 'Pending' };
+  if (b.pending < 0) return { cls: 'in', label: 'Advance · एडवांस', short: 'Advance' };
+  return { cls: 'in', label: 'All clear · हिसाब बराबर', short: 'Clear ✓' };
+}
+
+/* ---------- pages ---------- */
+function backupBanner() {
+  if (!db.entries.length) return '';
+  const lb = db.meta.lastBackup;
+  const days = lb ? Math.floor((Date.now() - lb) / 864e5) : null;
+  if (lb && days < 7) return '';
+  return `<div class="banner"><span>${lb ? `Last backup ${days} days ago.` : 'No backup yet.'} Keep your data safe.</span><button class="btn sm primary" data-act="exportBackup">Back up</button></div>`;
+}
+function clientListHTML() {
+  if (!db.clients.length) return `<div class="empty"><img class="empty-logo" src="icons/logo.png" alt="" width="104" height="104"><b>Add your first client</b>Keep every client's payments in one khata and send a ready thank-you or reminder message in Hindi, English or Gujarati.<br><button class="btn primary" data-act="addClient">${ic('plus')} Add client</button></div>`;
+  const bal = balances();
+  const q = ui.search.trim().toLowerCase(), qd = q.replace(/\D/g, '');
+  let list = db.clients.filter(c => !q || c.name.toLowerCase().includes(q) || (qd && String(c.phone || '').replace(/\D/g, '').includes(qd)));
+  list = list.filter(c => { const p = (bal.get(c.id) || EMPTY_BAL).pending; return ui.filter === 'all' || (ui.filter === 'pending' ? p > 0 : p <= 0); });
+  list.sort((a, b) => ((bal.get(b.id) || EMPTY_BAL).last).localeCompare((bal.get(a.id) || EMPTY_BAL).last) || a.name.localeCompare(b.name));
+  if (!list.length) return `<p class="empty">No client found.</p>`;
+  return list.map(c => {
+    const b = bal.get(c.id) || EMPTY_BAL, st = stateOf(b);
+    const last = b.last ? dUI(b.last.split('|')[0]) : 'No entries yet';
+    return `<a class="crow" href="#/client/${c.id}">
+      <div class="avatar" style="--h:${hue(c.name)}">${esc(initial(c.name))}</div>
+      <div class="cmain"><div class="cname">${esc(c.name)}</div><div class="csub">${esc(c.phone ? c.phone + ' · ' : '')}${last}</div></div>
+      <div class="camt ${st.cls}">${b.count ? fmtR(Math.abs(b.pending)) : ''}<small>${st.short}</small></div></a>`;
+  }).join('');
+}
+function pageHome() {
+  const bal = balances(), t = todayStr(), month = t.slice(0, 7);
+  let pend = 0, pc = 0, tin = 0, min = 0;
+  for (const c of db.clients) { const b = bal.get(c.id); if (b && b.pending > 0) { pend += b.pending; pc++; } }
+  for (const e of db.entries) if (e.type === 'received') { if (e.date === t) tin += e.amount; if (e.date.slice(0, 7) === month) min += e.amount; }
+  return `
+  <header class="topbar"><img class="brand-logo" src="icons/logo.png" alt="Jyot logo" width="46" height="46"><div class="tb-title"><h1>${esc(db.settings.business || 'Khata')}</h1><div class="sub">Khata · हिसाब-किताब</div></div></header>
+  ${storageOK ? '' : '<div class="banner">Storage is blocked in this browser — data will not be saved. Open in Chrome/Safari normally.</div>'}
+  <section class="summary">
+    <div class="sum main"><span>To receive · बाकी</span><b class="due">${fmtR(pend)}</b><em>${pc} client${pc === 1 ? '' : 's'} pending</em></div>
+    <div class="sum"><span>Received today · आज</span><b class="in">${fmtR(tin)}</b></div>
+    <div class="sum"><span>This month · इस महीने</span><b class="in">${fmtR(min)}</b></div>
+  </section>
+  ${backupBanner()}
+  <div class="searchrow"><input type="search" data-input="search" placeholder="Search client or phone" value="${esc(ui.search)}" aria-label="Search clients"></div>
+  <div class="chips">${chip('setFilter', 'all', 'All', ui.filter === 'all')}${chip('setFilter', 'pending', 'Pending · बाकी', ui.filter === 'pending')}${chip('setFilter', 'clear', 'Clear · चुकता', ui.filter === 'clear')}</div>
+  <div class="list" data-clist>${clientListHTML()}</div>
+  ${db.clients.length ? `<button class="fab" data-act="addClient">${ic('plus')} Client</button>` : ''}`;
+}
+
+function pageClient(id) {
+  const c = client(id); if (!c) return null;
+  const b = calc(id), st = stateOf(b);
+  let run = 0;
+  const rows = entriesOf(id).map(e => { run += e.type === 'received' ? -e.amount : e.amount; return { e, run }; }).reverse();
+  const num = waNumber(c.phone);
+  return `
+  <header class="topbar">
+    <button class="icon-btn" data-act="back" aria-label="Back">${ic('back')}</button>
+    <div class="tb-title"><h1>${esc(c.name)}</h1><div class="sub">${esc(c.phone || 'No phone saved')} · ${LANGS[c.lang || 'hi'].name}</div></div>
+    <div class="spacer"></div>
+    <button class="icon-btn" data-act="editClient" data-id="${c.id}" aria-label="Edit client">${ic('edit')}</button>
+  </header>
+  <section class="balcard ${st.cls}">
+    <div class="bl">${st.label}</div>
+    <div class="bv ${st.cls}">${fmtR(Math.abs(b.pending))}</div>
+    <div class="stats"><div><span>Total (bill + given)</span><b>${fmtR(b.total)}</b></div><div><span>Received</span><b class="in">${fmtR(b.rec)}</b></div></div>
+    ${c.phone ? `<div class="contact"><a class="btn sm" href="tel:${esc(String(c.phone).replace(/[^\d+]/g, ''))}">${ic('phone')} Call</a>${num ? `<button class="btn sm" data-act="waChat" data-id="${c.id}">${ic('wa')} Open WhatsApp</button>` : ''}</div>` : ''}
+  </section>
+  <div class="actions">
+    <button class="btn in" data-act="addEntry" data-client="${c.id}" data-type="received"><b>+ Received</b><small>पेमेंट मिला</small></button>
+    <button class="btn due" data-act="addEntry" data-client="${c.id}" data-type="bill"><b>+ Bill / Due</b><small>बाकी जोड़ें</small></button>
+    <button class="btn out" data-act="addEntry" data-client="${c.id}" data-type="given"><b>Given</b><small>मैंने दिया</small></button>
+  </div>
+  <button class="btn soft block" data-act="msgClient" data-id="${c.id}">${ic('chat')} Send message · मैसेज भेजें</button>
+  <div class="sec"><h2>Ledger · खाता</h2><span class="sub">${rows.length} entr${rows.length === 1 ? 'y' : 'ies'}</span></div>
+  ${rows.length ? rows.map(({ e, run }) => {
+    const T = TYPES[e.type], [y, m, d] = e.date.split('-');
+    const bl = run > 0 ? `Pending ${fmtR(run)}` : run < 0 ? `Advance ${fmtR(-run)}` : 'Clear';
+    const sub = [e.note, e.ref, e.receiptNo].filter(Boolean).join(' · ');
+    return `<button class="erow" data-act="openEntry" data-id="${e.id}">
+      <div class="edate"><b>${Number(d)}</b>${MON[Number(m) - 1]}<br>${y}</div>
+      <div class="emain"><div class="etype">${T.label}${e.mode ? ` <span class="pill ${T.cls}">${esc(modeLabel(e.mode))}</span>` : ''}</div><div class="enote">${esc(sub || T.hi)}</div></div>
+      <div class="eamt ${T.cls}">${e.type === 'received' ? '+' : ''}${fmtR(e.amount)}<small>${bl}</small></div></button>`;
+  }).join('') : `<p class="empty">No entries yet.<br>Tap <b style="display:inline;font-size:inherit">+ Bill / Due</b> to add the amount to receive, then <b style="display:inline;font-size:inherit">+ Received</b> for each payment.</p>`}`;
+}
+
+function periodRange(p) {
+  const t = todayStr(), now = new Date();
+  if (p === 'today') return [t, t];
+  if (p === 'week') { const d = new Date(now); d.setDate(d.getDate() - 6); return [ymd(d), t]; }
+  if (p === 'month') return [t.slice(0, 7) + '-01', t.slice(0, 7) + '-31'];
+  if (p === 'lastmonth') { const d = new Date(now.getFullYear(), now.getMonth() - 1, 1); const ym = ymd(d).slice(0, 7); return [ym + '-01', ym + '-31']; }
+  return ['0000-00-00', '9999-99-99'];
+}
+function dayBookEntries() {
+  const [a, b] = periodRange(ui.period);
+  return db.entries.filter(e => e.date >= a && e.date <= b && (ui.type === 'all' || e.type === ui.type) && (ui.mode === 'all' || e.mode === ui.mode))
+    .sort((x, y) => y.date.localeCompare(x.date) || (y.createdAt || 0) - (x.createdAt || 0));
+}
+function pageDayBook() {
+  const list = dayBookEntries();
+  let rec = 0, bill = 0, giv = 0;
+  for (const e of list) { if (e.type === 'received') rec += e.amount; else if (e.type === 'bill') bill += e.amount; else giv += e.amount; }
+  const groups = {}; for (const e of list) (groups[e.date] ||= []).push(e);
+  const periods = [['today', 'Today'], ['week', '7 days'], ['month', 'This month'], ['lastmonth', 'Last month'], ['all', 'All']];
+  return `
+  ${topbar('Day Book', { sub: 'All transactions · रोज़नामचा', right: `<button class="icon-btn" data-act="exportCsv" aria-label="Export CSV" title="Export CSV">${ic('download')}</button>` })}
+  <div class="chips">${periods.map(([k, l]) => chip('setPeriod', k, l, ui.period === k)).join('')}</div>
+  <div class="row2" style="margin-bottom:10px">
+    <select data-change="dbType" aria-label="Type"><option value="all">All types</option>${Object.keys(TYPES).map(k => `<option value="${k}" ${ui.type === k ? 'selected' : ''}>${TYPES[k].label}</option>`).join('')}</select>
+    <select data-change="dbMode" aria-label="Mode"><option value="all">All modes</option>${MODE_KEYS.map(k => `<option value="${k}" ${ui.mode === k ? 'selected' : ''}>${MODES[k].en}</option>`).join('')}</select>
+  </div>
+  <section class="card sumlist">
+    <div><span>Received · मिला</span><b class="in">${fmtR(rec)}</b></div>
+    <div><span>Bills / Due · बाकी जोड़ा</span><b class="due">${fmtR(bill)}</b></div>
+    <div><span>Given · दिया</span><b class="out">${fmtR(giv)}</b></div>
+  </section>
+  ${list.length ? Object.keys(groups).map(d => `<div class="dgroup">${dUI(d)}</div>${groups[d].map(e => {
+    const T = TYPES[e.type], c = client(e.clientId);
+    return `<button class="erow" data-act="openEntry" data-id="${e.id}">
+      <div class="avatar" style="--h:${hue(c ? c.name : '?')};width:38px;height:38px;font-size:16px">${esc(initial(c ? c.name : '?'))}</div>
+      <div class="emain"><div class="etype">${esc(c ? c.name : 'Deleted client')}</div><div class="enote">${T.label}${e.mode ? ' · ' + esc(modeLabel(e.mode)) : ''}${e.note ? ' · ' + esc(e.note) : ''}</div></div>
+      <div class="eamt ${T.cls}">${e.type === 'received' ? '+' : ''}${fmtR(e.amount)}</div></button>`;
+  }).join('')}`).join('') : '<p class="empty">No transactions for this filter.</p>'}`;
+}
+
+const previewOf = text => text.split('\n').filter(l => l.trim()).slice(1, 3).join(' · ');
+function pageTemplates() {
+  const langs = [['all', 'All'], ...LANG_KEYS.map(k => [k, LANGS[k].name])];
+  const list = db.templates.filter(t => ui.tplLang === 'all' || t.lang === ui.tplLang);
+  const groups = Object.keys(KINDS).map(k => [k, list.filter(t => t.kind === k)]).filter(([, l]) => l.length);
+  return `
+  ${topbar('Messages', { sub: 'Ready templates · हिंदी · English · ગુજરાતી', right: `<button class="icon-btn" data-act="newTpl" aria-label="New template">${ic('plus')}</button>` })}
+  <p class="sub" style="margin:0 2px 10px">Tap a template to edit it. These are used when you tap <b>Send message</b> on a client. Use <code>{name}</code>, <code>{pending}</code> etc. — they are filled automatically.</p>
+  <div class="chips">${langs.map(([k, l]) => chip('setTplLang', k, l, ui.tplLang === k)).join('')}</div>
+  ${groups.map(([k, l]) => `<div class="tgroup"><h3>${KINDS[k].label}<span class="sub" style="font-weight:400"> ${KINDS[k].hint ? '· ' + KINDS[k].hint : ''}</span></h3>${l.map(t => `
+    <button class="trow" data-act="editTpl" data-id="${esc(t.id)}"><div class="th"><span class="pill">${LANGS[t.lang].tag}</span>${esc(t.builtin ? LANGS[t.lang].name : tplName(t))}${t.edited ? ' <span class="pill in">edited</span>' : ''}</div><p>${esc(previewOf(t.text))}</p></button>`).join('')}</div>`).join('')}
+  <button class="btn block" style="margin-top:14px" data-act="newTpl">${ic('plus')} Create my own template</button>`;
+}
+
+function pageSettings() {
+  const s = db.settings, lb = db.meta.lastBackup;
+  const standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone;
+  return `
+  ${topbar('Settings')}
+  <form class="card stack" data-form="settings">
+    <h2>Business profile · आपकी जानकारी</h2>
+    <p class="sub" style="margin-top:-8px">Shown at the end of every message (and on receipts later).</p>
+    ${field('business', 'Business name', s.business, 'autocomplete="organization"')}
+    ${field('owner', 'Your name (optional)', s.owner, 'autocomplete="name"')}
+    ${field('phone', 'Your phone (shown in messages)', s.phone, 'type="tel" inputmode="tel"')}
+    ${field('upi', 'Your UPI ID (optional, for reminders)', s.upi, 'autocapitalize="off" placeholder="name@bank"')}
+    ${field('address', 'Address (optional)', s.address)}
+    <div class="row2">
+      ${field('prefix', 'Receipt prefix', s.prefix, 'maxlength="6" autocapitalize="characters"')}
+      ${field('cc', 'Country code', s.cc, 'inputmode="numeric" maxlength="4"')}
+    </div>
+    <div class="field"><span>Default message language · भाषा</span>
+      <input type="hidden" name="lang" value="${esc(s.lang)}">
+      <div class="chips wrap">${LANG_KEYS.map(k => `<button type="button" class="chip ${s.lang === k ? 'on' : ''}" data-act="prefLang" data-v="${k}">${LANGS[k].name}</button>`).join('')}</div>
+    </div>
+    <button class="btn primary block" type="submit">Save settings</button>
+  </form>
+
+  <div class="card stack" style="margin-top:14px">
+    <h2>Backup & export · बैकअप</h2>
+    <p class="sub" style="margin-top:-8px">${db.clients.length} clients · ${db.entries.length} entries · ${lb ? 'last backup ' + new Date(lb).toLocaleDateString('en-IN') : 'no backup yet'}. Your data lives only on this phone — back up regularly (save the file to Google Drive / WhatsApp to yourself).</p>
+    <button class="btn block" data-act="exportBackup">${ic('download')} Download backup (.json)</button>
+    <button class="btn block" data-act="importBackup">${ic('upload')} Restore from backup</button>
+    <input type="file" data-change="import" accept=".json,application/json" hidden>
+    <button class="btn block" data-act="exportCsv">${ic('download')} Export all entries (Excel / CSV)</button>
+  </div>
+
+  <div class="card stack" style="margin-top:14px">
+    <h2>Install on your phone</h2>
+    ${standalone ? '<p class="sub">✓ Installed — you are using the app version.</p>'
+      : deferredInstall ? `<button class="btn primary block" data-act="install">Install app</button>`
+      : `<p class="sub"><b>Android (Chrome):</b> menu ⋮ → <i>Install app</i> / <i>Add to Home screen</i>.<br><b>iPhone (Safari):</b> Share → <i>Add to Home Screen</i>.</p>`}
+    <p class="sub">Moving to a new phone (Android → iPhone)? Download a backup here, then use <i>Restore from backup</i> on the new phone.</p>
+  </div>
+
+  <div class="card stack" style="margin-top:14px">
+    <h2>Danger zone</h2>
+    <button class="btn danger block" data-act="wipe">${ic('trash')} Delete all data on this phone</button>
+  </div>
+  <div class="about"><img src="icons/logo.png" alt="" width="30" height="30"><span>Jyot Khata v1 · data stays on your device</span></div>`;
+}
+
+/* ---------- router ---------- */
+const ROUTES = { '': pageHome, client: pageClient, daybook: pageDayBook, templates: pageTemplates, settings: pageSettings };
+const routeName = () => location.hash.replace(/^#\/?/, '').split('/')[0] || '';
+let lastKey = null;
+function render() {
+  const parts = location.hash.replace(/^#\/?/, '').split('/');
+  const name = parts[0] || '', arg = parts[1];
+  const fn = ROUTES[name] || pageHome;
+  const key = name + '/' + (arg || '');
+  const y = key === lastKey ? window.scrollY : 0;
+  const html = fn(arg);
+  if (html === null) { location.replace('#/'); return; }
+  $('#app').innerHTML = html;
+  lastKey = key;
+  const cur = name === 'client' ? '' : (ROUTES[name] ? name : '');
+  $('#nav').innerHTML = `<div class="in2">${[['', 'Khata', 'book', '#/'], ['daybook', 'Day Book', 'list', '#/daybook'], ['templates', 'Messages', 'chat', '#/templates'], ['settings', 'Settings', 'gear', '#/settings']]
+    .map(([k, l, i, h]) => `<a href="${h}" class="${cur === k ? 'on' : ''}" ${cur === k ? 'aria-current="page"' : ''}>${ic(i)}${l}</a>`).join('')}</div>`;
+  window.scrollTo(0, y);
+}
+window.addEventListener('hashchange', render);
+
+/* ---------- forms & sheets ---------- */
+function clientForm(id = null) {
+  const ex = id ? client(id) : null;
+  let lang = (ex && ex.lang) || db.settings.lang;
+  const sh = openSheet(`
+    <form class="stack" data-f>
+      <div class="shead"><h2>${ex ? 'Edit client' : 'New client · नया क्लाइंट'}</h2><button type="button" class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
+      ${field('name', 'Name · नाम', ex ? ex.name : '', 'required maxlength="80" autocomplete="off"')}
+      ${field('phone', 'WhatsApp / phone number', ex ? ex.phone : '', 'type="tel" inputmode="tel" placeholder="98765 43210" autocomplete="off"')}
+      <div class="field"><span>Message language · भाषा</span><div class="chips wrap">${LANG_KEYS.map(k => `<button type="button" class="chip ${lang === k ? 'on' : ''}" data-s="lang" data-v="${k}">${LANGS[k].name}</button>`).join('')}</div></div>
+      ${ex ? '' : `<label class="field"><span>Opening balance — already pending? (optional)</span><div class="amt"><i>₹</i><input name="open" inputmode="decimal" placeholder="0" autocomplete="off"></div></label>`}
+      <button class="btn primary block" type="submit">${ex ? 'Save' : 'Add client'}</button>
+      ${ex ? `<button type="button" class="btn danger block" data-s="del">${ic('trash')} Delete client</button>` : ''}
+    </form>`, {
+    lang: t => { lang = t.dataset.v; $$('[data-s=lang]', sh.el).forEach(b => b.classList.toggle('on', b === t)); },
+    del: async () => {
+      const n = db.entries.filter(e => e.clientId === ex.id).length;
+      if (await askConfirm({ title: `Delete ${ex.name}?`, text: `This also deletes ${n} entr${n === 1 ? 'y' : 'ies'} for this client. It cannot be undone.` })) {
+        db.entries = db.entries.filter(e => e.clientId !== ex.id);
+        db.clients = db.clients.filter(c => c.id !== ex.id);
+        save(); toast('Client deleted'); goto('#/');
+      }
+    },
+  });
+  const form = $('[data-f]', sh.el);
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const f = form.elements, name = f.name.value.trim();
+    if (!name) { toast('Enter a name'); f.name.focus(); return; }
+    let target = ex;
+    if (ex) { ex.name = name; ex.phone = f.phone.value.trim(); ex.lang = lang; }
+    else {
+      target = { id: uid(), name, phone: f.phone.value.trim(), lang, createdAt: Date.now() };
+      db.clients.push(target);
+      const open = f.open.value.trim() ? parseAmount(f.open.value) : null;
+      if (open && !isNaN(open)) db.entries.push({ id: uid(), clientId: target.id, type: 'bill', amount: open, date: todayStr(), mode: '', ref: '', note: 'Opening balance', createdAt: Date.now() });
+    }
+    save(); toast(ex ? 'Saved ✓' : 'Client added ✓');
+    if (ex) { sh.close(); render(); } else goto('#/client/' + target.id);
+  });
+  setTimeout(() => { if (!ex) $('[name=name]', sh.el).focus(); }, 250);
+}
+
+function entryForm({ clientId, type = 'received', entryId = null }) {
+  const c = client(clientId), ex = entryId ? db.entries.find(e => e.id === entryId) : null;
+  if (!c) return;
+  const st = { type: ex ? ex.type : type, mode: (ex && ex.mode) || db.meta.lastMode || 'upi' };
+  const seg = Object.keys(TYPES).map(k => `<button type="button" data-s="type" data-v="${k}" class="${st.type === k ? 'on' : ''}">${TYPES[k].label}<small>${TYPES[k].hi}</small></button>`).join('');
+  const sh = openSheet(`
+    <form class="stack" data-f>
+      <div class="shead"><h2>${ex ? 'Edit entry' : 'New entry'} · ${esc(c.name)}</h2><button type="button" class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
+      <div class="seg">${seg}</div>
+      <label class="field"><span>Amount · रकम</span><div class="amt"><i>₹</i><input name="amount" inputmode="decimal" placeholder="0" autocomplete="off" value="${ex ? esc(String(ex.amount / 100)) : ''}"></div></label>
+      <label class="field"><span>Date · तारीख</span><input type="date" name="date" value="${esc(ex ? ex.date : todayStr())}"></label>
+      <div class="field" data-g="mode"><span>Payment mode · तरीका</span><div class="chips wrap">${MODE_KEYS.map(k => `<button type="button" class="chip ${st.mode === k ? 'on' : ''}" data-s="mode" data-v="${k}">${MODES[k].en}</button>`).join('')}</div></div>
+      <label class="field" data-g="ref"><span data-reflabel>${esc(MODES[st.mode].ref)}</span><input name="ref" maxlength="60" autocomplete="off" value="${ex ? esc(ex.ref || '') : ''}"></label>
+      <label class="field"><span>Note · नोट (optional)</span><input name="note" maxlength="120" autocomplete="off" value="${ex ? esc(ex.note || '') : ''}"></label>
+      <button class="btn primary block" type="submit" data-save>Save</button>
+      ${ex ? `<button type="button" class="btn danger block" data-s="del">${ic('trash')} Delete entry</button>` : ''}
+    </form>`, {
+    type: t => { st.type = t.dataset.v; paint(); },
+    mode: t => { st.mode = t.dataset.v; paint(); },
+    del: async (t, e, api) => {
+      if (await askConfirm({ title: 'Delete this entry?', text: `${TYPES[ex.type].label} ${fmtR(ex.amount)} on ${dUI(ex.date)} will be removed from the ledger.` })) {
+        db.entries = db.entries.filter(x => x.id !== ex.id); save(); sh.close(); render(); toast('Entry deleted');
+      }
+    },
+  });
+  const form = $('[data-f]', sh.el);
+  function paint() {
+    $$('[data-s=type]', sh.el).forEach(b => b.classList.toggle('on', b.dataset.v === st.type));
+    $$('[data-s=mode]', sh.el).forEach(b => b.classList.toggle('on', b.dataset.v === st.mode));
+    const bill = st.type === 'bill';
+    $('[data-g=mode]', sh.el).classList.toggle('hidden', bill);
+    $('[data-g=ref]', sh.el).classList.toggle('hidden', bill);
+    $('[data-reflabel]', sh.el).textContent = MODES[st.mode].ref;
+    $('[data-save]', sh.el).textContent = 'Save ' + TYPES[st.type].label.toLowerCase().replace(' / due', '');
+  }
+  paint();
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const f = form.elements, amt = parseAmount(f.amount.value);
+    if (isNaN(amt)) { toast('Enter a valid amount'); f.amount.focus(); return; }
+    const bill = st.type === 'bill';
+    const rec = { type: st.type, amount: amt, date: f.date.value || todayStr(), mode: bill ? '' : st.mode, ref: bill ? '' : f.ref.value.trim(), note: f.note.value.trim() };
+    let entry;
+    if (ex) { Object.assign(ex, rec); entry = ex; if (ex.type === 'received' && !ex.receiptNo) ex.receiptNo = nextReceipt(); }
+    else {
+      entry = { id: uid(), clientId, createdAt: Date.now(), ...rec };
+      if (entry.type === 'received') entry.receiptNo = nextReceipt();
+      db.entries.push(entry);
+    }
+    if (!bill) db.meta.lastMode = st.mode;
+    save(); sh.close(); render();
+    if (!ex && !bill) { toast('Saved ✓ — message ready'); messageSheet({ clientId, entryId: entry.id }); }
+    else toast('Saved ✓');
+  });
+  setTimeout(() => { if (!ex) $('[name=amount]', sh.el).focus(); }, 250);
+}
+
+function entrySheet(id) {
+  const e = db.entries.find(x => x.id === id); if (!e) return;
+  const c = client(e.clientId), T = TYPES[e.type];
+  const rows = [['Client', c ? c.name : '—'], ['Date', dUI(e.date)], ['Mode', e.mode ? modeLabel(e.mode) : ''], ['Reference', e.ref], ['Note', e.note], ['Receipt no.', e.receiptNo]]
+    .filter(r => r[1]).map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
+  const sh = openSheet(`
+    <div class="shead"><h2>${T.label} · ${T.hi}</h2><button class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
+    <div class="bigamt ${T.cls}">${e.type === 'received' ? '+' : ''}${fmtR(e.amount)}</div>
+    <dl class="kv" style="margin:0">${rows}</dl>
+    <button class="btn wa block" data-s="msg">${ic('wa')} Send message${e.type === 'bill' ? ' (reminder)' : ''}</button>
+    <div class="row2"><button class="btn" data-s="edit">${ic('edit')} Edit</button><button class="btn danger" data-s="del">${ic('trash')} Delete</button></div>`, {
+    msg: () => { sh.close(); messageSheet({ clientId: e.clientId, entryId: e.type === 'bill' ? null : e.id }); },
+    edit: () => { sh.close(); entryForm({ clientId: e.clientId, entryId: e.id }); },
+    del: async () => {
+      if (await askConfirm({ title: 'Delete this entry?', text: `${T.label} ${fmtR(e.amount)} on ${dUI(e.date)} will be removed from the ledger.` })) {
+        db.entries = db.entries.filter(x => x.id !== e.id); save(); sh.close(); render(); toast('Entry deleted');
+      }
+    },
+  });
+}
+
+function messageSheet({ clientId, entryId = null, kind = null, lang = null }) {
+  const c = client(clientId); if (!c) return;
+  const ex = entryId ? db.entries.find(e => e.id === entryId) : null;
+  const b = calc(clientId);
+  const ctx = ex || latestReceived(clientId);
+  const st = { lang: lang || c.lang || db.settings.lang };
+  const k = kind || (ex ? (ex.type === 'given' ? 'paid_out' : b.pending > 0 ? 'thanks_pending' : 'thanks_full') : (b.pending > 0 ? 'reminder' : 'greeting'));
+  st.tpl = pickTpl(k, st.lang).id;
+  const sh = openSheet(`
+    <div class="shead"><h2>Message to ${esc(c.name)}</h2><button class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
+    <div class="chips wrap" data-g="langs">${LANG_KEYS.map(l => `<button class="chip" data-s="lang" data-v="${l}">${LANGS[l].name}</button>`).join('')}</div>
+    <select data-tplsel aria-label="Template"></select>
+    <textarea data-text rows="11" aria-label="Message text"></textarea>
+    <p class="sub" style="margin-top:-6px">${c.phone ? `Opens WhatsApp chat with <b>${esc(c.phone)}</b>. You can edit the text above before sending.` : 'No phone saved for this client — WhatsApp will let you choose the contact.'}</p>
+    <div class="row3">
+      <button class="btn soft" data-s="copy">${ic('copy')} Copy</button>
+      <button class="btn wa" data-s="wa">${ic('wa')} WhatsApp</button>
+      <button class="btn ${navigator.share ? '' : 'hidden'}" data-s="share">${ic('share')} Share</button>
+    </div>
+    <button class="btn block" data-s="tpls">Edit templates</button>`, {
+    lang: t => {
+      const cur = tplById(st.tpl); st.lang = t.dataset.v;
+      st.tpl = pickTpl(cur ? cur.kind : k, st.lang).id; paint();
+    },
+    copy: async () => { toast((await copyText(ta.value)) ? 'Copied ✓ — now paste in WhatsApp' : 'Could not copy — select the text and copy manually'); },
+    wa: () => { openUrl(waLink(c.phone, ta.value)); },
+    share: async () => { try { await navigator.share({ text: ta.value }); } catch {} },
+    tpls: () => goto('#/templates'),
+  });
+  const ta = $('[data-text]', sh.el), sel = $('[data-tplsel]', sh.el);
+  sel.addEventListener('change', () => { st.tpl = sel.value; paint(); });
+  function paint() {
+    $$('[data-s=lang]', sh.el).forEach(b => b.classList.toggle('on', b.dataset.v === st.lang));
+    const opts = db.templates.filter(t => t.lang === st.lang);
+    sel.innerHTML = opts.map(t => `<option value="${esc(t.id)}" ${t.id === st.tpl ? 'selected' : ''}>${esc(t.builtin ? tplName(t) : '★ ' + tplName(t))}</option>`).join('');
+    const t = tplById(st.tpl);
+    ta.value = renderTemplate(t ? t.text : '', vars(c, ctx, st.lang));
+    grow();
+  }
+  const grow = () => { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight + 2, 380) + 'px'; };
+  ta.addEventListener('input', grow);
+  paint();
+}
+
+function templateEditor(id = null) {
+  const ex = id ? tplById(id) : null;
+  const builtin = !!(ex && ex.builtin);
+  const st = { lang: ex ? ex.lang : db.settings.lang };
+  const sh = openSheet(`
+    <form class="stack" data-f>
+      <div class="shead"><h2>${ex ? (builtin ? esc(KINDS[ex.kind].label) : 'Edit template') : 'New template'}${builtin ? ` · ${LANGS[ex.lang].name}` : ''}</h2><button type="button" class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
+      ${builtin ? '' : `${field('name', 'Template name', ex ? ex.name : '', 'maxlength="50" required placeholder="e.g. Diwali offer"')}
+      <div class="field"><span>Language</span><div class="chips wrap">${LANG_KEYS.map(k => `<button type="button" class="chip ${st.lang === k ? 'on' : ''}" data-s="lang" data-v="${k}">${LANGS[k].name}</button>`).join('')}</div></div>`}
+      <label class="field"><span>Message text</span><textarea name="text" rows="12" required>${esc(ex ? ex.text : 'Dear {name},\n\n')}</textarea></label>
+      <div class="field"><span>Tap to insert a field</span><div class="vars">${VARS.map(([k, d]) => `<button type="button" data-s="var" data-v="${k}" title="${esc(d)}">{${k}}</button>`).join('')}</div></div>
+      <div class="field"><span>Preview (sample data)</span><div class="preview" data-prev></div></div>
+      <button class="btn primary block" type="submit">Save template</button>
+      ${builtin && ex.edited ? `<button type="button" class="btn block" data-s="reset">Reset to original</button>` : ''}
+      ${ex && !builtin ? `<button type="button" class="btn danger block" data-s="del">${ic('trash')} Delete template</button>` : ''}
+    </form>`, {
+    lang: t => { st.lang = t.dataset.v; $$('[data-s=lang]', sh.el).forEach(b => b.classList.toggle('on', b === t)); prev(); },
+    var: t => {
+      const ta = form.elements.text, v = `{${t.dataset.v}}`;
+      ta.setRangeText(v, ta.selectionStart, ta.selectionEnd, 'end'); ta.focus(); prev();
+    },
+    reset: async () => {
+      if (await askConfirm({ title: 'Reset to original?', text: 'Your edits to this template will be replaced.', ok: 'Reset', danger: false })) {
+        ex.text = DEFAULT_BY_ID[ex.id].text; ex.edited = false; save(); sh.close(); render(); toast('Template reset');
+      }
+    },
+    del: async () => {
+      if (await askConfirm({ title: 'Delete template?', text: `“${ex.name}” will be removed.` })) { db.templates = db.templates.filter(t => t.id !== ex.id); save(); sh.close(); render(); toast('Template deleted'); }
+    },
+  });
+  const form = $('[data-f]', sh.el);
+  const prev = () => { $('[data-prev]', sh.el).textContent = renderTemplate(form.elements.text.value, sampleVars(builtin ? ex.lang : st.lang)); };
+  form.elements.text.addEventListener('input', prev); prev();
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const text = form.elements.text.value.trim();
+    if (!text) { toast('Write the message text'); return; }
+    if (ex && builtin) { ex.text = text; ex.edited = text !== DEFAULT_BY_ID[ex.id].text; }
+    else if (ex) { ex.text = text; ex.name = form.elements.name.value.trim(); ex.lang = st.lang; }
+    else db.templates.push({ id: 'custom.' + uid(), kind: 'custom', lang: st.lang, name: form.elements.name.value.trim(), text, builtin: false });
+    save(); sh.close(); render(); toast('Template saved ✓');
+  });
+}
+
+/* ---------- export / import ---------- */
+function download(name, content, type) {
+  const url = URL.createObjectURL(new Blob([content], { type }));
+  const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+function csvCell(v) {
+  let s = String(v ?? '');
+  if (/^[=@]/.test(s) || /^[+\-][^\d\s]/.test(s)) s = "'" + s;
+  return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+function entriesCSV(list) {
+  const head = ['Date', 'Client', 'Phone', 'Type', 'Amount', 'Mode', 'Reference', 'Note', 'Receipt no'];
+  const rows = list.map(e => { const c = client(e.clientId) || {}; return [e.date, c.name, c.phone, TYPES[e.type].label, (e.amount / 100).toFixed(2), e.mode ? MODES[e.mode].en : '', e.ref, e.note, e.receiptNo]; });
+  return '﻿' + [head, ...rows].map(r => r.map(csvCell).join(',')).join('\r\n');
+}
+async function exportBackup() {
+  const name = `jyot-khata-backup-${todayStr()}.json`, data = JSON.stringify(db);
+  const mark = () => { db.meta.lastBackup = Date.now(); save(); render(); };
+  try {
+    const file = new File([data], name, { type: 'application/json' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: name }); mark(); toast('Backup shared ✓'); return; }
+  } catch (e) { if (e && e.name === 'AbortError') return; }
+  download(name, data, 'application/json'); mark(); toast('Backup downloaded ✓');
+}
+function importBackup(file) {
+  const r = new FileReader();
+  r.onload = async () => {
+    try {
+      const d = JSON.parse(r.result);
+      if (!d || !Array.isArray(d.clients) || !Array.isArray(d.entries)) throw new Error('Not a Jyot Khata backup');
+      const okDate = s => /^\d{4}-\d{2}-\d{2}$/.test(s);
+      d.entries = d.entries.filter(e => e && e.id && e.clientId && TYPES[e.type] && Number.isInteger(e.amount) && okDate(e.date));
+      if (await askConfirm({ title: 'Restore this backup?', text: `It has ${d.clients.length} clients and ${d.entries.length} entries. This REPLACES the ${db.clients.length} clients and ${db.entries.length} entries currently on this phone.`, ok: 'Restore', danger: true })) {
+        db = migrate(d); save(); goto('#/'); toast('Backup restored ✓');
+      }
+    } catch (e) { toast('That file is not a valid Jyot Khata backup'); }
+  };
+  r.readAsText(file);
+}
+
+/* ---------- events ---------- */
+const ACT = {
+  back: () => goto('#/'),
+  addClient: () => clientForm(),
+  editClient: t => clientForm(t.dataset.id),
+  addEntry: t => entryForm({ clientId: t.dataset.client, type: t.dataset.type }),
+  openEntry: t => entrySheet(t.dataset.id),
+  msgClient: t => messageSheet({ clientId: t.dataset.id }),
+  waChat: t => { const c = client(t.dataset.id); if (c) openUrl(waLink(c.phone, '')); },
+  setFilter: t => { ui.filter = t.dataset.v; render(); },
+  setPeriod: t => { ui.period = t.dataset.v; render(); },
+  setTplLang: t => { ui.tplLang = t.dataset.v; render(); },
+  editTpl: t => templateEditor(t.dataset.id),
+  newTpl: () => templateEditor(),
+  prefLang: t => { $('[name=lang]').value = t.dataset.v; $$('[data-act=prefLang]').forEach(b => b.classList.toggle('on', b === t)); },
+  exportBackup: () => exportBackup(),
+  importBackup: () => $('[data-change=import]').click(),
+  exportCsv: () => {
+    const list = routeName() === 'daybook' ? dayBookEntries() : [...db.entries].sort((a, b) => a.date.localeCompare(b.date));
+    if (!list.length) return toast('Nothing to export');
+    download(`jyot-khata-entries-${todayStr()}.csv`, entriesCSV(list), 'text/csv;charset=utf-8'); toast('CSV downloaded ✓');
+  },
+  install: async () => { if (!deferredInstall) return; deferredInstall.prompt(); await deferredInstall.userChoice.catch(() => {}); deferredInstall = null; render(); },
+  wipe: async () => {
+    if (await askConfirm({ title: 'Delete ALL data?', text: `This permanently deletes ${db.clients.length} clients and ${db.entries.length} entries from this phone. Download a backup first if you are unsure.`, ok: 'Delete everything' })) {
+      db = migrate(defaultDB()); save(); goto('#/'); toast('All data deleted');
+    }
+  },
+};
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-act]');
+  if (t && !t.closest('.overlay') && ACT[t.dataset.act]) ACT[t.dataset.act](t, e);
+});
+document.addEventListener('input', e => {
+  if (e.target.matches('[data-input=search]')) { ui.search = e.target.value; const l = $('[data-clist]'); if (l) l.innerHTML = clientListHTML(); }
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.matches('[data-change=dbType]')) { ui.type = t.value; render(); }
+  else if (t.matches('[data-change=dbMode]')) { ui.mode = t.value; render(); }
+  else if (t.matches('[data-change=import]')) { if (t.files[0]) importBackup(t.files[0]); t.value = ''; }
+});
+document.addEventListener('submit', e => {
+  const f = e.target;
+  if (f.matches('[data-form=settings]')) {
+    e.preventDefault();
+    const v = f.elements, s = db.settings;
+    s.business = v.business.value.trim(); s.owner = v.owner.value.trim(); s.phone = v.phone.value.trim();
+    s.upi = v.upi.value.trim(); s.address = v.address.value.trim(); s.lang = v.lang.value;
+    s.prefix = (v.prefix.value.trim() || 'RC').toUpperCase(); s.cc = v.cc.value.replace(/\D/g, '') || '91';
+    save(); toast('Settings saved ✓');
+  }
+});
+
+/* ---------- boot ---------- */
+if (!location.hash) history.replaceState(null, '', '#/');
+render();
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
