@@ -1,0 +1,18 @@
+{
+  "legacy": {
+    "onboarded": true,
+    "business": "Legacy Demo",
+    "pending": 75000,
+    "initial": "કિ",
+    "key": "jyotkhata.v1"
+  },
+  "reducedMotion": "0s",
+  "serviceWorker": {
+    "scope": "http://localhost:8871/jyot-khata/",
+    "cached": [
+      "jyot-khata-v3"
+    ]
+  },
+  "offlineReload": "Legacy Demo",
+  "sourceSafety": "All functional JavaScript unchanged after normalising static markup style attributes. Protected functions compared byte-for-byte."
+}

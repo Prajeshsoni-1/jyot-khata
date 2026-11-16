@@ -1,0 +1,1778 @@
+{
+  "engine": "Chromium (installed Chrome), isolated contexts",
+  "url": "http://127.0.0.1:8871/jyot-khata/",
+  "fixture": "Synthetic ledger only; no real client data",
+  "checks": [
+    {
+      "width": 320,
+      "colorScheme": "light",
+      "state": "onboarding",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 320,
+      "colorScheme": "light",
+      "state": "home",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "light",
+      "state": "client",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": null,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 320,
+      "colorScheme": "light",
+      "state": "daybook",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "Last month"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "All"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "light",
+      "state": "templates",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": null,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "ગુજરાતી"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "light",
+      "state": "settings",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 320,
+      "colorScheme": "light",
+      "state": "client-form",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "light",
+      "state": "entry-form",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "light",
+      "state": "entry-detail",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "light",
+      "state": "message",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": true,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "btn ",
+          "text": " Share"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "light",
+      "state": "template-editor",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "light",
+      "state": "receipt",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "light",
+      "state": "statement",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "light",
+      "state": "confirm",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "light",
+      "state": "onboarding",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 375,
+      "colorScheme": "light",
+      "state": "home",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "light",
+      "state": "client",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": null,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 375,
+      "colorScheme": "light",
+      "state": "daybook",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "Last month"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "All"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "light",
+      "state": "templates",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": null,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 375,
+      "colorScheme": "light",
+      "state": "settings",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 375,
+      "colorScheme": "light",
+      "state": "client-form",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "light",
+      "state": "entry-form",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "light",
+      "state": "entry-detail",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "light",
+      "state": "message",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": true,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "btn ",
+          "text": " Share"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "light",
+      "state": "template-editor",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "light",
+      "state": "receipt",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "light",
+      "state": "statement",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "light",
+      "state": "confirm",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 414,
+      "colorScheme": "light",
+      "state": "onboarding",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "light",
+      "state": "home",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "light",
+      "state": "client",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": null,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "light",
+      "state": "daybook",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "Last month"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "All"
+        }
+      ]
+    },
+    {
+      "width": 414,
+      "colorScheme": "light",
+      "state": "templates",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": null,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "light",
+      "state": "settings",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "light",
+      "state": "client-form",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "light",
+      "state": "entry-form",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "light",
+      "state": "entry-detail",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "light",
+      "state": "message",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "light",
+      "state": "template-editor",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "light",
+      "state": "receipt",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "light",
+      "state": "statement",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "light",
+      "state": "confirm",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "light",
+      "state": "onboarding",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "light",
+      "state": "home",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "light",
+      "state": "client",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": null,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "light",
+      "state": "daybook",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "light",
+      "state": "templates",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": null,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "light",
+      "state": "settings",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "light",
+      "state": "client-form",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "light",
+      "state": "entry-form",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "light",
+      "state": "entry-detail",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "light",
+      "state": "message",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "light",
+      "state": "template-editor",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "light",
+      "state": "receipt",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "light",
+      "state": "statement",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "light",
+      "state": "confirm",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(255, 248, 240)",
+      "primary": "#d4260e",
+      "excess": []
+    },
+    {
+      "width": 320,
+      "colorScheme": "dark",
+      "state": "onboarding",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 320,
+      "colorScheme": "dark",
+      "state": "home",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "dark",
+      "state": "client",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": null,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 320,
+      "colorScheme": "dark",
+      "state": "daybook",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "Last month"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "All"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "dark",
+      "state": "templates",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": null,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "ગુજરાતી"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "dark",
+      "state": "settings",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 320,
+      "colorScheme": "dark",
+      "state": "client-form",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "dark",
+      "state": "entry-form",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "dark",
+      "state": "entry-detail",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "dark",
+      "state": "message",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": true,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "btn ",
+          "text": " Share"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "dark",
+      "state": "template-editor",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "dark",
+      "state": "receipt",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "dark",
+      "state": "statement",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "colorScheme": "dark",
+      "state": "confirm",
+      "pageWidth": 320,
+      "viewport": 320,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "dark",
+      "state": "onboarding",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 375,
+      "colorScheme": "dark",
+      "state": "home",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "dark",
+      "state": "client",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": null,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 375,
+      "colorScheme": "dark",
+      "state": "daybook",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "Last month"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "All"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "dark",
+      "state": "templates",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": null,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 375,
+      "colorScheme": "dark",
+      "state": "settings",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 375,
+      "colorScheme": "dark",
+      "state": "client-form",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "dark",
+      "state": "entry-form",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "dark",
+      "state": "entry-detail",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "dark",
+      "state": "message",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": true,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "btn ",
+          "text": " Share"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "dark",
+      "state": "template-editor",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "dark",
+      "state": "receipt",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "dark",
+      "state": "statement",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "colorScheme": "dark",
+      "state": "confirm",
+      "pageWidth": 375,
+      "viewport": 375,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "No dues · बाकी नहीं"
+        }
+      ]
+    },
+    {
+      "width": 414,
+      "colorScheme": "dark",
+      "state": "onboarding",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "dark",
+      "state": "home",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "dark",
+      "state": "client",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": null,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "dark",
+      "state": "daybook",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": [
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "Last month"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "chip ",
+          "text": "All"
+        }
+      ]
+    },
+    {
+      "width": 414,
+      "colorScheme": "dark",
+      "state": "templates",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": null,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "dark",
+      "state": "settings",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "dark",
+      "state": "client-form",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "dark",
+      "state": "entry-form",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "dark",
+      "state": "entry-detail",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "dark",
+      "state": "message",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "dark",
+      "state": "template-editor",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "dark",
+      "state": "receipt",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "dark",
+      "state": "statement",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 414,
+      "colorScheme": "dark",
+      "state": "confirm",
+      "pageWidth": 414,
+      "viewport": 414,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "dark",
+      "state": "onboarding",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "dark",
+      "state": "home",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "dark",
+      "state": "client",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": null,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "dark",
+      "state": "daybook",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "dark",
+      "state": "templates",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": null,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "dark",
+      "state": "settings",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "dark",
+      "state": "client-form",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "dark",
+      "state": "entry-form",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "dark",
+      "state": "entry-detail",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "dark",
+      "state": "message",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "dark",
+      "state": "template-editor",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "dark",
+      "state": "receipt",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "dark",
+      "state": "statement",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    },
+    {
+      "width": 768,
+      "colorScheme": "dark",
+      "state": "confirm",
+      "pageWidth": 768,
+      "viewport": 768,
+      "pageOverflow": false,
+      "sheetOverflow": false,
+      "smallestInput": 16,
+      "background": "rgb(24, 20, 17)",
+      "primary": "#ff896b",
+      "excess": []
+    }
+  ],
+  "errors": []
+}
