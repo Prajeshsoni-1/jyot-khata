@@ -1,0 +1,232 @@
+{
+  "entryFlows": "Client opening validation; bill 12.34; cash received 2.34; given 1.00; bill edit 15.34; pending 14.00; message draft and Back preserved",
+  "receiptDownload": {
+    "file": "Receipt-RC-0001-2026-11-17.pdf",
+    "bytes": 202142
+  },
+  "statementDownload": {
+    "file": "Statement-client-2026-11-17.pdf",
+    "bytes": 173715
+  },
+  "layouts": [
+    {
+      "width": 320,
+      "colorScheme": "light",
+      "viewport": 480,
+      "sheet": {
+        "top": 0,
+        "bottom": 480,
+        "height": 480
+      },
+      "footer": {
+        "top": 407,
+        "bottom": 480,
+        "height": 73
+      },
+      "body": {
+        "top": 69,
+        "bottom": 407,
+        "height": 338
+      },
+      "lastInput": {
+        "top": 338.984375,
+        "bottom": 390.984375,
+        "height": 52
+      },
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    {
+      "width": 375,
+      "colorScheme": "light",
+      "viewport": 480,
+      "sheet": {
+        "top": 0,
+        "bottom": 480,
+        "height": 480
+      },
+      "footer": {
+        "top": 407,
+        "bottom": 480,
+        "height": 73
+      },
+      "body": {
+        "top": 69,
+        "bottom": 407,
+        "height": 338
+      },
+      "lastInput": {
+        "top": 338.984375,
+        "bottom": 390.984375,
+        "height": 52
+      },
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    {
+      "width": 414,
+      "colorScheme": "light",
+      "viewport": 480,
+      "sheet": {
+        "top": 0,
+        "bottom": 480,
+        "height": 480
+      },
+      "footer": {
+        "top": 407,
+        "bottom": 480,
+        "height": 73
+      },
+      "body": {
+        "top": 69,
+        "bottom": 407,
+        "height": 338
+      },
+      "lastInput": {
+        "top": 338.984375,
+        "bottom": 390.984375,
+        "height": 52
+      },
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    {
+      "width": 768,
+      "colorScheme": "light",
+      "viewport": 480,
+      "sheet": {
+        "top": 0,
+        "bottom": 480,
+        "height": 480
+      },
+      "footer": {
+        "top": 407,
+        "bottom": 480,
+        "height": 73
+      },
+      "body": {
+        "top": 69,
+        "bottom": 407,
+        "height": 338
+      },
+      "lastInput": {
+        "top": 338.984375,
+        "bottom": 390.984375,
+        "height": 52
+      },
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    {
+      "width": 320,
+      "colorScheme": "dark",
+      "viewport": 480,
+      "sheet": {
+        "top": 0,
+        "bottom": 480,
+        "height": 480
+      },
+      "footer": {
+        "top": 407,
+        "bottom": 480,
+        "height": 73
+      },
+      "body": {
+        "top": 69,
+        "bottom": 407,
+        "height": 338
+      },
+      "lastInput": {
+        "top": 338.984375,
+        "bottom": 390.984375,
+        "height": 52
+      },
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    {
+      "width": 375,
+      "colorScheme": "dark",
+      "viewport": 480,
+      "sheet": {
+        "top": 0,
+        "bottom": 480,
+        "height": 480
+      },
+      "footer": {
+        "top": 407,
+        "bottom": 480,
+        "height": 73
+      },
+      "body": {
+        "top": 69,
+        "bottom": 407,
+        "height": 338
+      },
+      "lastInput": {
+        "top": 338.984375,
+        "bottom": 390.984375,
+        "height": 52
+      },
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    {
+      "width": 414,
+      "colorScheme": "dark",
+      "viewport": 480,
+      "sheet": {
+        "top": 0,
+        "bottom": 480,
+        "height": 480
+      },
+      "footer": {
+        "top": 407,
+        "bottom": 480,
+        "height": 73
+      },
+      "body": {
+        "top": 69,
+        "bottom": 407,
+        "height": 338
+      },
+      "lastInput": {
+        "top": 338.984375,
+        "bottom": 390.984375,
+        "height": 52
+      },
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    {
+      "width": 768,
+      "colorScheme": "dark",
+      "viewport": 480,
+      "sheet": {
+        "top": 0,
+        "bottom": 480,
+        "height": 480
+      },
+      "footer": {
+        "top": 407,
+        "bottom": 480,
+        "height": 73
+      },
+      "body": {
+        "top": 69,
+        "bottom": 407,
+        "height": 338
+      },
+      "lastInput": {
+        "top": 338.984375,
+        "bottom": 390.984375,
+        "height": 52
+      },
+      "overflow": false,
+      "bodyOverflow": false
+    }
+  ],
+  "largeContent": "80-character Gujarati client, 9,99,99,999.99 entry: no horizontal page overflow at 375px; full Phase 5 stress matrix still pending",
+  "offline": "Reload preserved data under /jyot-khata/",
+  "errors": []
+}

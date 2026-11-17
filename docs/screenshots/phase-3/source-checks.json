@@ -1,0 +1,14 @@
+{
+  "storage": "byte-identical",
+  "money": "byte-identical",
+  "messages/share": "byte-identical",
+  "history": "byte-identical",
+  "receipt/PDF/share": "byte-identical",
+  "statement canvas": "byte-identical",
+  "backup/events": "byte-identical",
+  "function clientForm(": "handlers/submit/autofocus byte-identical",
+  "function entryForm(": "handlers/submit/autofocus byte-identical",
+  "function entrySheet(": "handlers/submit/autofocus byte-identical",
+  "syntax": "both scripts pass node --check",
+  "CSS variables": "all resolve"
+}

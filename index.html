@@ -345,6 +345,93 @@ input[aria-invalid="true"],textarea[aria-invalid="true"]{border-color:var(--dang
   #toast,body.noscroll #toast{transform:translateX(-50%)}
 }
 
+/* Phase 3: working screens and sheets. Financial calculations remain unchanged. */
+.home-header,.client-header{position:static;align-items:flex-start;padding-block:var(--space-4)}
+.home-header .tb-title,.client-header .tb-title{flex:1}
+.home-header h1,.client-header h1{white-space:normal;overflow:visible;overflow-wrap:anywhere}
+.client-header .sub{overflow-wrap:anywhere}
+.client-header .spacer{display:none}
+.summary-secondary:has(.money-long),.stats:has(.money-long){grid-template-columns:1fr}
+.home-summary{display:block;border:var(--stroke) solid var(--line);border-radius:var(--radius-card);background:var(--surface);margin:0 0 var(--space-4);padding:var(--space-4)}
+.home-summary .sum{padding:0;background:none;border-radius:0}
+.home-summary .sum.main{gap:var(--space-1)}
+.home-summary .sum.main b{font-weight:var(--weight-bold)}
+.summary-secondary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-3) var(--space-4);border-top:var(--stroke) solid var(--line);margin-top:var(--space-4);padding-top:var(--space-3)}
+.summary-secondary .sum b{font-size:var(--text-amount);line-height:var(--leading-amount)}
+.home-summary b,.balcard .bv,.stats b,.bigamt{font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.clients-heading{margin:var(--space-6) 0 var(--space-3);align-items:center;gap:var(--space-3)}
+.client-filters{margin-bottom:var(--space-3)}
+.crow{display:grid;grid-template-columns:var(--size-avatar) minmax(0,1fr) minmax(0,max-content);column-gap:var(--space-3);row-gap:var(--space-1)}
+.cname{white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;overflow-wrap:anywhere}
+.csub{white-space:normal;overflow-wrap:anywhere}
+.camt{min-width:0;max-width:14rem;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.backup-reminder .btn{background:var(--surface);color:var(--text);border-color:var(--control-border)}
+.balcard{border:var(--stroke) solid var(--line);border-radius:var(--radius-card);color:var(--text)}
+.balcard.due,.balcard.in{border-left-color:var(--line)}
+.balcard .bv{margin-top:var(--space-1);font-weight:var(--weight-bold)}
+.stats{grid-template-columns:repeat(2,minmax(0,1fr));border-top-style:solid;gap:var(--space-3) var(--space-4);margin-top:var(--space-4);padding-top:var(--space-3)}
+.stats>div{min-width:0}
+.transaction-actions{grid-template-columns:repeat(2,minmax(0,1fr));margin:var(--space-4) 0 var(--space-3)}
+.transaction-actions>.btn:first-child{grid-column:1/-1;flex-direction:row;gap:var(--space-2)}
+.transaction-actions .btn{padding:var(--space-3);min-width:0}
+.client-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-2)}
+.client-tools .btn{flex-direction:column;gap:0;padding-inline:var(--space-2)}
+.client-tools small{font-weight:var(--weight-regular);font-size:var(--text-label);line-height:var(--leading-label)}
+.contact{margin-top:var(--space-3)}
+.ledger-heading{flex-wrap:wrap;gap:var(--space-1) var(--space-3);margin-bottom:var(--space-1)}
+.ledger-caption{margin:0 0 var(--space-3)}
+.ledger-list{background:var(--surface);border:var(--stroke) solid var(--line);border-radius:var(--radius-card)}
+.ledger-list .erow{display:grid;grid-template-columns:var(--size-date) minmax(0,1fr);gap:var(--space-1) var(--space-3);margin:0;border:0;border-bottom:var(--stroke) solid var(--line);border-radius:0}
+.ledger-list .erow:first-child{border-radius:var(--radius-card) var(--radius-card) 0 0}
+.ledger-list .erow:last-child{border-bottom:0;border-radius:0 0 var(--radius-card) var(--radius-card)}
+.ledger-list .erow:only-child{border-radius:var(--radius-card)}
+.ledger-list .edate{grid-row:1/3;align-self:start;padding-top:var(--space-1)}
+.ledger-list .enote{white-space:normal;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.ledger-list .eamt{grid-column:2;display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--space-1) var(--space-3);text-align:left;overflow-wrap:anywhere;font-variant-numeric:tabular-nums;min-width:0}
+.ledger-list .eamt small{align-self:center}
+.ledger-empty{background:var(--surface);border-radius:var(--radius-card)}
+.sheet:has(>.sheet-layout){padding:0;gap:0;overflow:hidden}
+.sheet-layout{display:flex;flex-direction:column;min-height:0;max-height:var(--sheet-max);margin:0}
+.sheet .sheet-layout>.shead{position:static;flex:none;margin:0;padding:var(--space-3) var(--space-4);border-bottom:var(--stroke) solid var(--line)}
+.sheet-title{flex:1;min-width:0}
+.sheet-title .sub{overflow-wrap:anywhere}
+.sheet-layout>.sheet-body{min-height:0;overflow-y:auto;overscroll-behavior-y:contain;scroll-padding-block:var(--space-4);padding:var(--space-4);flex:1 1 auto}
+.sheet-footer{flex:none;display:flex;flex-direction:column;gap:var(--space-2);border-top:var(--stroke) solid var(--line);padding:var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom));background:var(--surface)}
+.sheet-footer .btn{width:100%}
+.sheet-footer>.row2:has(>.btn){grid-template-columns:repeat(2,minmax(0,1fr))}
+.sheet-footer>.row2>.btn:only-child,.sheet-footer>.row2>.btn:has(+.hidden){grid-column:1/-1}
+.sheet-body>*{flex-shrink:0}
+.sheet-body .kv{margin:0}
+.sheet-body .bigamt{font-weight:var(--weight-bold)}
+.detail-amount{padding:var(--space-4);border-radius:var(--radius-card);background:var(--surface2)}
+.detail-amount .sub{margin-bottom:var(--space-1)}
+.sheet-divider{margin-top:var(--space-3)}
+.entry-effect{display:none;font-size:var(--text-label);line-height:var(--leading-label);color:var(--muted)}
+.entry-form:has([data-s=type][data-v=received][aria-pressed=true]) .effect-received,
+.entry-form:has([data-s=type][data-v=bill][aria-pressed=true]) .effect-bill,
+.entry-form:has([data-s=type][data-v=given][aria-pressed=true]) .effect-given{display:block}
+.entry-effects{margin-top:calc(-1 * var(--space-2))}
+.message-context{padding:var(--space-3);background:var(--surface2);border-radius:var(--radius-control);overflow-wrap:anywhere}
+.document-summary{padding:var(--space-4);background:var(--surface2);border-radius:var(--radius-card);overflow-wrap:anywhere}
+.document-summary .bigamt{font-size:var(--text-amount-input);line-height:var(--leading-amount-input);margin-block:var(--space-1)}
+.document-preview h3{font-size:var(--text-label);line-height:var(--leading-label);font-weight:var(--weight-medium);margin-bottom:var(--space-2)}
+.document-preview .rcpt-prev{max-height:none;overflow:visible}
+.document-status{font-size:var(--text-label);line-height:var(--leading-label);color:var(--muted);overflow-wrap:anywhere}
+.sheet:has([data-s=yes])>p{color:var(--text);overflow-wrap:anywhere}
+@media (max-width:430px){
+  .crow{grid-template-columns:var(--size-avatar) minmax(0,1fr)}
+  .crow .avatar{grid-row:1/3;align-self:start}
+  .camt{grid-column:2;display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-2);text-align:left;max-width:none;flex-wrap:wrap}
+  .sheet-body .kv{grid-template-columns:minmax(0,1fr);gap:var(--space-1)}
+  .sheet-body .kv dd:not(:last-child){margin-bottom:var(--space-3)}
+}
+@media (max-height:600px){
+  :root{--sheet-max:100vh}
+  @supports (height:1dvh){:root{--sheet-max:100dvh}}
+  .sheet .sheet-layout>.shead{padding-block:var(--space-2)}
+  .sheet-title .sub{max-height:3.15em;overflow:auto}
+}
+
 </style>
 </head>
 <body>
@@ -960,7 +1047,7 @@ function backupBanner() {
   const lb = db.meta.lastBackup;
   const days = lb ? Math.floor((Date.now() - lb) / 864e5) : null;
   if (lb && days < 7) return '';
-  return `<div class="banner"><span>${lb ? `Last backup ${days} days ago.` : 'No backup yet.'} Keep your data safe.</span><button class="btn sm primary" data-act="exportBackup">Back up</button></div>`;
+  return `<div class="banner backup-reminder"><span>${lb ? `Last backup ${days} days ago.` : 'No backup yet.'} Keep your data safe.</span><button class="btn sm primary" data-act="exportBackup">Back up</button></div>`;
 }
 function clientListHTML() {
   if (!db.clients.length) return `<div class="empty"><img class="empty-logo" src="icons/logo.png" alt="" width="104" height="104"><b>Add your first client</b>Keep every client's payments in one khata and send a ready thank-you or reminder message in Hindi, English or Gujarati.<br><button class="btn primary" data-act="addClient">${ic('plus')} Add client</button></div>`;
@@ -985,17 +1072,18 @@ function pageHome() {
   for (const c of db.clients) { const b = bal.get(c.id); if (b && b.pending > 0) { pend += b.pending; pc++; } }
   for (const e of db.entries) if (e.type === 'received') { if (e.date === t) tin += e.amount; if (e.date.slice(0, 7) === month) min += e.amount; }
   return `
-  <header class="topbar">${brandMarkHTML(db.settings)}<div class="tb-title"><h1>${esc(db.settings.business || 'Khata')}</h1><div class="sub">Khata · हिसाब-किताब</div></div></header>
-  <section class="summary">
+  <header class="topbar home-header">${brandMarkHTML(db.settings)}<div class="tb-title"><h1>${esc(db.settings.business || 'Khata')}</h1><div class="sub">Khata · हिसाब-किताब</div></div></header>
+  <section class="summary home-summary" aria-label="Account overview">
     <div class="sum main"><span>To receive · बाकी</span><b class="due">${fmtR(pend)}</b><em>${pc} client${pc === 1 ? '' : 's'} pending</em></div>
-    <div class="sum"><span>Received today · आज</span><b class="in">${fmtR(tin)}</b></div>
-    <div class="sum"><span>This month · इस महीने</span><b class="in">${fmtR(min)}</b></div>
+    <div class="summary-secondary"><div class="sum"><span>Received today · आज</span><b class="in ${fmtR(tin).length > 11 ? 'money-long' : ''}">${fmtR(tin)}</b></div>
+    <div class="sum"><span>This month · इस महीने</span><b class="in ${fmtR(min).length > 11 ? 'money-long' : ''}">${fmtR(min)}</b></div></div>
   </section>
   ${backupBanner()}
+  <div class="sec clients-heading"><h2>Clients · ग्राहक</h2>${db.clients.length ? `<button class="btn sm" data-act="addClient">${ic('plus')} Add client</button>` : ''}</div>
   <div class="searchrow"><input type="search" data-input="search" placeholder="Search client or phone" value="${esc(ui.search)}" aria-label="Search clients"></div>
-  <div class="chips">${chip('setFilter', 'all', 'All', ui.filter === 'all')}${chip('setFilter', 'pending', 'Pending · बाकी', ui.filter === 'pending')}${chip('setFilter', 'clear', 'No dues · बाकी नहीं', ui.filter === 'clear')}</div>
+  <div class="chips client-filters" role="group" aria-label="Client filter">${chip('setFilter', 'all', 'All', ui.filter === 'all')}${chip('setFilter', 'pending', 'Pending · बाकी', ui.filter === 'pending')}${chip('setFilter', 'clear', 'No dues · बाकी नहीं', ui.filter === 'clear')}</div>
   <div class="list" data-clist>${clientListHTML()}</div>
-  ${db.clients.length ? `<button class="fab" data-act="addClient">${ic('plus')} Client</button>` : ''}`;
+`;
 }
 
 function pageClient(id) {
@@ -1005,7 +1093,7 @@ function pageClient(id) {
   const rows = entriesOf(id).map(e => { run += e.type === 'received' ? -e.amount : e.amount; return { e, run }; }).reverse();
   const num = waNumber(c.phone);
   return `
-  <header class="topbar">
+  <header class="topbar client-header">
     <button class="icon-btn" data-act="back" aria-label="Back">${ic('back')}</button>
     <div class="tb-title"><h1>${esc(c.name)}</h1><div class="sub">${esc(c.phone || 'No phone saved')} · ${LANGS[c.lang || 'hi'].name}</div></div>
     <div class="spacer"></div>
@@ -1014,18 +1102,19 @@ function pageClient(id) {
   <section class="balcard ${st.cls}">
     <div class="bl">${st.label}</div>
     <div class="bv ${st.cls}">${fmtR(Math.abs(b.pending))}</div>
-    <div class="stats"><div><span>Total (bill + given)</span><b>${fmtR(b.total)}</b></div><div><span>Received</span><b class="in">${fmtR(b.rec)}</b></div></div>
+    <div class="stats"><div><span>Total (bill + given)</span><b class="${fmtR(b.total).length > 11 ? 'money-long' : ''}">${fmtR(b.total)}</b></div><div><span>Received</span><b class="in ${fmtR(b.rec).length > 11 ? 'money-long' : ''}">${fmtR(b.rec)}</b></div></div>
     ${c.phone ? `<div class="contact"><a class="btn sm" href="tel:${esc(String(c.phone).replace(/[^\d+]/g, ''))}">${ic('phone')} Call</a>${num ? `<button class="btn sm" data-act="waChat" data-id="${c.id}">${ic('wa')} Open WhatsApp</button>` : ''}</div>` : ''}
   </section>
-  <div class="actions">
+  <div class="actions transaction-actions" role="group" aria-label="Record a transaction">
     <button class="btn in" data-act="addEntry" data-client="${c.id}" data-type="received"><b>+ Received</b><small>पेमेंट मिला</small></button>
     <button class="btn due" data-act="addEntry" data-client="${c.id}" data-type="bill"><b>+ Bill / Due</b><small>बाकी जोड़ें</small></button>
-    <button class="btn out" data-act="addEntry" data-client="${c.id}" data-type="given"><b>Given</b><small>मैंने दिया</small></button>
+    <button class="btn out" data-act="addEntry" data-client="${c.id}" data-type="given"><b>Given / refund</b><small>मैंने दिया</small></button>
   </div>
-  <button class="btn soft block" data-act="msgClient" data-id="${c.id}">${ic('chat')} Send message · मैसेज भेजें</button>
-  <button class="btn block" style="margin-top:var(--space-2)" data-act="stmtClient" data-id="${c.id}">${ic('file')} Statement PDF · खाता विवरण</button>
-  <div class="sec"><h2>Ledger · खाता</h2><span class="sub">${rows.length} entr${rows.length === 1 ? 'y' : 'ies'}</span></div>
-  ${rows.length ? rows.map(({ e, run }) => {
+  <div class="client-tools"><button class="btn" data-act="msgClient" data-id="${c.id}">${ic('chat')}<span>Send message</span><small>मैसेज भेजें</small></button>
+  <button class="btn" data-act="stmtClient" data-id="${c.id}">${ic('file')}<span>Statement PDF</span><small>खाता विवरण</small></button></div>
+  <div class="sec ledger-heading"><h2>Ledger · खाता</h2><span class="sub">${rows.length} entr${rows.length === 1 ? 'y' : 'ies'}</span></div>
+  <p class="sub ledger-caption">Latest first · Balance shown after each entry</p>
+  <div class="ledger-list">${rows.length ? rows.map(({ e, run }) => {
     const T = TYPES[e.type], [y, m, d] = e.date.split('-');
     const bl = run > 0 ? `Pending ${fmtR(run)}` : run < 0 ? `Advance ${fmtR(-run)}` : 'Clear';
     const sub = [e.note, e.ref, e.receiptNo].filter(Boolean).join(' · ');
@@ -1033,7 +1122,7 @@ function pageClient(id) {
       <div class="edate"><b>${Number(d)}</b>${MON[Number(m) - 1]}<br>${y}</div>
       <div class="emain"><div class="etype">${T.label}${e.mode ? ` <span class="pill ${T.cls}">${esc(modeLabel(e.mode))}</span>` : ''}</div><div class="enote">${esc(sub || T.hi)}</div></div>
       <div class="eamt ${T.cls}">${e.type === 'received' ? '+' : ''}${fmtR(e.amount)}<small>${bl}</small></div></button>`;
-  }).join('') : `<p class="empty">No entries yet.<br>Tap <b style="display:inline;font-size:inherit">+ Bill / Due</b> to add the amount to receive, then <b style="display:inline;font-size:inherit">+ Received</b> for each payment.</p>`}`;
+  }).join('') : `<p class="empty ledger-empty">No entries yet.<br>Tap <b style="display:inline;font-size:inherit">+ Bill / Due</b> to add the amount to receive, then <b style="display:inline;font-size:inherit">+ Received</b> for each payment.</p>`}</div>`;
 }
 
 function periodRange(p) {
@@ -1187,14 +1276,18 @@ function clientForm(id = null) {
   const ex = id ? client(id) : null;
   let lang = (ex && ex.lang) || db.settings.lang;
   const sh = openSheet(`
-    <form class="stack" data-f>
+    <form class="sheet-layout client-form" data-f>
       <div class="shead"><h2>${ex ? 'Edit client' : 'New client · नया क्लाइंट'}</h2><button type="button" class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
+      <div class="sheet-body stack">
       ${field('name', 'Name · नाम', ex ? ex.name : '', 'required maxlength="80" autocomplete="off"')}
-      ${field('phone', 'WhatsApp / phone number', ex ? ex.phone : '', 'type="tel" inputmode="tel" placeholder="98765 43210" autocomplete="off"')}
+      ${field('phone', 'WhatsApp / phone number (optional)', ex ? ex.phone : '', 'type="tel" inputmode="tel" placeholder="98765 43210" autocomplete="off"')}
       <div class="field"><span>Message language · भाषा</span><div class="chips wrap">${LANG_KEYS.map(k => `<button type="button" class="chip ${lang === k ? 'on' : ''}" aria-pressed="${!!(lang === k)}" data-s="lang" data-v="${k}">${LANGS[k].name}</button>`).join('')}</div></div>
       ${ex ? '' : `<label class="field"><span>Opening balance — already pending? (optional)</span><div class="amt"><i>₹</i><input name="open" inputmode="decimal" placeholder="0" autocomplete="off" aria-describedby="open-help open-err"></div><small class="field-help" id="open-help">Only an amount the client still owes you (not an advance). It is dated today.</small><small class="field-err" id="open-err" data-err role="alert" hidden></small></label>`}
+      ${ex ? `<button type="button" class="btn danger block sheet-divider" data-s="del">${ic('trash')} Delete client</button>` : ''}
+      </div>
+      <footer class="sheet-footer">
       <button class="btn primary block" type="submit">${ex ? 'Save' : 'Add client'}</button>
-      ${ex ? `<button type="button" class="btn danger block" data-s="del">${ic('trash')} Delete client</button>` : ''}
+      </footer>
     </form>`, {
     lang: t => { lang = t.dataset.v; $$('[data-s=lang]', sh.el).forEach(b => setSelected(b, b === t)); },
     del: async () => {
@@ -1237,16 +1330,21 @@ function entryForm({ clientId, type = 'received', entryId = null }) {
   const st = { type: ex ? ex.type : type, mode: (ex && ex.mode) || db.meta.lastMode || 'upi' };
   const seg = Object.keys(TYPES).map(k => `<button type="button" data-s="type" data-v="${k}" class="${st.type === k ? 'on' : ''}" aria-pressed="${st.type === k}">${TYPES[k].label}<small>${TYPES[k].hi}</small></button>`).join('');
   const sh = openSheet(`
-    <form class="stack" data-f>
-      <div class="shead"><h2>${ex ? 'Edit entry' : 'New entry'} · ${esc(c.name)}</h2><button type="button" class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
-      <div class="seg">${seg}</div>
+    <form class="sheet-layout entry-form" data-f>
+      <div class="shead"><div class="sheet-title"><h2>${ex ? 'Edit entry' : 'New entry'}</h2><p class="sub">${esc(c.name)}</p></div><button type="button" class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
+      <div class="sheet-body stack">
+      <div class="seg" role="group" aria-label="Entry type">${seg}</div>
+      <div class="entry-effects"><p class="entry-effect effect-received">Reduces pending · बाकी घटेगी</p><p class="entry-effect effect-bill">Adds to pending · बाकी बढ़ेगी</p><p class="entry-effect effect-given">Given / refund adds to pending · बाकी बढ़ेगी</p></div>
       <label class="field"><span>Amount · रकम</span><div class="amt"><i>₹</i><input name="amount" inputmode="decimal" placeholder="0" autocomplete="off" value="${ex ? esc(String(ex.amount / 100)) : ''}"></div></label>
       <label class="field"><span>Date · तारीख</span><input type="date" name="date" value="${esc(ex ? ex.date : todayStr())}"></label>
       <div class="field" data-g="mode"><span>Payment mode · तरीका</span><div class="chips wrap">${MODE_KEYS.map(k => `<button type="button" class="chip ${st.mode === k ? 'on' : ''}" aria-pressed="${!!(st.mode === k)}" data-s="mode" data-v="${k}">${MODES[k].en}</button>`).join('')}</div></div>
       <label class="field" data-g="ref"><span data-reflabel>${esc(MODES[st.mode].ref)}</span><input name="ref" maxlength="60" autocomplete="off" value="${ex ? esc(ex.ref || '') : ''}"></label>
       <label class="field"><span>Note · नोट (optional)</span><input name="note" maxlength="120" autocomplete="off" value="${ex ? esc(ex.note || '') : ''}"></label>
+      ${ex ? `<button type="button" class="btn danger block sheet-divider" data-s="del">${ic('trash')} Delete entry</button>` : ''}
+      </div>
+      <footer class="sheet-footer">
       <button class="btn primary block" type="submit" data-save>Save</button>
-      ${ex ? `<button type="button" class="btn danger block" data-s="del">${ic('trash')} Delete entry</button>` : ''}
+      </footer>
     </form>`, {
     type: t => { st.type = t.dataset.v; paint(); },
     mode: t => { st.mode = t.dataset.v; paint(); },
@@ -1294,12 +1392,13 @@ function entrySheet(id) {
   const rows = [['Client', c ? c.name : '—'], ['Date', dUI(e.date)], ['Mode', e.mode ? modeLabel(e.mode) : ''], ['Reference', e.ref], ['Note', e.note], ['Receipt no.', e.receiptNo]]
     .filter(r => r[1]).map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
   const sh = openSheet(`
+    <div class="sheet-layout">
     <div class="shead"><h2>${T.label} · ${T.hi}</h2><button class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
-    <div class="bigamt ${T.cls}">${e.type === 'received' ? '+' : ''}${fmtR(e.amount)}</div>
+    <div class="sheet-body stack"><div class="detail-amount"><p class="sub">Entry amount · रकम</p><div class="bigamt ${T.cls}">${e.type === 'received' ? '+' : ''}${fmtR(e.amount)}</div></div>
     <dl class="kv" style="margin:0">${rows}</dl>
-    <button class="btn wa block" data-s="msg">${ic('wa')} Send message${e.type === 'bill' ? ' (reminder)' : ''}</button>
+    </div><footer class="sheet-footer"><button class="btn wa block" data-s="msg">${ic('wa')} Send message${e.type === 'bill' ? ' (reminder)' : ''}</button>
     ${e.type === 'received' ? `<button class="btn primary block" data-s="receipt">${ic('file')} Receipt PDF · रसीद</button>` : ''}
-    <div class="row2"><button class="btn" data-s="edit">${ic('edit')} Edit</button><button class="btn danger" data-s="del">${ic('trash')} Delete</button></div>`, {
+    <div class="row2"><button class="btn" data-s="edit">${ic('edit')} Edit</button><button class="btn danger" data-s="del">${ic('trash')} Delete</button></div></footer></div>`, {
     msg: () => { sh.close(); messageSheet({ clientId: e.clientId, entryId: e.type === 'bill' ? null : e.id }); },
     receipt: () => { sh.close(); receiptSheet(e.id); },
     edit: () => { sh.close(); entryForm({ clientId: e.clientId, entryId: e.id }); },
@@ -1320,18 +1419,20 @@ function messageSheet({ clientId, entryId = null, kind = null, lang = null }) {
   const k = kind || (ex ? (ex.type === 'given' ? 'paid_out' : b.pending > 0 ? 'thanks_pending' : 'thanks_full') : (b.pending > 0 ? 'reminder' : 'greeting'));
   st.tpl = pickTpl(k, st.lang).id;
   const sh = openSheet(`
-    <div class="shead"><h2>Message to ${esc(c.name)}</h2><button class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
+    <div class="sheet-layout">
+    <div class="shead"><div class="sheet-title"><h2>Message</h2><p class="sub">${esc(c.name)}</p></div><button class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
+    <div class="sheet-body stack">
+    <p class="sub message-context">${ex ? `Account context: after the ${TYPES[ex.type].label.toLowerCase()} entry on ${dUI(ex.date)}.` : 'Account context: current balance.'} Review the text before sharing.</p>
     <div class="chips wrap" data-g="langs">${LANG_KEYS.map(l => `<button class="chip" aria-pressed="false" data-s="lang" data-v="${l}">${LANGS[l].name}</button>`).join('')}</div>
     <select data-tplsel aria-label="Template"></select>
     <textarea data-text rows="11" aria-label="Message text"></textarea>
     <p class="sub" style="margin-top:calc(-1 * var(--space-2))">${c.phone ? `Opens WhatsApp chat with <b>${esc(c.phone)}</b>. You can edit the text above before sending.` : 'No phone saved for this client — WhatsApp will let you choose the contact.'}</p>
-    <div class="row3">
-      <button class="btn soft" data-s="copy">${ic('copy')} Copy</button>
-      <button class="btn wa" data-s="wa">${ic('wa')} WhatsApp</button>
-      <button class="btn ${navigator.share ? '' : 'hidden'}" data-s="share">${ic('share')} Share</button>
-    </div>
-    ${ex && ex.type === 'received' ? `<button class="btn primary block" data-s="receipt">${ic('file')} Receipt PDF · रसीद</button>` : ''}
-    <button class="btn block" data-s="tpls">Edit templates</button>`, {
+    ${ex && ex.type === 'received' ? `<button class="btn block" data-s="receipt">${ic('file')} Receipt PDF · रसीद</button>` : ''}
+    <button class="btn block" data-s="tpls">Edit templates</button>
+    </div><footer class="sheet-footer">
+      <button class="btn wa" data-s="wa">${ic('wa')} Open WhatsApp</button>
+      <div class="row2"><button class="btn" data-s="copy">${ic('copy')} Copy</button><button class="btn ${navigator.share ? '' : 'hidden'}" data-s="share">${ic('share')} Share</button></div>
+    </footer></div>`, {
     receipt: (t, ev, api) => { api.close(); receiptSheet(ex.id, st.lang); },
     lang: async t => {
       if (!(await okToReplace())) return;
@@ -1351,6 +1452,7 @@ function messageSheet({ clientId, entryId = null, kind = null, lang = null }) {
     sel.innerHTML = opts.map(t => `<option value="${esc(t.id)}" ${t.id === st.tpl ? 'selected' : ''}>${esc(t.builtin ? tplName(t) : '★ ' + tplName(t))}</option>`).join('');
     const t = tplById(st.tpl);
     ta.value = renderTemplate(t ? t.text : '', vars(c, ctx, st.lang, !!ex));
+    ta.lang = st.lang;
     st.dirty = false;
     grow();
   }
@@ -1804,13 +1906,15 @@ function statementSheet(clientId, lang0 = null) {
   const periods = [['all', 'All time'], ['fy', 'This FY'], ['month', 'This month'], ['lastmonth', 'Last month']];
   const nameSlug = c.name.replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'client';
   const sh = openSheet(`
-    <div class="shead"><h2>Statement · ${esc(c.name)}</h2><button class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
+    <div class="sheet-layout">
+    <div class="shead"><div class="sheet-title"><h2>Statement · खाता विवरण</h2><p class="sub">${esc(c.name)}</p></div><button class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
+    <div class="sheet-body stack">
     <div class="field"><span>Period · अवधि</span><div class="chips wrap">${periods.map(([k, l]) => `<button class="chip" aria-pressed="false" data-s="period" data-v="${k}">${l}</button>`).join('')}</div></div>
     <div class="field"><span>Language · भाषा</span><div class="chips wrap">${LANG_KEYS.map(l => `<button class="chip" aria-pressed="false" data-s="lang" data-v="${l}">${LANGS[l].name}</button>`).join('')}</div></div>
-    <div class="rcpt-prev" data-prev></div>
-    <p class="sub" data-info style="margin-top:calc(-1 * var(--space-2))"></p>
-    <div class="row2"><button class="btn wa" data-s="share" disabled>${ic('share')} Share PDF</button><button class="btn" data-s="dl" disabled>${ic('download')} Download</button></div>
-    <p class="sub">Tap <b>Share PDF</b> → choose WhatsApp → pick the client. A short message is added as the caption when the app allows it. The PDF covers the period you picked; the caption uses the client's current balance.</p>`, {
+    <p class="document-status" data-info aria-live="polite"></p>
+    <section class="document-preview" aria-label="Statement preview"><h3>A4 preview · first page</h3><div class="rcpt-prev" data-prev></div></section>
+    <p class="sub">Tap <b>Share PDF</b> → choose WhatsApp → pick the client. A short message is added as the caption when the app allows it. The PDF covers the period you picked; the caption uses the client's current balance. The PDF includes every page.</p>
+    </div><footer class="sheet-footer"><button class="btn wa" data-s="share" disabled>${ic('share')} Share PDF</button><button class="btn" data-s="dl" disabled>${ic('download')} Download</button></footer></div>`, {
     lang: t => { st.lang = t.dataset.v; paint(); },
     period: t => { st.period = t.dataset.v; paint(); },
     share: () => shareFile(st.pdf, st.text),
@@ -1829,7 +1933,7 @@ function statementSheet(clientId, lang0 = null) {
       r.preview.className = 'rcpt-canvas'; prev.replaceChildren(r.preview);
       const base = `Statement-${nameSlug}-${todayStr()}`;
       st.pdf = new File([buildPDF(r.pages, base, 595.28, 841.89)], base + '.pdf', { type: 'application/pdf' });
-      info.textContent = `${r.entries} entr${r.entries === 1 ? 'y' : 'ies'} · ${r.pages.length} page${r.pages.length === 1 ? '' : 's'}${r.pages.length > 1 ? ' (first page shown)' : ''} · ${Math.round(st.pdf.size / 1024)} KB`;
+      info.textContent = `${periods.find(([key]) => key === st.period)[1]} · ${r.entries} entr${r.entries === 1 ? 'y' : 'ies'} · Preview: page 1 of ${r.pages.length} · ${Math.round(st.pdf.size / 1024)} KB`;
       const t = pickTpl(calc(c.id).pending > 0 ? 'reminder' : 'greeting', st.lang);
       st.text = renderTemplate(t.text, vars(c, null, st.lang));
       btns.forEach(x => { x.disabled = false; });
@@ -1845,12 +1949,14 @@ function receiptSheet(entryId, lang0 = null) {
   const st = { lang: lang0 || c.lang || db.settings.lang, n: 0, pdf: null, img: null, text: '' };
   const base = `Receipt-${String(e.receiptNo || 'payment').replace(/[^A-Za-z0-9_-]/g, '')}-${e.date}`;
   const sh = openSheet(`
+    <div class="sheet-layout">
     <div class="shead"><h2>Receipt · ${esc(e.receiptNo || '')}</h2><button class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
+    <div class="sheet-body stack">
+    <div class="document-summary" data-summary></div>
     <div class="chips wrap">${LANG_KEYS.map(l => `<button class="chip" aria-pressed="false" data-s="lang" data-v="${l}">${LANGS[l].name}</button>`).join('')}</div>
-    <div class="rcpt-prev" data-prev></div>
-    <div class="row2"><button class="btn wa" data-s="share" disabled>${ic('share')} Share PDF</button><button class="btn" data-s="dl" disabled>${ic('download')} Download</button></div>
-    <button class="btn soft block" data-s="img" disabled>${ic('share')} Share as image</button>
-    <p class="sub">Tap <b>Share PDF</b> → choose WhatsApp → pick the client. Your thank-you message is added as the caption when the app allows it; otherwise the PDF is shared on its own.</p>`, {
+    <section class="document-preview" aria-label="Receipt preview"><h3>A5 receipt preview</h3><div class="rcpt-prev" data-prev></div></section>
+    <p class="sub">Tap <b>Share PDF</b> → choose WhatsApp → pick the client. Your thank-you message is added as the caption when the app allows it; otherwise the PDF is shared on its own. Account figures are shown as they stood after this payment.</p>
+    </div><footer class="sheet-footer"><button class="btn wa" data-s="share" disabled>${ic('share')} Share PDF</button><div class="row2"><button class="btn" data-s="dl" disabled>${ic('download')} Download</button><button class="btn" data-s="img" disabled>${ic('share')} Share as image</button></div></footer></div>`, {
     lang: t => { st.lang = t.dataset.v; paint(); },
     share: () => shareFile(st.pdf, st.text),
     img: () => shareFile(st.img, st.text),
@@ -1859,6 +1965,9 @@ function receiptSheet(entryId, lang0 = null) {
   const prev = $('[data-prev]', sh.el), btns = $$('[data-s=share],[data-s=dl],[data-s=img]', sh.el);
   async function paint() {
     const n = ++st.n;
+    const L = RL[st.lang], summary = $('[data-summary]', sh.el);
+    summary.lang = st.lang;
+    summary.innerHTML = `<p class="sub">${esc(L.amount)}</p><div class="bigamt in">${fmtR(e.amount)}</div><p>${esc(c.name)}</p><p class="sub">${dUI(e.date)} · ${esc(modeLabel(e.mode, st.lang))}</p>`;
     $$('[data-s=lang]', sh.el).forEach(b => setSelected(b, b.dataset.v === st.lang));
     btns.forEach(b => { b.disabled = true; });
     prev.innerHTML = '<p class="sub" style="padding:var(--space-8);text-align:center">Preparing receipt…</p>';
