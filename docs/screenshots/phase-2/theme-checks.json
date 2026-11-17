@@ -1,0 +1,39 @@
+{
+  "results": [
+    {
+      "case": "Light overrides dark OS; unsaved Settings text retained",
+      "preference": "light",
+      "scheme": "light",
+      "background": "rgb(255, 248, 240)",
+      "chrome": "#fff8f0",
+      "selected": "light"
+    },
+    {
+      "case": "Dark overrides light OS",
+      "preference": "dark",
+      "scheme": "dark",
+      "background": "rgb(24, 20, 17)",
+      "chrome": "#181411",
+      "selected": "dark"
+    },
+    {
+      "case": "Auto follows live OS changes",
+      "preference": "auto",
+      "scheme": "dark",
+      "background": "rgb(24, 20, 17)",
+      "chrome": "#181411",
+      "selected": "auto"
+    }
+  ],
+  "persistence": "Light/Dark preferences survive reload; Auto follows OS changes",
+  "independentPreferenceKey": "jyotkhata.appearance.v1",
+  "ledgerBytesUnchanged": true,
+  "legacyPendingPaise": 75000,
+  "grapheme": "કિ",
+  "chipSemantics": "Passed initial/rendered and changed type/mode states",
+  "messageDraftProtection": "Cancel replacement preserves text and selected Gujarati language",
+  "history": "Nested confirmation closes and browser Back closes message sheet",
+  "reducedMotion": "0s",
+  "preferenceWriteFailure": "Session theme applies with visible non-persistence notice",
+  "offlineSubpath": "Passed reload at /jyot-khata/ with chosen dark theme"
+}

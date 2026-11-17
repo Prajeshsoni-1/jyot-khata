@@ -5,8 +5,33 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Jyot Khata</title>
 <meta name="description" content="Client ledger with ready Hindi, English and Gujarati WhatsApp payment messages.">
-<meta name="theme-color" content="#d4260e" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#181411" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#fff8f0" id="theme-color">
+<script>
+/* Appearance is a device preference, separate from the ledger and its backups. */
+window.jyotAppearance = (() => {
+  const key = 'jyotkhata.appearance.v1', choices = ['auto', 'light', 'dark'];
+  const system = matchMedia('(prefers-color-scheme: dark)');
+  let preference = 'auto';
+  try { const value = localStorage.getItem(key); if (choices.includes(value)) preference = value; } catch {}
+  function apply() {
+    const dark = preference === 'dark' || (preference === 'auto' && system.matches);
+    document.documentElement.dataset.theme = preference;
+    document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+    document.getElementById('theme-color').content = dark ? '#181411' : '#fff8f0';
+  }
+  if (system.addEventListener) system.addEventListener('change', apply);
+  else system.addListener(apply);
+  apply();
+  return {
+    get: () => preference,
+    set(value) {
+      if (!choices.includes(value)) return false;
+      preference = value; apply();
+      try { localStorage.setItem(key, value); return true; } catch { return false; }
+    },
+  };
+})();
+</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -20,7 +45,7 @@
   /* Colour roles: keep decorative dividers separate from control boundaries. */
   --bg:#fff8f0; --surface:#ffffff; --surface2:#f5ebe1;
   --text:#2b211b; --muted:#75665d; --line:#e7d9cc; --control-border:#8a786c;
-  --primary:#d4260e; --primary-ink:#ffffff; --primary-soft:#fde5dc;
+  --primary:#d4260e; --primary-ink:#ffffff; --primary-soft:#fde5dc; --primary-soft-ink:#ad210d;
   --in:#12683c; --in-soft:#e0f3e7; --due:#914500; --due-soft:#fff0d2;
   --out:#1d4ed8; --out-soft:#e3ebfd; --danger:#b42318; --danger-soft:#fdeceb;
   --focus:#d4260e; --scrim:rgba(24,20,17,.48);
@@ -61,25 +86,26 @@
   /* Existing geometry is named here; component/layout changes follow in phases 2–5. */
   --app-max:35rem; --app-bottom-space:9.375rem; --fab-bottom:4.75rem; --toast-bottom:6rem;
   --size-icon:1.375rem; --size-logo:2.875rem; --size-empty-logo:6.5rem;
-  --size-about-logo:1.875rem; --size-logo-preview:4.5rem; --size-avatar:2.75rem; --size-avatar-small:2.375rem;
-  --size-icon-button:2.75rem; --size-input:2.875rem; --size-amount-input:3.5rem;
-  --size-chip:2.625rem; --size-segment:3.25rem; --size-button:3rem; --size-button-small:2.5rem;
-  --size-action:3.625rem; --size-client-row:4.25rem; --size-entry-row:4rem; --size-fab:3.375rem;
-  --size-variable:2.125rem; --size-nav:3.5rem; --size-date:3rem; --size-key-label:6.875rem;
+  --size-about-logo:1.875rem; --size-logo-preview:4.5rem; --size-avatar:2.5rem; --size-avatar-small:2.375rem;
+  --size-icon-button:3rem; --size-input:3.25rem; --size-amount-input:3.5rem;
+  --size-chip:2.75rem; --size-segment:3.25rem; --size-button:3rem; --size-button-small:2.75rem;
+  --size-action:3.625rem; --size-client-row:4.75rem; --size-entry-row:4.75rem; --size-fab:3.375rem;
+  --size-variable:2.75rem; --size-nav:4rem; --size-date:3rem; --size-key-label:6.875rem;
   --preview-max:15rem; --sheet-max:92vh; --receipt-preview-max:50vh;
   --stroke:1px; --stroke-strong:2px; --focus-width:3px; --accent-border:6px;
-  --focus-offset:2px; --brand-strip:4px;
-  --opacity-placeholder:.8; --opacity-segment-hint:.85; --opacity-action-hint:.9; --opacity-disabled:.5;
+  --focus-offset:2px; --brand-strip:2px;
+  --opacity-placeholder:1; --opacity-segment-hint:1; --opacity-action-hint:1; --opacity-disabled:.5;
+  --target-min:2.75rem; --check-width:.375rem; --check-height:.625rem; --nav-icon-width:2.75rem; --nav-icon-height:1.875rem;
   --z-header:5; --z-fab:10; --z-nav:20; --z-overlay:50; --z-brand:60; --z-toast:100;
   /* Compatibility aliases for existing selectors. */
   --r:var(--radius-card); --shadow:var(--elevation-flat);
 }
 @supports (height:1dvh){:root{--sheet-max:92dvh}}
 @media (prefers-color-scheme:dark){
-  :root{
+  :root:not([data-theme="light"]){
     --bg:#181411; --surface:#251e1a; --surface2:#342a24;
     --text:#f8eee7; --muted:#c7b9ae; --line:#4a3c33; --control-border:#94857c;
-    --primary:#ff896b; --primary-ink:#33120b; --primary-soft:#44251d;
+    --primary:#ff896b; --primary-ink:#33120b; --primary-soft:#44251d; --primary-soft-ink:#ff896b;
     --in:#67d99b; --in-soft:#183526; --due:#ffbe68; --due-soft:#3b2b15;
     --out:#9cb9ff; --out-soft:#1e2d49; --danger:#ff9a90; --danger-soft:#47231f;
     --focus:#ff896b; --scrim:rgba(0,0,0,.64);
@@ -89,9 +115,21 @@
     --elevation-sheet:0 -8px 32px rgba(0,0,0,.32);
   }
 }
+:root[data-theme="dark"]{
+    --bg:#181411; --surface:#251e1a; --surface2:#342a24;
+    --text:#f8eee7; --muted:#c7b9ae; --line:#4a3c33; --control-border:#94857c;
+    --primary:#ff896b; --primary-ink:#33120b; --primary-soft:#44251d; --primary-soft-ink:#ff896b;
+    --in:#67d99b; --in-soft:#183526; --due:#ffbe68; --due-soft:#3b2b15;
+    --out:#9cb9ff; --out-soft:#1e2d49; --danger:#ff9a90; --danger-soft:#47231f;
+    --focus:#ff896b; --scrim:rgba(0,0,0,.64);
+    --toast-bg:#f8eee7; --toast-ink:#251e1a;
+    --avatar-bg-s:35%; --avatar-bg-l:24%; --avatar-ink-s:70%; --avatar-ink-l:85%;
+    --elevation-floating:0 4px 12px rgba(0,0,0,.24);
+    --elevation-sheet:0 -8px 32px rgba(0,0,0,.32);
+}
 body::before{content:"";position:fixed;top:0;left:0;right:0;height:var(--brand-strip);background:var(--brand-grad);z-index:var(--z-brand)}
 .brand-logo{width:var(--size-logo);height:var(--size-logo);flex:none;display:block}
-.empty-logo{width:var(--size-empty-logo);height:var(--size-empty-logo);display:block;margin:0 auto var(--space-3)}
+.empty-logo{width:var(--size-logo-preview);height:var(--size-logo-preview);display:block;margin:0 auto var(--space-4)}
 .about{display:flex;align-items:center;justify-content:center;gap:var(--space-3);margin-top:var(--space-4);color:var(--muted);font-size:var(--text-label);line-height:var(--leading-label)}
 .about img{width:var(--size-about-logo);height:var(--size-about-logo)}
 .brand-logo{object-fit:contain}
@@ -112,7 +150,7 @@ button{cursor:pointer}
 a{color:inherit}
 svg{width:var(--size-icon);height:var(--size-icon);fill:none;stroke:currentColor;stroke-width:var(--stroke-strong);stroke-linecap:round;stroke-linejoin:round;flex:none}
 h1,h2,h3,p{margin:0}
-:focus-visible{outline:var(--focus-width) solid color-mix(in srgb,var(--focus) 55%,transparent);outline-offset:var(--focus-offset)}
+:focus-visible{outline:var(--focus-width) solid var(--focus);outline-offset:var(--focus-offset)}
 
 #app{max-width:var(--app-max);margin:0 auto;padding:0 var(--space-4) calc(var(--app-bottom-space) + env(safe-area-inset-bottom))}
 .topbar{display:flex;align-items:center;gap:var(--space-2);padding:calc(var(--space-3) + env(safe-area-inset-top)) 0 var(--space-3);position:sticky;top:0;background:var(--bg);z-index:var(--z-header)}
@@ -120,9 +158,9 @@ h1,h2,h3,p{margin:0}
 .tb-title{min-width:0}
 .sub{font-size:var(--text-label);line-height:var(--leading-label);color:var(--muted)}
 .spacer{flex:1}
-.icon-btn{width:var(--size-icon-button);height:var(--size-icon-button);border-radius:var(--radius-control);border:0;background:transparent;display:grid;place-items:center;flex:none}
+.icon-btn{width:var(--size-icon-button);height:var(--size-icon-button);border-radius:var(--radius-control);border:0;background:transparent;display:grid;place-items:center;flex:none;transition:background-color var(--motion-press) var(--ease-out)}
 .icon-btn:hover{background:var(--surface2)}
-.card{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);padding:var(--space-4)}
+.card{background:var(--surface);border:var(--stroke) solid var(--line);border-radius:var(--radius-card);box-shadow:var(--elevation-flat);padding:var(--space-4)}
 .stack{display:flex;flex-direction:column;gap:var(--space-4)}
 .card h2{font-size:var(--text-section);line-height:var(--leading-section)}
 .muted{color:var(--muted)}
@@ -143,59 +181,59 @@ h1,h2,h3,p{margin:0}
 .sumlist b{font-size:var(--text-amount);line-height:var(--leading-amount)}
 
 /* inputs */
-input,select,textarea{width:100%;background:var(--surface);border:var(--stroke) solid var(--line);border-radius:var(--radius-control);padding:var(--space-3) var(--space-4);min-height:var(--size-input);font-size:var(--text-body);line-height:var(--leading-body)}
+input,select,textarea{width:100%;min-width:0;background:var(--surface);border:var(--stroke) solid var(--control-border);border-radius:var(--radius-control);padding:var(--space-3) var(--space-4);min-height:var(--size-input);font-size:var(--text-body);line-height:var(--leading-body);transition:border-color var(--motion-selection) var(--ease-out)}
 textarea{resize:vertical;}
 input::placeholder,textarea::placeholder{color:var(--muted);opacity:var(--opacity-placeholder)}
 .searchrow{position:relative;margin-bottom:var(--space-3)}
 .field{display:flex;flex-direction:column;gap:var(--space-2);border:0;padding:0;margin:0;min-width:0}
 .field>span{font-size:var(--text-label);line-height:var(--leading-label);font-weight:var(--weight-medium);color:var(--muted)}
-.amt{display:flex;align-items:center;gap:var(--space-2);background:var(--surface);border:var(--stroke) solid var(--line);border-radius:var(--radius-control);padding:0 var(--space-4)}
+.amt{display:flex;align-items:center;gap:var(--space-2);background:var(--surface);border:var(--stroke) solid var(--control-border);border-radius:var(--radius-control);padding:0 var(--space-4);min-width:0}
 .amt i{font-style:normal;font-size:var(--text-amount-input);line-height:var(--leading-amount-input);font-weight:var(--weight-bold);color:var(--muted)}
 .amt input{border:0;padding:var(--space-3) 0;font-size:var(--text-amount-input);line-height:var(--leading-amount-input);font-weight:var(--weight-bold);background:transparent;min-height:var(--size-amount-input)}
 .amt input:focus-visible{outline:none}
-.amt:focus-within{outline:var(--focus-width) solid color-mix(in srgb,var(--focus) 55%,transparent)}
+.amt:focus-within{outline:var(--focus-width) solid var(--focus);outline-offset:var(--focus-offset)}
 
 /* chips & seg */
-.chips{display:flex;gap:var(--space-2);overflow-x:auto;padding:var(--space-optical) 0 var(--space-2);margin-bottom:var(--space-1);scrollbar-width:none}
+.chips{display:flex;flex-wrap:wrap;gap:var(--space-2);padding:var(--space-1) 0 var(--space-2);margin-bottom:var(--space-1)}
 .chips::-webkit-scrollbar{display:none}
 .chips.wrap{flex-wrap:wrap;overflow:visible;padding:0;margin:0}
-.chip{border:var(--stroke) solid var(--line);background:var(--surface);border-radius:var(--radius-pill);padding:0 var(--space-4);min-height:var(--size-chip);font-weight:var(--weight-medium);white-space:nowrap;flex:none;display:inline-flex;align-items:center;gap:var(--space-2)}
-.chip.on{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
-.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-2);background:var(--surface2);border-radius:var(--radius-control);padding:var(--space-1)}
-.seg button{border:0;background:transparent;border-radius:var(--radius-control);min-height:var(--size-segment);font-weight:var(--weight-bold);display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.chip{border:var(--stroke) solid var(--control-border);background:var(--surface);color:var(--muted);border-radius:var(--radius-pill);padding:var(--space-2) var(--space-3);min-height:var(--size-chip);min-width:var(--target-min);max-width:100%;font-size:var(--text-label);line-height:var(--leading-label);font-weight:var(--weight-medium);white-space:normal;overflow-wrap:anywhere;display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);transition:background-color var(--motion-selection) var(--ease-out),border-color var(--motion-selection) var(--ease-out),color var(--motion-selection) var(--ease-out)}
+.chip.on{background:var(--primary-soft);color:var(--primary-soft-ink);border-color:var(--primary)}
+.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-1);background:var(--surface2);border-radius:var(--radius-control);padding:var(--space-1)}
+.seg button{position:relative;border:var(--stroke) solid transparent;background:transparent;border-radius:var(--radius-tag);min-width:var(--target-min);min-height:var(--size-segment);padding:var(--space-6) var(--space-1) var(--space-2);font-weight:var(--weight-medium);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow-wrap:anywhere;transition:background-color var(--motion-selection) var(--ease-out),border-color var(--motion-selection) var(--ease-out)}
 .seg button small{font-weight:var(--weight-regular);font-size:var(--text-label);line-height:var(--leading-label);opacity:var(--opacity-segment-hint)}
-.seg button.on{background:var(--surface);box-shadow:var(--shadow)}
+.seg button.on{background:var(--surface);border-color:var(--control-border);box-shadow:var(--elevation-flat)}
 .seg button.on[data-v=received]{color:var(--in)} .seg button.on[data-v=bill]{color:var(--due)} .seg button.on[data-v=given]{color:var(--out)}
 
 /* buttons */
-.btn{min-height:var(--size-button);border-radius:var(--radius-control);border:var(--stroke) solid var(--line);background:var(--surface);padding:0 var(--space-4);font-weight:var(--weight-bold);display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);text-decoration:none;text-align:center;}
+.btn{min-height:var(--size-button);min-width:var(--target-min);max-width:100%;border-radius:var(--radius-control);border:var(--stroke) solid var(--control-border);background:var(--surface);padding:var(--space-2) var(--space-4);font-weight:var(--weight-medium);display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);text-decoration:none;text-align:center;overflow-wrap:anywhere;transition:background-color var(--motion-press) var(--ease-out),box-shadow var(--motion-press) var(--ease-out),transform var(--motion-press) var(--ease-out)}
 .btn.primary{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
-.btn.soft{background:var(--primary-soft);border-color:transparent;color:var(--text)}
-.btn.in{background:var(--in-bg);border-color:transparent;color:var(--on-solid)}
-.btn.due{background:var(--due-bg);border-color:transparent;color:var(--on-solid)}
-.btn.out{background:var(--out-bg);border-color:transparent;color:var(--on-solid)}
-.btn.wa{background:var(--wa-bg);border-color:transparent;color:var(--on-solid)}
+.btn.soft{background:var(--primary-soft);border-color:transparent;color:var(--primary-soft-ink)}
+.btn.in{background:var(--in-soft);border-color:transparent;color:var(--in)}
+.btn.due{background:var(--due-soft);border-color:transparent;color:var(--due)}
+.btn.out{background:var(--out-soft);border-color:transparent;color:var(--out)}
+.btn.wa{background:var(--in-soft);border-color:transparent;color:var(--in)}
 .btn.danger{background:var(--danger-soft);color:var(--danger);border-color:transparent}
-.btn.sm{min-height:var(--size-button-small);padding:0 var(--space-3);font-size:var(--text-label);line-height:var(--leading-label)}
+.btn.sm{min-height:var(--size-button-small);padding:var(--space-2) var(--space-3);font-size:var(--text-label);line-height:var(--leading-label)}
 .btn.block{width:100%}
-.btn:disabled{opacity:var(--opacity-disabled)}
+.btn:disabled{opacity:var(--opacity-disabled);cursor:default}
 .actions{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-2);margin:var(--space-3) 0 var(--space-2)}
 .actions .btn{flex-direction:column;gap:0;padding:var(--space-2) var(--space-2);min-height:var(--size-action)}
 .actions .btn small{font-weight:var(--weight-regular);font-size:var(--text-label);line-height:var(--leading-label);opacity:var(--opacity-action-hint)}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-2)}
-.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-2)}
+.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-2)}
+.row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-2)}
 
 /* client list */
-.list{display:flex;flex-direction:column;gap:var(--space-2)}
-.crow{display:flex;align-items:center;gap:var(--space-3);background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);padding:var(--space-3) var(--space-4);text-decoration:none;min-height:var(--size-client-row)}
-.avatar{width:var(--size-avatar);height:var(--size-avatar);border-radius:var(--radius-circle);display:grid;place-items:center;font-weight:var(--weight-bold);font-size:var(--text-amount);line-height:var(--leading-amount);background:hsl(var(--h) var(--avatar-bg-s) var(--avatar-bg-l));color:hsl(var(--h) var(--avatar-ink-s) var(--avatar-ink-l));flex:none}
+.list{display:flex;flex-direction:column;gap:0;background:var(--surface);border:var(--stroke) solid var(--line);border-radius:var(--radius-card)}
+.crow{display:flex;align-items:center;gap:var(--space-3);background:transparent;border-bottom:var(--stroke) solid var(--line);padding:var(--space-3) var(--space-4);text-decoration:none;min-height:var(--size-client-row);transition:background-color var(--motion-press) var(--ease-out)}
+.avatar{width:var(--size-avatar);height:var(--size-avatar);border-radius:var(--radius-circle);display:grid;place-items:center;font-weight:var(--weight-medium);font-size:var(--text-amount);line-height:var(--leading-amount);background:var(--surface2);color:var(--muted);flex:none}
 
 .cmain{flex:1;min-width:0}
-.cname{font-weight:var(--weight-bold);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cname{font-weight:var(--weight-medium);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .csub{font-size:var(--text-label);line-height:var(--leading-label);color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .camt{text-align:right;font-weight:var(--weight-bold);font-size:var(--text-amount);line-height:var(--leading-amount);flex:none}
 .camt small{display:block;font-weight:var(--weight-regular);font-size:var(--text-label);line-height:var(--leading-label);color:var(--muted)}
-.empty{text-align:center;color:var(--muted);padding:var(--space-8) var(--space-3)}
+.empty{text-align:center;color:var(--muted);padding:var(--space-8) var(--space-4);line-height:var(--leading-body)}
 .empty b{display:block;color:var(--text);font-size:var(--text-amount);line-height:var(--leading-amount);margin-bottom:var(--space-2)}
 .empty .btn{margin-top:var(--space-4)}
 .fab{position:fixed;bottom:calc(var(--fab-bottom) + env(safe-area-inset-bottom));right:calc(max(0px,(100vw - var(--app-max))/2) + var(--space-4));z-index:var(--z-fab);border:0;border-radius:var(--radius-pill);background:var(--primary);color:var(--primary-ink);min-height:var(--size-fab);padding:0 var(--space-6);font-weight:var(--weight-bold);box-shadow:var(--elevation-floating);display:inline-flex;align-items:center;gap:var(--space-2)}
@@ -211,7 +249,7 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:var(--opacit
 .contact{display:flex;gap:var(--space-2);margin-top:var(--space-3);flex-wrap:wrap}
 .sec{display:flex;align-items:baseline;justify-content:space-between;margin:var(--space-6) var(--space-optical) var(--space-2)}
 .sec h2{font-size:var(--text-section);line-height:var(--leading-section)}
-.erow{display:flex;gap:var(--space-3);align-items:center;width:100%;text-align:left;background:var(--surface);border:0;border-radius:var(--r);box-shadow:var(--shadow);padding:var(--space-3) var(--space-4);min-height:var(--size-entry-row);margin-bottom:var(--space-2)}
+.erow{display:flex;gap:var(--space-3);align-items:center;width:100%;text-align:left;background:var(--surface);border:var(--stroke) solid var(--line);border-radius:var(--radius-card);padding:var(--space-3) var(--space-4);min-height:var(--size-entry-row);margin-bottom:var(--space-2);transition:background-color var(--motion-press) var(--ease-out)}
 .edate{width:var(--size-date);font-size:var(--text-label);line-height:var(--leading-label);color:var(--muted);text-align:center;flex:none}
 .edate b{display:block;font-size:var(--text-amount);line-height:var(--leading-amount);color:var(--text)}
 .emain{flex:1;min-width:0}
@@ -219,18 +257,18 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:var(--opacit
 .enote{font-size:var(--text-label);line-height:var(--leading-label);color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .eamt{text-align:right;font-weight:var(--weight-bold);font-size:var(--text-amount);line-height:var(--leading-amount);flex:none}
 .eamt small{display:block;font-weight:var(--weight-regular);font-size:var(--text-label);line-height:var(--leading-label);color:var(--muted)}
-.pill{display:inline-block;font-size:var(--text-label);line-height:var(--leading-label);font-weight:var(--weight-bold);padding:var(--space-optical) var(--space-2);border-radius:var(--radius-pill);background:var(--surface2);color:var(--muted)}
+.pill{display:inline-block;font-size:var(--text-label);line-height:var(--leading-label);font-weight:var(--weight-medium);padding:var(--space-optical) var(--space-2);border-radius:var(--radius-tag);background:var(--surface2);color:var(--muted)}
 .pill.in{background:var(--in-soft);color:var(--in)} .pill.due{background:var(--due-soft);color:var(--due)} .pill.out{background:var(--out-soft);color:var(--out)}
 .dgroup{font-size:var(--text-label);line-height:var(--leading-label);font-weight:var(--weight-bold);color:var(--muted);margin:var(--space-4) var(--space-optical) var(--space-2)}
 
 /* templates */
 .tgroup{margin-top:var(--space-4)}
 .tgroup h3{font-size:var(--text-label);line-height:var(--leading-label);margin:0 var(--space-optical) var(--space-2)}
-.trow{display:block;width:100%;text-align:left;background:var(--surface);border:0;border-radius:var(--r);box-shadow:var(--shadow);padding:var(--space-3) var(--space-4);margin-bottom:var(--space-2)}
+.trow{display:block;width:100%;text-align:left;background:var(--surface);border:var(--stroke) solid var(--line);border-radius:var(--radius-card);padding:var(--space-3) var(--space-4);margin-bottom:var(--space-2);min-height:var(--size-entry-row);transition:background-color var(--motion-press) var(--ease-out)}
 .trow p{font-size:var(--text-label);line-height:var(--leading-label);color:var(--muted);margin-top:var(--space-1);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .trow .th{display:flex;align-items:center;gap:var(--space-2);font-weight:var(--weight-bold)}
 .vars{display:flex;flex-wrap:wrap;gap:var(--space-2)}
-.vars button{border:var(--stroke) dashed var(--line);background:var(--surface2);border-radius:var(--radius-tag);min-height:var(--size-variable);padding:0 var(--space-3);font-size:var(--text-label);line-height:var(--leading-label);font-family:var(--font-code)}
+.vars button{border:var(--stroke) solid var(--control-border);background:var(--surface);border-radius:var(--radius-tag);min-height:var(--size-variable);min-width:var(--target-min);padding:var(--space-2) var(--space-3);font-size:var(--text-label);line-height:var(--leading-label);font-family:var(--font-code);transition:background-color var(--motion-press) var(--ease-out)}
 .preview{white-space:pre-wrap;background:var(--preview-bg);color:var(--preview-ink);border-radius:var(--radius-control) var(--radius-control) var(--radius-control) var(--radius-tag);padding:var(--space-3) var(--space-4);font-size:var(--text-body);line-height:var(--leading-body);max-height:var(--preview-max);overflow:auto}
 
 
@@ -241,12 +279,12 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:var(--opacit
 /* bottom nav */
 #nav{position:fixed;bottom:0;left:0;right:0;z-index:var(--z-nav);background:var(--surface);border-top:var(--stroke) solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
 #nav .in2{max-width:var(--app-max);margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
-#nav a{display:flex;flex-direction:column;align-items:center;gap:var(--space-optical);padding:var(--space-2) 0 var(--space-2);font-size:var(--text-nav);line-height:var(--leading-nav);color:var(--muted);text-decoration:none;min-height:var(--size-nav)}
-#nav a.on{color:var(--primary);font-weight:var(--weight-bold)}
+#nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-1);padding:var(--space-2) var(--space-1);font-size:var(--text-nav);line-height:var(--leading-nav);color:var(--muted);text-align:center;text-decoration:none;min-height:var(--size-nav);min-width:0;overflow-wrap:anywhere;transition:background-color var(--motion-press) var(--ease-out)}
+#nav a.on{color:var(--primary);font-weight:var(--weight-medium)}
 
 /* banner */
-.banner{display:flex;align-items:center;gap:var(--space-3);background:var(--due-soft);color:var(--text);border-radius:var(--radius-control);padding:var(--space-3) var(--space-3);margin:0 0 var(--space-3);font-size:var(--text-label);line-height:var(--leading-label)}
-.banner .btn{margin-left:auto;flex:none;white-space:nowrap}
+.banner{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-3);background:var(--due-soft);color:var(--text);border:var(--stroke) solid var(--line);border-radius:var(--radius-control);padding:var(--space-4);margin:0 0 var(--space-3);font-size:var(--text-label);line-height:var(--leading-label)}
+.banner .btn{margin-left:auto;flex:none;white-space:normal}
 .banner.err{background:var(--danger-soft);color:var(--text);border:var(--stroke) solid var(--danger)}
 .field-help{font-size:var(--text-label);line-height:var(--leading-label);color:var(--muted);font-weight:var(--weight-regular)}
 .field-err{font-size:var(--text-label);line-height:var(--leading-label);font-weight:var(--weight-medium);color:var(--danger)}
@@ -263,12 +301,50 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:var(--opacit
 .kv dt{color:var(--muted)} .kv dd{margin:0;word-break:break-word}
 .bigamt{font-size:var(--text-hero);line-height:var(--leading-hero);font-weight:var(--weight-hero)}
 
-#toast{position:fixed;left:50%;bottom:calc(var(--toast-bottom) + env(safe-area-inset-bottom));transform:translate(-50%,var(--motion-rise));background:var(--toast-bg);color:var(--toast-ink);padding:var(--space-3) var(--space-4);border-radius:var(--radius-pill);font-size:var(--text-label);line-height:var(--leading-label);z-index:var(--z-toast);opacity:0;pointer-events:none;transition:opacity var(--motion-toast) var(--ease-out),transform var(--motion-toast) var(--ease-out);max-width:calc(100vw - var(--space-8));text-align:center}
+#toast{position:fixed;left:50%;bottom:calc(var(--toast-bottom) + env(safe-area-inset-bottom));transform:translate(-50%,var(--motion-rise));background:var(--toast-bg);color:var(--toast-ink);padding:var(--space-3) var(--space-4);border-radius:var(--radius-control);font-size:var(--text-label);line-height:var(--leading-label);z-index:var(--z-toast);opacity:0;pointer-events:none;transition:opacity var(--motion-toast) var(--ease-out),transform var(--motion-toast) var(--ease-out);width:max-content;max-width:calc(100vw - var(--space-8));text-align:center;overflow-wrap:anywhere}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 body.noscroll #toast{bottom:auto;top:calc(var(--space-4) + env(safe-area-inset-top));transform:translate(-50%,calc(-1 * var(--motion-rise)))}
 body.noscroll #toast.show{transform:translate(-50%,0)}
 .hidden{display:none!important}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Shared control states: quiet surfaces, a visible check, and a solid focus boundary. */
+.chip::before,.seg button::before{content:"";display:block;width:var(--check-width);height:var(--check-height);border:solid currentColor;border-width:0 var(--stroke-strong) var(--stroke-strong) 0;transform:rotate(45deg);flex:none;visibility:hidden}
+.chip.on::before,.seg button.on::before{visibility:visible}
+.seg button::before{position:absolute;top:var(--space-2);left:calc(50% - var(--check-width)/2)}
+.crow:first-child{border-radius:var(--radius-card) var(--radius-card) 0 0}
+.crow:last-child{border-bottom:0;border-radius:0 0 var(--radius-card) var(--radius-card)}
+.crow:only-child{border-radius:var(--radius-card)}
+.crow:active,.erow:active,.trow:active,.icon-btn:active,.vars button:active{background:var(--surface2)}
+.btn:not(:disabled):active,.fab:active{transform:translateY(1px);box-shadow:inset 0 0 0 var(--stroke-strong) currentColor}
+.chip:active{box-shadow:inset 0 0 0 var(--stroke) currentColor}
+.btn:focus-visible,.chip:focus-visible,.seg button:focus-visible{outline:var(--focus-width) solid var(--focus);outline-offset:var(--focus-offset);box-shadow:0 0 0 var(--focus-offset) var(--surface)}
+input[aria-invalid="true"],textarea[aria-invalid="true"]{border-color:var(--danger)}
+.amt:has(input[aria-invalid="true"]){border-color:var(--danger)}
+.banner>span{flex:1 1 12rem;min-width:0;overflow-wrap:anywhere}
+#nav a svg{width:var(--nav-icon-width);height:var(--nav-icon-height);padding:var(--space-1) var(--space-3);border-radius:var(--radius-pill);transition:background-color var(--motion-selection) var(--ease-out)}
+#nav a.on svg{background:var(--primary-soft)}
+#nav a:active{background:var(--surface2)}
+.sheet>.shead,.sheet>form>.shead{position:sticky;top:calc(-1 * var(--space-4));z-index:1;background:var(--surface);padding:var(--space-2) 0;border-bottom:var(--stroke) solid var(--line)}
+.sheet .shead .icon-btn{background:var(--surface2);border-radius:var(--radius-circle)}
+.sheet .shead h2{overflow-wrap:anywhere}
+.sheet{scroll-padding-block:var(--space-8)}
+.sheet>*,.sheet>form>*{flex-shrink:0}
+.theme-settings{margin-bottom:var(--space-4)}
+.theme-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-2)}
+.theme-options .chip{border-radius:var(--radius-control);padding-inline:var(--space-2)}
+@media (max-width:430px){
+  .row3{grid-template-columns:1fr}
+}
+@media (max-width:374px){
+  .row2:has(>.btn){grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+  .btn:not(:disabled):active,.fab:active{transform:none}
+  .overlay .sheet,#toast{transform:none}
+  #toast,body.noscroll #toast{transform:translateX(-50%)}
+}
+
 </style>
 </head>
 <body>
@@ -865,7 +941,11 @@ const topbar = (title, { sub = '', back = false, right = '' } = {}) => `
     <div class="tb-title"><h1>${esc(title)}</h1>${sub ? `<div class="sub">${esc(sub)}</div>` : ''}</div>
     <div class="spacer"></div>${right}
   </header>`;
-const chip = (act, v, label, on) => `<button class="chip ${on ? 'on' : ''}" data-act="${act}" data-v="${esc(v)}">${label}</button>`;
+const chip = (act, v, label, on) => `<button class="chip ${on ? 'on' : ''}" aria-pressed="${!!on}" data-act="${act}" data-v="${esc(v)}">${label}</button>`;
+const setSelected = (button, on) => {
+  button.classList.toggle('on', on);
+  button.setAttribute('aria-pressed', String(!!on));
+};
 const field = (name, label, value = '', attrs = '') => `<label class="field"><span>${label}</span><input name="${name}" value="${esc(value)}" ${attrs}></label>`;
 function stateOf(b) {
   if (b.count === 0) return { cls: '', label: 'No entries', short: '—' };
@@ -1016,6 +1096,13 @@ function pageSettings() {
   const standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone;
   return `
   ${topbar('Settings')}
+  <section class="card stack theme-settings" aria-labelledby="appearance-title">
+    <h2 id="appearance-title">Appearance · थीम · થીમ</h2>
+    <div class="theme-options" role="group" aria-label="Theme">
+      ${[['auto', 'Auto'], ['light', 'Light'], ['dark', 'Dark']].map(([value, label]) => `<button type="button" class="chip ${window.jyotAppearance.get() === value ? 'on' : ''}" aria-pressed="${window.jyotAppearance.get() === value}" data-act="setTheme" data-v="${value}">${label}</button>`).join('')}
+    </div>
+    <p class="sub" data-theme-note aria-live="polite">Auto follows your device. This choice applies to this browser.</p>
+  </section>
   <form class="card stack" data-form="settings">
     <h2>Business profile · आपकी जानकारी</h2>
     <p class="sub" style="margin-top:calc(-1 * var(--space-2))">Shown on your messages, receipts and statements.</p>
@@ -1035,7 +1122,7 @@ function pageSettings() {
     </div>
     <div class="field"><span>Default message language · भाषा</span>
       <input type="hidden" name="lang" value="${esc(s.lang)}">
-      <div class="chips wrap">${LANG_KEYS.map(k => `<button type="button" class="chip ${s.lang === k ? 'on' : ''}" data-act="prefLang" data-v="${k}">${LANGS[k].name}</button>`).join('')}</div>
+      <div class="chips wrap">${LANG_KEYS.map(k => `<button type="button" class="chip ${s.lang === k ? 'on' : ''}" aria-pressed="${!!(s.lang === k)}" data-act="prefLang" data-v="${k}">${LANGS[k].name}</button>`).join('')}</div>
     </div>
     <button class="btn primary block" type="submit">Save settings</button>
   </form>
@@ -1104,12 +1191,12 @@ function clientForm(id = null) {
       <div class="shead"><h2>${ex ? 'Edit client' : 'New client · नया क्लाइंट'}</h2><button type="button" class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
       ${field('name', 'Name · नाम', ex ? ex.name : '', 'required maxlength="80" autocomplete="off"')}
       ${field('phone', 'WhatsApp / phone number', ex ? ex.phone : '', 'type="tel" inputmode="tel" placeholder="98765 43210" autocomplete="off"')}
-      <div class="field"><span>Message language · भाषा</span><div class="chips wrap">${LANG_KEYS.map(k => `<button type="button" class="chip ${lang === k ? 'on' : ''}" data-s="lang" data-v="${k}">${LANGS[k].name}</button>`).join('')}</div></div>
+      <div class="field"><span>Message language · भाषा</span><div class="chips wrap">${LANG_KEYS.map(k => `<button type="button" class="chip ${lang === k ? 'on' : ''}" aria-pressed="${!!(lang === k)}" data-s="lang" data-v="${k}">${LANGS[k].name}</button>`).join('')}</div></div>
       ${ex ? '' : `<label class="field"><span>Opening balance — already pending? (optional)</span><div class="amt"><i>₹</i><input name="open" inputmode="decimal" placeholder="0" autocomplete="off" aria-describedby="open-help open-err"></div><small class="field-help" id="open-help">Only an amount the client still owes you (not an advance). It is dated today.</small><small class="field-err" id="open-err" data-err role="alert" hidden></small></label>`}
       <button class="btn primary block" type="submit">${ex ? 'Save' : 'Add client'}</button>
       ${ex ? `<button type="button" class="btn danger block" data-s="del">${ic('trash')} Delete client</button>` : ''}
     </form>`, {
-    lang: t => { lang = t.dataset.v; $$('[data-s=lang]', sh.el).forEach(b => b.classList.toggle('on', b === t)); },
+    lang: t => { lang = t.dataset.v; $$('[data-s=lang]', sh.el).forEach(b => setSelected(b, b === t)); },
     del: async () => {
       const n = db.entries.filter(e => e.clientId === ex.id).length;
       if (await askConfirm({ title: `Delete ${ex.name}?`, text: `This also deletes ${n} entr${n === 1 ? 'y' : 'ies'} for this client. It cannot be undone.` })) {
@@ -1148,14 +1235,14 @@ function entryForm({ clientId, type = 'received', entryId = null }) {
   const c = client(clientId), ex = entryId ? db.entries.find(e => e.id === entryId) : null;
   if (!c) return;
   const st = { type: ex ? ex.type : type, mode: (ex && ex.mode) || db.meta.lastMode || 'upi' };
-  const seg = Object.keys(TYPES).map(k => `<button type="button" data-s="type" data-v="${k}" class="${st.type === k ? 'on' : ''}">${TYPES[k].label}<small>${TYPES[k].hi}</small></button>`).join('');
+  const seg = Object.keys(TYPES).map(k => `<button type="button" data-s="type" data-v="${k}" class="${st.type === k ? 'on' : ''}" aria-pressed="${st.type === k}">${TYPES[k].label}<small>${TYPES[k].hi}</small></button>`).join('');
   const sh = openSheet(`
     <form class="stack" data-f>
       <div class="shead"><h2>${ex ? 'Edit entry' : 'New entry'} · ${esc(c.name)}</h2><button type="button" class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
       <div class="seg">${seg}</div>
       <label class="field"><span>Amount · रकम</span><div class="amt"><i>₹</i><input name="amount" inputmode="decimal" placeholder="0" autocomplete="off" value="${ex ? esc(String(ex.amount / 100)) : ''}"></div></label>
       <label class="field"><span>Date · तारीख</span><input type="date" name="date" value="${esc(ex ? ex.date : todayStr())}"></label>
-      <div class="field" data-g="mode"><span>Payment mode · तरीका</span><div class="chips wrap">${MODE_KEYS.map(k => `<button type="button" class="chip ${st.mode === k ? 'on' : ''}" data-s="mode" data-v="${k}">${MODES[k].en}</button>`).join('')}</div></div>
+      <div class="field" data-g="mode"><span>Payment mode · तरीका</span><div class="chips wrap">${MODE_KEYS.map(k => `<button type="button" class="chip ${st.mode === k ? 'on' : ''}" aria-pressed="${!!(st.mode === k)}" data-s="mode" data-v="${k}">${MODES[k].en}</button>`).join('')}</div></div>
       <label class="field" data-g="ref"><span data-reflabel>${esc(MODES[st.mode].ref)}</span><input name="ref" maxlength="60" autocomplete="off" value="${ex ? esc(ex.ref || '') : ''}"></label>
       <label class="field"><span>Note · नोट (optional)</span><input name="note" maxlength="120" autocomplete="off" value="${ex ? esc(ex.note || '') : ''}"></label>
       <button class="btn primary block" type="submit" data-save>Save</button>
@@ -1171,8 +1258,8 @@ function entryForm({ clientId, type = 'received', entryId = null }) {
   });
   const form = $('[data-f]', sh.el);
   function paint() {
-    $$('[data-s=type]', sh.el).forEach(b => b.classList.toggle('on', b.dataset.v === st.type));
-    $$('[data-s=mode]', sh.el).forEach(b => b.classList.toggle('on', b.dataset.v === st.mode));
+    $$('[data-s=type]', sh.el).forEach(b => setSelected(b, b.dataset.v === st.type));
+    $$('[data-s=mode]', sh.el).forEach(b => setSelected(b, b.dataset.v === st.mode));
     const bill = st.type === 'bill';
     $('[data-g=mode]', sh.el).classList.toggle('hidden', bill);
     $('[data-g=ref]', sh.el).classList.toggle('hidden', bill);
@@ -1234,7 +1321,7 @@ function messageSheet({ clientId, entryId = null, kind = null, lang = null }) {
   st.tpl = pickTpl(k, st.lang).id;
   const sh = openSheet(`
     <div class="shead"><h2>Message to ${esc(c.name)}</h2><button class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
-    <div class="chips wrap" data-g="langs">${LANG_KEYS.map(l => `<button class="chip" data-s="lang" data-v="${l}">${LANGS[l].name}</button>`).join('')}</div>
+    <div class="chips wrap" data-g="langs">${LANG_KEYS.map(l => `<button class="chip" aria-pressed="false" data-s="lang" data-v="${l}">${LANGS[l].name}</button>`).join('')}</div>
     <select data-tplsel aria-label="Template"></select>
     <textarea data-text rows="11" aria-label="Message text"></textarea>
     <p class="sub" style="margin-top:calc(-1 * var(--space-2))">${c.phone ? `Opens WhatsApp chat with <b>${esc(c.phone)}</b>. You can edit the text above before sending.` : 'No phone saved for this client — WhatsApp will let you choose the contact.'}</p>
@@ -1259,7 +1346,7 @@ function messageSheet({ clientId, entryId = null, kind = null, lang = null }) {
   const ta = $('[data-text]', sh.el), sel = $('[data-tplsel]', sh.el);
   sel.addEventListener('change', async () => { if (!(await okToReplace())) { sel.value = st.tpl; return; } st.tpl = sel.value; paint(); });
   function paint() {
-    $$('[data-s=lang]', sh.el).forEach(b => b.classList.toggle('on', b.dataset.v === st.lang));
+    $$('[data-s=lang]', sh.el).forEach(b => setSelected(b, b.dataset.v === st.lang));
     const opts = db.templates.filter(t => t.lang === st.lang);
     sel.innerHTML = opts.map(t => `<option value="${esc(t.id)}" ${t.id === st.tpl ? 'selected' : ''}>${esc(t.builtin ? tplName(t) : '★ ' + tplName(t))}</option>`).join('');
     const t = tplById(st.tpl);
@@ -1282,7 +1369,7 @@ function templateEditor(id = null) {
     <form class="stack" data-f>
       <div class="shead"><h2>${ex ? (builtin ? esc(KINDS[ex.kind].label) : 'Edit template') : 'New template'}${builtin ? ` · ${LANGS[ex.lang].name}` : ''}</h2><button type="button" class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
       ${builtin ? '' : `${field('name', 'Template name', ex ? ex.name : '', 'maxlength="50" required placeholder="e.g. Diwali offer"')}
-      <div class="field"><span>Language</span><div class="chips wrap">${LANG_KEYS.map(k => `<button type="button" class="chip ${st.lang === k ? 'on' : ''}" data-s="lang" data-v="${k}">${LANGS[k].name}</button>`).join('')}</div></div>`}
+      <div class="field"><span>Language</span><div class="chips wrap">${LANG_KEYS.map(k => `<button type="button" class="chip ${st.lang === k ? 'on' : ''}" aria-pressed="${!!(st.lang === k)}" data-s="lang" data-v="${k}">${LANGS[k].name}</button>`).join('')}</div></div>`}
       <label class="field"><span>Message text</span><textarea name="text" rows="12" required>${esc(ex ? ex.text : STARTER[st.lang])}</textarea></label>
       <div class="field"><span>Tap to insert a field</span><div class="vars">${VARS.map(([k, d]) => `<button type="button" data-s="var" data-v="${k}" title="${esc(d)}">{${k}}</button>`).join('')}</div></div>
       <div class="field"><span>Preview (sample data)</span><div class="preview" data-prev></div></div>
@@ -1293,7 +1380,7 @@ function templateEditor(id = null) {
     lang: t => {
       const was = STARTER[st.lang]; st.lang = t.dataset.v;
       if (!ex && form.elements.text.value === was) form.elements.text.value = STARTER[st.lang];
-      $$('[data-s=lang]', sh.el).forEach(b => b.classList.toggle('on', b === t)); prev();
+      $$('[data-s=lang]', sh.el).forEach(b => setSelected(b, b === t)); prev();
     },
     var: t => {
       const ta = form.elements.text, v = `{${t.dataset.v}}`;
@@ -1536,7 +1623,7 @@ function pageOnboarding() {
           <div class="stack" style="gap:var(--space-2);flex:1"><button type="button" class="btn sm" data-act="logoPick">${ic('upload')} Upload logo</button><button type="button" class="btn sm" data-act="logoClear">Remove</button></div></div>
         <input type="file" data-change="logo" accept="image/*" hidden></div>
       <div class="field"><span>Message language · भाषा</span><input type="hidden" name="lang" value="${esc(s.lang)}">
-        <div class="chips wrap">${LANG_KEYS.map(k => `<button type="button" class="chip ${s.lang === k ? 'on' : ''}" data-act="prefLang" data-v="${k}">${LANGS[k].name}</button>`).join('')}</div></div>
+        <div class="chips wrap">${LANG_KEYS.map(k => `<button type="button" class="chip ${s.lang === k ? 'on' : ''}" aria-pressed="${!!(s.lang === k)}" data-act="prefLang" data-v="${k}">${LANGS[k].name}</button>`).join('')}</div></div>
       <button class="btn primary block" type="submit">Start · शुरू करें</button>
     </form>
   </div>`;
@@ -1718,8 +1805,8 @@ function statementSheet(clientId, lang0 = null) {
   const nameSlug = c.name.replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'client';
   const sh = openSheet(`
     <div class="shead"><h2>Statement · ${esc(c.name)}</h2><button class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
-    <div class="field"><span>Period · अवधि</span><div class="chips wrap">${periods.map(([k, l]) => `<button class="chip" data-s="period" data-v="${k}">${l}</button>`).join('')}</div></div>
-    <div class="field"><span>Language · भाषा</span><div class="chips wrap">${LANG_KEYS.map(l => `<button class="chip" data-s="lang" data-v="${l}">${LANGS[l].name}</button>`).join('')}</div></div>
+    <div class="field"><span>Period · अवधि</span><div class="chips wrap">${periods.map(([k, l]) => `<button class="chip" aria-pressed="false" data-s="period" data-v="${k}">${l}</button>`).join('')}</div></div>
+    <div class="field"><span>Language · भाषा</span><div class="chips wrap">${LANG_KEYS.map(l => `<button class="chip" aria-pressed="false" data-s="lang" data-v="${l}">${LANGS[l].name}</button>`).join('')}</div></div>
     <div class="rcpt-prev" data-prev></div>
     <p class="sub" data-info style="margin-top:calc(-1 * var(--space-2))"></p>
     <div class="row2"><button class="btn wa" data-s="share" disabled>${ic('share')} Share PDF</button><button class="btn" data-s="dl" disabled>${ic('download')} Download</button></div>
@@ -1732,8 +1819,8 @@ function statementSheet(clientId, lang0 = null) {
   const prev = $('[data-prev]', sh.el), info = $('[data-info]', sh.el), btns = $$('[data-s=share],[data-s=dl]', sh.el);
   async function paint() {
     const n = ++st.n;
-    $$('[data-s=lang]', sh.el).forEach(b => b.classList.toggle('on', b.dataset.v === st.lang));
-    $$('[data-s=period]', sh.el).forEach(b => b.classList.toggle('on', b.dataset.v === st.period));
+    $$('[data-s=lang]', sh.el).forEach(b => setSelected(b, b.dataset.v === st.lang));
+    $$('[data-s=period]', sh.el).forEach(b => setSelected(b, b.dataset.v === st.period));
     btns.forEach(b => { b.disabled = true; });
     prev.innerHTML = '<p class="sub" style="padding:var(--space-8);text-align:center">Preparing statement…</p>'; info.textContent = '';
     try {
@@ -1759,7 +1846,7 @@ function receiptSheet(entryId, lang0 = null) {
   const base = `Receipt-${String(e.receiptNo || 'payment').replace(/[^A-Za-z0-9_-]/g, '')}-${e.date}`;
   const sh = openSheet(`
     <div class="shead"><h2>Receipt · ${esc(e.receiptNo || '')}</h2><button class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
-    <div class="chips wrap">${LANG_KEYS.map(l => `<button class="chip" data-s="lang" data-v="${l}">${LANGS[l].name}</button>`).join('')}</div>
+    <div class="chips wrap">${LANG_KEYS.map(l => `<button class="chip" aria-pressed="false" data-s="lang" data-v="${l}">${LANGS[l].name}</button>`).join('')}</div>
     <div class="rcpt-prev" data-prev></div>
     <div class="row2"><button class="btn wa" data-s="share" disabled>${ic('share')} Share PDF</button><button class="btn" data-s="dl" disabled>${ic('download')} Download</button></div>
     <button class="btn soft block" data-s="img" disabled>${ic('share')} Share as image</button>
@@ -1772,7 +1859,7 @@ function receiptSheet(entryId, lang0 = null) {
   const prev = $('[data-prev]', sh.el), btns = $$('[data-s=share],[data-s=dl],[data-s=img]', sh.el);
   async function paint() {
     const n = ++st.n;
-    $$('[data-s=lang]', sh.el).forEach(b => b.classList.toggle('on', b.dataset.v === st.lang));
+    $$('[data-s=lang]', sh.el).forEach(b => setSelected(b, b.dataset.v === st.lang));
     btns.forEach(b => { b.disabled = true; });
     prev.innerHTML = '<p class="sub" style="padding:var(--space-8);text-align:center">Preparing receipt…</p>';
     try {
@@ -1832,6 +1919,12 @@ function importBackup(file) {
 
 /* ---------- events ---------- */
 const ACT = {
+  setTheme: t => {
+    const remembered = window.jyotAppearance.set(t.dataset.v);
+    $$('[data-act=setTheme]').forEach(b => setSelected(b, b.dataset.v === window.jyotAppearance.get()));
+    const note = $('[data-theme-note]');
+    if (note) note.textContent = remembered ? 'Auto follows your device. This choice applies to this browser.' : 'Theme applied for now. This browser could not remember it.';
+  },
   back: () => goto('#/'),
   addClient: () => clientForm(),
   editClient: t => clientForm(t.dataset.id),
@@ -1855,7 +1948,7 @@ const ACT = {
   setTplLang: t => { ui.tplLang = t.dataset.v; render(); },
   editTpl: t => templateEditor(t.dataset.id),
   newTpl: () => templateEditor(),
-  prefLang: t => { $('[name=lang]').value = t.dataset.v; $$('[data-act=prefLang]').forEach(b => b.classList.toggle('on', b === t)); },
+  prefLang: t => { $('[name=lang]').value = t.dataset.v; $$('[data-act=prefLang]').forEach(b => setSelected(b, b === t)); },
   exportBackup: () => exportBackup(),
   importBackup: () => $('[data-change=import]').click(),
   exportCsv: () => {
