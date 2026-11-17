@@ -432,6 +432,97 @@ input[aria-invalid="true"],textarea[aria-invalid="true"]{border-color:var(--dang
   .sheet-title .sub{max-height:3.15em;overflow:auto}
 }
 
+/* Phase 4: templates, preferences, setup and the day book. */
+.workspace-page>.topbar{position:static;align-items:flex-start;padding-block:var(--space-4)}
+.workspace-page>.topbar .tb-title{flex:1}
+.workspace-page>.topbar .spacer{display:none}
+.workspace-page>.topbar h1{white-space:normal;overflow:visible;overflow-wrap:anywhere}
+.page-intro{margin-bottom:var(--space-4);color:var(--muted)}
+.section-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-2) var(--space-3);margin-block:var(--space-6) var(--space-3)}
+.section-heading h2{font-size:var(--text-section);line-height:var(--leading-section)}
+.disclosure{border:var(--stroke) solid var(--line);border-radius:var(--radius-control);background:var(--surface);min-width:0}
+.disclosure>summary{list-style:none;display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-4);min-height:var(--size-input);cursor:pointer;font-weight:var(--weight-medium);overflow-wrap:anywhere;border-radius:var(--radius-control)}
+.disclosure>summary::-webkit-details-marker{display:none}
+.disclosure>summary::after{content:"";width:var(--space-2);height:var(--space-2);border-right:var(--stroke-strong) solid currentColor;border-bottom:var(--stroke-strong) solid currentColor;transform:rotate(45deg);margin-left:auto;flex:none}
+.disclosure[open]>summary::after{transform:rotate(225deg)}
+.disclosure>summary:active{background:var(--surface2)}
+.disclosure-body{padding:0 var(--space-4) var(--space-4);min-width:0}
+.disclosure[open]>summary{margin-bottom:var(--space-2)}
+.templates-toolbar{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);flex-wrap:wrap;margin-top:var(--space-3)}
+.templates-page .tgroup{margin-top:var(--space-6)}
+.templates-page .tgroup h2{font-size:var(--text-section);line-height:var(--leading-section);font-weight:var(--weight-medium);overflow-wrap:anywhere}
+.templates-page .tgroup>p{margin:var(--space-1) 0 var(--space-3)}
+.template-list{border:var(--stroke) solid var(--line);border-radius:var(--radius-card);background:var(--surface)}
+.template-list .trow{border:0;border-bottom:var(--stroke) solid var(--line);border-radius:0;margin:0;background:transparent}
+.template-list .trow:first-child{border-radius:var(--radius-card) var(--radius-card) 0 0}
+.template-list .trow:last-child{border-bottom:0;border-radius:0 0 var(--radius-card) var(--radius-card)}
+.template-list .trow:only-child{border-radius:var(--radius-card)}
+.template-list .trow:active{background:var(--surface2)}
+.template-list .th{align-items:flex-start;flex-wrap:wrap;font-weight:var(--weight-medium)}
+.template-name{flex:1;min-width:0;overflow-wrap:anywhere}
+.template-list .trow p{overflow-wrap:anywhere;margin-top:var(--space-2)}
+.template-editor .preview{max-height:none;overflow:visible;overflow-wrap:anywhere;background:var(--surface2);border-radius:var(--radius-control)}
+.template-editor textarea{min-height:12rem}
+.template-editor .vars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.template-editor .vars button{display:flex;flex-direction:column;gap:var(--space-1);text-align:left;min-width:0;overflow-wrap:anywhere}
+.template-editor .vars code{font-weight:var(--weight-medium);font-size:var(--text-label);font-family:var(--font-code)}
+.template-editor .vars small{font:var(--text-label)/var(--leading-label) var(--font-ui);color:var(--muted)}
+.settings-sections{display:flex;flex-direction:column;gap:var(--space-4)}
+.settings-sections .theme-settings{margin:0}
+.backup-status{display:flex;align-items:flex-start;gap:var(--space-3)}
+.backup-status svg{color:var(--muted);margin-top:var(--space-1)}
+.backup-status p{min-width:0;overflow-wrap:anywhere}
+.profile-form{padding:0;scroll-margin-bottom:calc(var(--size-nav) + var(--space-8))}
+.profile-group{padding:var(--space-4);min-width:0}
+.profile-group+.profile-group{border-top:var(--stroke) solid var(--line)}
+.profile-group h3{font-size:var(--text-body);line-height:var(--leading-body);font-weight:var(--weight-medium)}
+.profile-form>.disclosure{margin:0 var(--space-4) var(--space-4)}
+.profile-form .logo-row{align-items:flex-start;flex-wrap:wrap}
+.profile-form .logo-actions{flex:1;min-width:8rem;gap:var(--space-2)}
+.profile-footer{background:var(--surface);border-top:var(--stroke) solid var(--line);border-radius:0 0 var(--radius-card) var(--radius-card);padding:var(--space-3) var(--space-4);display:flex;flex-direction:column;gap:var(--space-2)}
+.profile-footer p{font-size:var(--text-label);line-height:var(--leading-label);color:var(--muted)}
+.settings-page .about{margin-top:var(--space-6)}
+.danger-zone{margin-top:var(--space-2)}
+.danger-zone h2{color:var(--danger)}
+.setup-page{padding-top:calc(var(--space-4) + env(safe-area-inset-top));text-align:left}
+.setup-heading{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-4)}
+.setup-heading img{width:var(--size-logo-preview);height:var(--size-logo-preview);object-fit:contain;flex:none}
+.setup-heading h1{font-size:var(--text-title);line-height:var(--leading-title);overflow-wrap:anywhere}
+.setup-heading>div{min-width:0}
+.setup-form{padding:var(--space-4)}
+.setup-form .disclosure{background:var(--bg)}
+.setup-form .disclosure-body{padding-inline:var(--space-3)}
+.setup-form .logo-row{align-items:flex-start;flex-wrap:wrap}
+.setup-form .logo-actions{flex:1;min-width:7rem;gap:var(--space-2)}
+.setup-footer{display:flex;flex-direction:column;gap:var(--space-2)}
+.setup-footer .sub{text-align:center}
+.daybook-filters{gap:var(--space-3)}
+.daybook-filters .chips{padding:0;margin:0}
+.daybook-filters>.field>span{font-weight:var(--weight-medium)}
+.daybook-totals{margin-top:var(--space-4)}
+.daybook-totals>div{flex-wrap:wrap;gap:var(--space-1) var(--space-3)}
+.daybook-totals b{margin-left:auto;overflow-wrap:anywhere;max-width:100%;font-variant-numeric:tabular-nums}
+.daybook-scope{margin:var(--space-3) 0 0;overflow-wrap:anywhere}
+.daybook-group{margin-top:var(--space-6)}
+.daybook-group h2{font-size:var(--text-label);line-height:var(--leading-label);color:var(--muted);font-weight:var(--weight-medium);margin-bottom:var(--space-2)}
+.daybook-list{border:var(--stroke) solid var(--line);border-radius:var(--radius-card);background:var(--surface)}
+.daybook-list .erow{display:grid;grid-template-columns:var(--size-avatar-small) minmax(0,1fr) minmax(0,max-content);gap:var(--space-1) var(--space-3);margin:0;border:0;border-bottom:var(--stroke) solid var(--line);border-radius:0;background:transparent}
+.daybook-list .erow:first-child{border-radius:var(--radius-card) var(--radius-card) 0 0}
+.daybook-list .erow:last-child{border-bottom:0;border-radius:0 0 var(--radius-card) var(--radius-card)}
+.daybook-list .erow:only-child{border-radius:var(--radius-card)}
+.daybook-list .erow:active{background:var(--surface2)}
+.daybook-list .etype{font-weight:var(--weight-medium);overflow-wrap:anywhere}
+.daybook-list .enote{white-space:normal;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.daybook-list .eamt{max-width:100%;min-width:0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+@media (max-width:430px){
+  .daybook-list .erow{grid-template-columns:var(--size-avatar-small) minmax(0,1fr)}
+  .daybook-list .avatar{grid-row:1/3;align-self:start}
+  .daybook-list .eamt{grid-column:2;text-align:left}
+}
+@media (max-width:374px){
+  .profile-pair,.daybook-selects{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -1146,24 +1237,30 @@ function pageDayBook() {
   const groups = {}; for (const e of list) (groups[e.date] ||= []).push(e);
   const periods = [['today', 'Today'], ['week', '7 days'], ['month', 'This month'], ['lastmonth', 'Last month'], ['all', 'All']];
   return `
-  ${topbar('Day Book', { sub: 'All transactions · रोज़नामचा', right: `<button class="icon-btn" data-act="exportCsv" aria-label="Export CSV of the entries shown" title="Export CSV of the entries shown">${ic('download')}</button>` })}
+  <div class="workspace-page daybook-page">
+  ${topbar('Day Book', { sub: 'All transactions · रोज़नामचा' })}
+  <section class="card stack daybook-filters" aria-label="Transaction filters">
+  <div class="field"><span>Period · अवधि</span>
   <div class="chips">${periods.map(([k, l]) => chip('setPeriod', k, l, ui.period === k)).join('')}</div>
-  <div class="row2" style="margin-bottom:var(--space-3)">
-    <select data-change="dbType" aria-label="Type"><option value="all">All types</option>${Object.keys(TYPES).map(k => `<option value="${k}" ${ui.type === k ? 'selected' : ''}>${TYPES[k].label}</option>`).join('')}</select>
-    <select data-change="dbMode" aria-label="Mode"><option value="all">All modes</option>${MODE_KEYS.map(k => `<option value="${k}" ${ui.mode === k ? 'selected' : ''}>${MODES[k].en}</option>`).join('')}</select>
+  </div><div class="row2 daybook-selects">
+    <label class="field"><span>Entry type</span><select data-change="dbType"><option value="all">All types</option>${Object.keys(TYPES).map(k => `<option value="${k}" ${ui.type === k ? 'selected' : ''}>${TYPES[k].label}</option>`).join('')}</select></label>
+    <label class="field"><span>Payment mode</span><select data-change="dbMode"><option value="all">All modes</option>${MODE_KEYS.map(k => `<option value="${k}" ${ui.mode === k ? 'selected' : ''}>${MODES[k].en}</option>`).join('')}</select></label>
   </div>
-  <section class="card sumlist">
+  </section>
+  <section class="card sumlist daybook-totals" aria-label="Totals for the shown entries">
     <div><span>Received · मिला</span><b class="in">${fmtR(rec)}</b></div>
     <div><span>Bills / Due · बाकी जोड़ा</span><b class="due">${fmtR(bill)}</b></div>
     <div><span>Given · दिया</span><b class="out">${fmtR(giv)}</b></div>
   </section>
-  ${list.length ? Object.keys(groups).map(d => `<div class="dgroup">${dUI(d)}</div>${groups[d].map(e => {
+  <p class="sub daybook-scope">${periods.find(([k]) => k === ui.period)?.[1] || 'All'} · ${ui.type === 'all' ? 'All types' : TYPES[ui.type].label} · ${ui.mode === 'all' ? 'All modes' : MODES[ui.mode].en}</p>
+  <div class="section-heading"><h2>${list.length} entr${list.length === 1 ? 'y' : 'ies'}</h2><button class="btn sm" data-act="exportCsv">${ic('download')} Export shown CSV</button></div>
+  ${list.length ? Object.keys(groups).map(d => `<section class="daybook-group"><h2>${dUI(d)}</h2><div class="daybook-list">${groups[d].map(e => {
     const T = TYPES[e.type], c = client(e.clientId);
     return `<button class="erow" data-act="openEntry" data-id="${e.id}">
       <div class="avatar" style="--h:${hue(c ? c.name : '?')};width:var(--size-avatar-small);height:var(--size-avatar-small);font-size:var(--text-body)">${esc(initial(c ? c.name : '?'))}</div>
       <div class="emain"><div class="etype">${esc(c ? c.name : 'Deleted client')}</div><div class="enote">${T.label}${e.mode ? ' · ' + esc(modeLabel(e.mode)) : ''}${e.note ? ' · ' + esc(e.note) : ''}</div></div>
       <div class="eamt ${T.cls}">${e.type === 'received' ? '+' : ''}${fmtR(e.amount)}</div></button>`;
-  }).join('')}`).join('') : '<div class="empty"><b>No transactions found</b>Nothing matches the period and filters you chose.<br><button class="btn" data-act="resetDayBook">Show all transactions</button></div>'}`;
+  }).join('')}</div></section>`).join('') : '<div class="empty"><b>No transactions found</b>Nothing matches the period and filters you chose.<br><button class="btn" data-act="resetDayBook">Show all transactions</button></div>'}</div>`;
 }
 
 const previewOf = text => { const ls = text.split('\n').filter(l => l.trim()); return (ls.length > 1 ? ls.slice(1, 3) : ls).join(' · '); };
@@ -1172,19 +1269,31 @@ function pageTemplates() {
   const list = db.templates.filter(t => ui.tplLang === 'all' || t.lang === ui.tplLang);
   const groups = Object.keys(KINDS).map(k => [k, list.filter(t => t.kind === k)]).filter(([, l]) => l.length);
   return `
-  ${topbar('Messages', { sub: 'Ready templates · हिंदी · English · ગુજરાતી', right: `<button class="icon-btn" data-act="newTpl" aria-label="New template">${ic('plus')}</button>` })}
-  <p class="sub" style="margin:0 var(--space-optical) var(--space-3)">Tap a template to edit it. These are used when you tap <b>Send message</b> on a client. Use <code>{name}</code>, <code>{pending}</code> etc. — they are filled automatically.</p>
-  <div class="chips">${langs.map(([k, l]) => chip('setTplLang', k, l, ui.tplLang === k)).join('')}</div>
-  ${groups.map(([k, l]) => `<div class="tgroup"><h3>${KINDS[k].label}<span class="sub" style="font-weight:var(--weight-regular)"> ${KINDS[k].hint ? '· ' + KINDS[k].hint : ''}</span></h3>${l.map(t => `
-    <button class="trow" data-act="editTpl" data-id="${esc(t.id)}"><div class="th"><span class="pill">${LANGS[t.lang].tag}</span>${esc(t.builtin ? LANGS[t.lang].name : tplName(t))}${t.edited ? ' <span class="pill in">edited</span>' : ''}</div><p>${esc(previewOf(t.text))}</p></button>`).join('')}</div>`).join('')}
-  <button class="btn block" style="margin-top:var(--space-4)" data-act="newTpl">${ic('plus')} Create my own template</button>`;
+  <div class="workspace-page templates-page">
+  ${topbar('Message templates', { sub: 'हिंदी · English · ગુજરાતી' })}
+  <p class="page-intro">Edit your ready messages here. To send one, open a client and choose <b>Send message</b>.</p>
+  <div class="field"><span>Template language · भाषा</span><div class="chips" role="group" aria-label="Template language">${langs.map(([k, l]) => chip('setTplLang', k, l, ui.tplLang === k)).join('')}</div></div>
+  <div class="templates-toolbar"><p class="sub">${list.length} templates</p><button class="btn sm" data-act="newTpl">${ic('plus')} New template</button></div>
+  ${groups.map(([k, l]) => `<section class="tgroup"><h2>${KINDS[k].label}</h2>${KINDS[k].hint ? `<p class="sub">${KINDS[k].hint}</p>` : ''}<div class="template-list">${l.map(t => `
+    <button class="trow" data-act="editTpl" data-id="${esc(t.id)}"><div class="th"><span class="template-name" lang="${t.lang}">${esc(t.builtin ? LANGS[t.lang].name : tplName(t))}</span><span class="pill">${LANGS[t.lang].tag}</span>${t.edited ? ' <span class="pill in">Edited</span>' : ''}</div><p lang="${t.lang}">${esc(previewOf(t.text))}</p></button>`).join('')}</div></section>`).join('')}
+  </div>`;
 }
 
 function pageSettings() {
   const s = db.settings, lb = db.meta.lastBackup;
   const standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone;
   return `
-  ${topbar('Settings')}
+  <div class="workspace-page settings-page">
+  ${topbar('Settings', { sub: 'Your business, data and preferences' })}
+  <div class="settings-sections">
+  <section class="card stack" aria-labelledby="backup-title">
+    <h2 id="backup-title">Backup & export · बैकअप</h2>
+    <p class="sub">${db.clients.length} clients · ${db.entries.length} entries · ${lb ? 'last backup ' + new Date(lb).toLocaleDateString('en-IN') : 'no backup yet'}. Your data lives only on this phone — back up regularly (save the file to Google Drive / WhatsApp to yourself).</p>
+    <button class="btn primary block" data-act="exportBackup">${ic('download')} Download backup (.json)</button>
+    <button class="btn block" data-act="importBackup">${ic('upload')} Restore from backup</button>
+    <input type="file" data-change="import" accept=".json,application/json" hidden>
+    <button class="btn block" data-act="exportCsv">${ic('download')} Export all entries (Excel / CSV)</button>
+  </section>
   <section class="card stack theme-settings" aria-labelledby="appearance-title">
     <h2 id="appearance-title">Appearance · थीम · થીમ</h2>
     <div class="theme-options" role="group" aria-label="Theme">
@@ -1192,59 +1301,55 @@ function pageSettings() {
     </div>
     <p class="sub" data-theme-note aria-live="polite">Auto follows your device. This choice applies to this browser.</p>
   </section>
-  <form class="card stack" data-form="settings">
-    <h2>Business profile · आपकी जानकारी</h2>
-    <p class="sub" style="margin-top:calc(-1 * var(--space-2))">Shown on your messages, receipts and statements.</p>
+  <form class="card profile-form" data-form="settings">
+    <section class="profile-group stack" aria-labelledby="profile-title">
+    <h2 id="profile-title">Business profile · आपकी जानकारी</h2>
+    <p class="sub" style="margin-top:calc(-1 * var(--space-2))">Shown on your messages, receipts and statements. Tap Save settings to keep profile changes, including your logo.</p>
     ${field('business', 'Business name', s.business, 'autocomplete="organization"')}
-    <div class="field"><span>Your logo (shown on receipts &amp; statements)</span>
-      <div class="logo-row"><div data-logo-prev>${logoPrevHTML(ui.logoDraft !== undefined ? ui.logoDraft : logoUrl(s), s.business)}</div>
-        <div class="stack" style="gap:var(--space-2);flex:1"><button type="button" class="btn sm" data-act="logoPick">${ic('upload')} Upload logo</button><button type="button" class="btn sm" data-act="logoClear">Remove logo</button></div></div>
-      <input type="file" data-change="logo" accept="image/*" hidden></div>
     ${field('owner', 'Your name (optional)', s.owner, 'autocomplete="name"')}
     ${field('phone', 'Your phone (shown in messages)', s.phone, 'type="tel" inputmode="tel"')}
     ${field('upi', 'Your UPI ID (optional, for reminders)', s.upi, 'autocapitalize="off" placeholder="name@bank"')}
-    ${field('address', 'Address (optional, shown on receipt)', s.address)}
-    ${field('receiptNote', 'Footer note on receipts & statements (optional)', s.receiptNote || '', 'maxlength="140" placeholder="e.g. Please keep this receipt for your records"')}
-    <div class="row2">
-      ${field('prefix', 'Receipt prefix', s.prefix, 'maxlength="6" autocapitalize="characters"')}
-      ${field('cc', 'Country code', s.cc, 'inputmode="numeric" maxlength="4"')}
-    </div>
-    <div class="field"><span>Default message language · भाषा</span>
+    <div class="field"><span>Default message language · भाषा</span><p class="sub">Used for new clients’ messages. This does not change the app’s labels.</p>
       <input type="hidden" name="lang" value="${esc(s.lang)}">
       <div class="chips wrap">${LANG_KEYS.map(k => `<button type="button" class="chip ${s.lang === k ? 'on' : ''}" aria-pressed="${!!(s.lang === k)}" data-act="prefLang" data-v="${k}">${LANGS[k].name}</button>`).join('')}</div>
     </div>
-    <button class="btn primary block" type="submit">Save settings</button>
+    </section>
+    <details class="disclosure" data-profile-logo><summary>Business logo</summary><div class="disclosure-body stack">    <div class="field"><span>Your logo (shown on receipts &amp; statements)</span>
+      <div class="logo-row"><div data-logo-prev>${logoPrevHTML(ui.logoDraft !== undefined ? ui.logoDraft : logoUrl(s), s.business)}</div>
+        <div class="stack logo-actions"><button type="button" class="btn sm" data-act="logoPick">${ic('upload')} Upload logo</button><button type="button" class="btn sm" data-act="logoClear">Remove logo</button></div></div>
+      <input type="file" data-change="logo" accept="image/*" hidden></div>
+<p class="sub">Logo changes are kept when you save the profile.</p></div></details>
+    <details class="disclosure" data-receipt-settings><summary>Receipt & contact details</summary><div class="disclosure-body stack">    ${field('address', 'Address (optional, shown on receipt)', s.address)}
+    ${field('receiptNote', 'Footer note on receipts & statements (optional)', s.receiptNote || '', 'maxlength="140" placeholder="e.g. Please keep this receipt for your records"')}
+    <div class="row2 profile-pair">
+      ${field('prefix', 'Receipt prefix', s.prefix, 'maxlength="6" autocapitalize="characters"')}
+      ${field('cc', 'Country code', s.cc, 'inputmode="numeric" maxlength="4"')}
+    </div>
+</div></details>
+    <footer class="profile-footer"><p>Profile edits are saved only when you tap Save settings.</p><button class="btn primary block" type="submit">Save settings</button></footer>
   </form>
 
-  <div class="card stack" style="margin-top:var(--space-4)">
-    <h2>Backup & export · बैकअप</h2>
-    <p class="sub" style="margin-top:calc(-1 * var(--space-2))">${db.clients.length} clients · ${db.entries.length} entries · ${lb ? 'last backup ' + new Date(lb).toLocaleDateString('en-IN') : 'no backup yet'}. Your data lives only on this phone — back up regularly (save the file to Google Drive / WhatsApp to yourself).</p>
-    <button class="btn block" data-act="exportBackup">${ic('download')} Download backup (.json)</button>
-    <button class="btn block" data-act="importBackup">${ic('upload')} Restore from backup</button>
-    <input type="file" data-change="import" accept=".json,application/json" hidden>
-    <button class="btn block" data-act="exportCsv">${ic('download')} Export all entries (Excel / CSV)</button>
-  </div>
 
-  <div class="card stack" style="margin-top:var(--space-4)">
-    <h2>Install on your phone</h2>
+
+  <details class="disclosure" data-install-help><summary>Install on your phone</summary><div class="disclosure-body stack">
     ${standalone ? '<p class="sub">✓ Installed — you are using the app version.</p>'
       : deferredInstall ? `<button class="btn primary block" data-act="install">Install app</button>`
       : `<p class="sub"><b>Android (Chrome):</b> menu ⋮ → <i>Install app</i> / <i>Add to Home screen</i>.<br><b>iPhone (Safari):</b> Share → <i>Add to Home Screen</i>.</p>`}
     <p class="sub">Moving to a new phone (Android → iPhone)? Download a backup here, then use <i>Restore from backup</i> on the new phone.</p>
-  </div>
+  </div></details>
 
-  <div class="card stack" style="margin-top:var(--space-4)">
-    <h2>Invite others · दूसरों को भेजें</h2>
+  <details class="disclosure" data-invite-help><summary>Invite others · दूसरों को भेजें</summary><div class="disclosure-body stack">
     <p class="sub" style="margin-top:calc(-1 * var(--space-2))">Anyone with the link can open the app and set up their own business with their own name and logo. Each person's data stays on their own phone.</p>
     <button class="btn wa block" data-act="shareApp">${ic('share')} Share app link</button>
     <button class="btn block" data-act="copyAppLink">${ic('copy')} Copy link</button>
-  </div>
+  </div></details>
 
-  <div class="card stack" style="margin-top:var(--space-4)">
+  <section class="card stack danger-zone">
     <h2>Danger zone</h2>
+    <p class="sub">Deleting data removes this phone’s entire khata. Keep a backup first.</p>
     <button class="btn danger block" data-act="wipe">${ic('trash')} Delete all data on this phone</button>
-  </div>
-  <div class="about"><img src="icons/logo.png" alt="" width="30" height="30"><span>Jyot Khata v1 · data stays on your device</span></div>`;
+  </section></div>
+  <div class="about"><img src="icons/logo.png" alt="" width="30" height="30"><span>Jyot Khata v1 · data stays on your device</span></div></div>`;
 }
 
 /* ---------- router ---------- */
@@ -1468,16 +1573,17 @@ function templateEditor(id = null) {
   const builtin = !!(ex && ex.builtin);
   const st = { lang: ex ? ex.lang : db.settings.lang };
   const sh = openSheet(`
-    <form class="stack" data-f>
+    <form class="sheet-layout template-editor" data-f>
       <div class="shead"><h2>${ex ? (builtin ? esc(KINDS[ex.kind].label) : 'Edit template') : 'New template'}${builtin ? ` · ${LANGS[ex.lang].name}` : ''}</h2><button type="button" class="icon-btn" data-s="close" aria-label="Close">${ic('x')}</button></div>
+      <div class="sheet-body stack">
       ${builtin ? '' : `${field('name', 'Template name', ex ? ex.name : '', 'maxlength="50" required placeholder="e.g. Diwali offer"')}
       <div class="field"><span>Language</span><div class="chips wrap">${LANG_KEYS.map(k => `<button type="button" class="chip ${st.lang === k ? 'on' : ''}" aria-pressed="${!!(st.lang === k)}" data-s="lang" data-v="${k}">${LANGS[k].name}</button>`).join('')}</div></div>`}
-      <label class="field"><span>Message text</span><textarea name="text" rows="12" required>${esc(ex ? ex.text : STARTER[st.lang])}</textarea></label>
-      <div class="field"><span>Tap to insert a field</span><div class="vars">${VARS.map(([k, d]) => `<button type="button" data-s="var" data-v="${k}" title="${esc(d)}">{${k}}</button>`).join('')}</div></div>
-      <div class="field"><span>Preview (sample data)</span><div class="preview" data-prev></div></div>
-      <button class="btn primary block" type="submit">Save template</button>
+      <label class="field"><span>Message text</span><textarea name="text" rows="8" required>${esc(ex ? ex.text : STARTER[st.lang])}</textarea></label>
+      <details class="disclosure" data-field-picker><summary>Insert a field</summary><div class="disclosure-body stack"><p class="sub">Tap a field to insert it at the cursor. Its value fills in when you prepare a client message.</p><div class="vars">${VARS.map(([k, d]) => `<button type="button" data-s="var" data-v="${k}" title="${esc(d)}"><code>{${k}}</code><small>${esc(d)}</small></button>`).join('')}</div></div></details>
+      <details class="disclosure" data-sample-preview open><summary>Sample preview</summary><div class="disclosure-body stack"><p class="sub">Example values only. Nothing is sent from this editor.</p><div class="preview" data-prev></div></div></details>
       ${builtin && ex.edited ? `<button type="button" class="btn block" data-s="reset">Reset to original</button>` : ''}
       ${ex && !builtin ? `<button type="button" class="btn danger block" data-s="del">${ic('trash')} Delete template</button>` : ''}
+      </div><footer class="sheet-footer"><button class="btn primary block" type="submit">Save template</button></footer>
     </form>`, {
     lang: t => {
       const was = STARTER[st.lang]; st.lang = t.dataset.v;
@@ -1498,7 +1604,11 @@ function templateEditor(id = null) {
     },
   });
   const form = $('[data-f]', sh.el);
-  const prev = () => { $('[data-prev]', sh.el).textContent = renderTemplate(form.elements.text.value, sampleVars(builtin ? ex.lang : st.lang)); };
+  const prev = () => {
+    const lang = builtin ? ex.lang : st.lang, preview = $('[data-prev]', sh.el);
+    form.elements.text.lang = lang; preview.lang = lang;
+    preview.textContent = renderTemplate(form.elements.text.value, sampleVars(builtin ? ex.lang : st.lang));
+  };
   form.elements.text.addEventListener('input', prev); prev();
   form.addEventListener('submit', e => {
     e.preventDefault();
@@ -1711,22 +1821,25 @@ function readLogo(file) {                  // -> small data: URL (max 320px, kep
 function pageOnboarding() {
   const s = db.settings;
   return `
-  <div class="onb">
-    <img class="empty-logo" src="icons/logo.png" alt="Jyot Khata" width="104" height="104">
-    <h1>Welcome to Jyot Khata</h1>
-    <p class="sub" style="margin:var(--space-1) 0 var(--space-3)">स्वागत है · સ્વાગત છે</p>
-    <p class="muted" style="margin-bottom:var(--space-4)">Set up your business in 30 seconds. Your clients and payments stay <b>on this phone</b> — nothing is uploaded anywhere.</p>
-    <form class="card stack" data-form="onboard" style="text-align:left">
+  <div class="onb setup-page">
+    <header class="setup-heading">
+    <img class="setup-logo" src="icons/logo.png" alt="Jyot Khata" width="104" height="104">
+    <div><h1>Welcome to Jyot Khata</h1>
+    <p class="sub">स्वागत है · સ્વાગત છે</p></div></header>
+    <p class="page-intro">Your business. Your khata.<br>Client records stay <b>on this phone</b>, with no account to create.</p>
+    <form class="card stack setup-form" data-form="onboard">
       ${field('business', 'Business / shop name · व्यवसाय का नाम', '', 'required maxlength="60" autocomplete="organization" placeholder="e.g. Sharma Traders"')}
-      ${field('owner', 'Your name (optional)', '', 'maxlength="40" autocomplete="name"')}
+      <div class="field"><span>Message language · भाषा</span><input type="hidden" name="lang" value="${esc(s.lang)}">
+        <div class="chips wrap">${LANG_KEYS.map(k => `<button type="button" class="chip ${s.lang === k ? 'on' : ''}" aria-pressed="${!!(s.lang === k)}" data-act="prefLang" data-v="${k}">${LANGS[k].name}</button>`).join('')}</div></div>
+      <p class="sub">Choose the default language for client messages. You can change it later.</p>
+      <details class="disclosure" data-setup-optional><summary>Add optional details</summary><div class="disclosure-body stack">      ${field('owner', 'Your name (optional)', '', 'maxlength="40" autocomplete="name"')}
       ${field('phone', 'Your phone (shown on receipts, optional)', '', 'type="tel" inputmode="tel"')}
       <div class="field"><span>Your logo (optional)</span>
         <div class="logo-row"><div data-logo-prev>${logoPrevHTML(ui.logoDraft || '', '')}</div>
-          <div class="stack" style="gap:var(--space-2);flex:1"><button type="button" class="btn sm" data-act="logoPick">${ic('upload')} Upload logo</button><button type="button" class="btn sm" data-act="logoClear">Remove</button></div></div>
+          <div class="stack logo-actions"><button type="button" class="btn sm" data-act="logoPick">${ic('upload')} Upload logo</button><button type="button" class="btn sm" data-act="logoClear">Remove</button></div></div>
         <input type="file" data-change="logo" accept="image/*" hidden></div>
-      <div class="field"><span>Message language · भाषा</span><input type="hidden" name="lang" value="${esc(s.lang)}">
-        <div class="chips wrap">${LANG_KEYS.map(k => `<button type="button" class="chip ${s.lang === k ? 'on' : ''}" aria-pressed="${!!(s.lang === k)}" data-act="prefLang" data-v="${k}">${LANGS[k].name}</button>`).join('')}</div></div>
-      <button class="btn primary block" type="submit">Start · शुरू करें</button>
+</div></details>
+      <footer class="setup-footer"><button class="btn primary block" type="submit">Start · शुरू करें</button><p class="sub">Back up regularly from Settings to keep a copy.</p></footer>
     </form>
   </div>`;
 }

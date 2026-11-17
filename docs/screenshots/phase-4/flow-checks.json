@@ -1,0 +1,194 @@
+{
+  "onboarding": "Required business validation and Gujarati setup work with optional controls collapsed",
+  "settings": "Grouped profile controls save and survive reload; Light/Dark/Auto preserve unsaved inputs; Auto follows system",
+  "backupAndDayBook": "JSON download + cancel/confirmed restore; five periods; type/mode filters; exported CSV equals shown entries; empty-result reset passed",
+  "templates": "Gujarati filter, preview language, variable insertion, built-in save/reset and cancel; custom Gujarati starter/save; browser Back dismisses nested delete confirmation then editor",
+  "layouts": [
+    {
+      "state": "settings-expanded",
+      "width": 320,
+      "colorScheme": "light",
+      "overflow": false,
+      "smallTargets": 0
+    },
+    {
+      "state": "onboarding-expanded",
+      "width": 320,
+      "colorScheme": "light",
+      "overflow": false,
+      "smallTargets": 0
+    },
+    {
+      "state": "template-editor-short",
+      "width": 320,
+      "colorScheme": "light",
+      "footerTop": 407,
+      "footerBottom": 480,
+      "overflow": false,
+      "bodyHeight": 330
+    },
+    {
+      "state": "settings-expanded",
+      "width": 375,
+      "colorScheme": "light",
+      "overflow": false,
+      "smallTargets": 0
+    },
+    {
+      "state": "onboarding-expanded",
+      "width": 375,
+      "colorScheme": "light",
+      "overflow": false,
+      "smallTargets": 0
+    },
+    {
+      "state": "template-editor-short",
+      "width": 375,
+      "colorScheme": "light",
+      "footerTop": 407,
+      "footerBottom": 480,
+      "overflow": false,
+      "bodyHeight": 330
+    },
+    {
+      "state": "settings-expanded",
+      "width": 414,
+      "colorScheme": "light",
+      "overflow": false,
+      "smallTargets": 0
+    },
+    {
+      "state": "onboarding-expanded",
+      "width": 414,
+      "colorScheme": "light",
+      "overflow": false,
+      "smallTargets": 0
+    },
+    {
+      "state": "template-editor-short",
+      "width": 414,
+      "colorScheme": "light",
+      "footerTop": 407,
+      "footerBottom": 480,
+      "overflow": false,
+      "bodyHeight": 342
+    },
+    {
+      "state": "settings-expanded",
+      "width": 768,
+      "colorScheme": "light",
+      "overflow": false,
+      "smallTargets": 0
+    },
+    {
+      "state": "onboarding-expanded",
+      "width": 768,
+      "colorScheme": "light",
+      "overflow": false,
+      "smallTargets": 0
+    },
+    {
+      "state": "template-editor-short",
+      "width": 768,
+      "colorScheme": "light",
+      "footerTop": 407,
+      "footerBottom": 480,
+      "overflow": false,
+      "bodyHeight": 342
+    },
+    {
+      "state": "settings-expanded",
+      "width": 320,
+      "colorScheme": "dark",
+      "overflow": false,
+      "smallTargets": 0
+    },
+    {
+      "state": "onboarding-expanded",
+      "width": 320,
+      "colorScheme": "dark",
+      "overflow": false,
+      "smallTargets": 0
+    },
+    {
+      "state": "template-editor-short",
+      "width": 320,
+      "colorScheme": "dark",
+      "footerTop": 407,
+      "footerBottom": 480,
+      "overflow": false,
+      "bodyHeight": 330
+    },
+    {
+      "state": "settings-expanded",
+      "width": 375,
+      "colorScheme": "dark",
+      "overflow": false,
+      "smallTargets": 0
+    },
+    {
+      "state": "onboarding-expanded",
+      "width": 375,
+      "colorScheme": "dark",
+      "overflow": false,
+      "smallTargets": 0
+    },
+    {
+      "state": "template-editor-short",
+      "width": 375,
+      "colorScheme": "dark",
+      "footerTop": 407,
+      "footerBottom": 480,
+      "overflow": false,
+      "bodyHeight": 330
+    },
+    {
+      "state": "settings-expanded",
+      "width": 414,
+      "colorScheme": "dark",
+      "overflow": false,
+      "smallTargets": 0
+    },
+    {
+      "state": "onboarding-expanded",
+      "width": 414,
+      "colorScheme": "dark",
+      "overflow": false,
+      "smallTargets": 0
+    },
+    {
+      "state": "template-editor-short",
+      "width": 414,
+      "colorScheme": "dark",
+      "footerTop": 407,
+      "footerBottom": 480,
+      "overflow": false,
+      "bodyHeight": 342
+    },
+    {
+      "state": "settings-expanded",
+      "width": 768,
+      "colorScheme": "dark",
+      "overflow": false,
+      "smallTargets": 0
+    },
+    {
+      "state": "onboarding-expanded",
+      "width": 768,
+      "colorScheme": "dark",
+      "overflow": false,
+      "smallTargets": 0
+    },
+    {
+      "state": "template-editor-short",
+      "width": 768,
+      "colorScheme": "dark",
+      "footerTop": 407,
+      "footerBottom": 480,
+      "overflow": false,
+      "bodyHeight": 342
+    }
+  ],
+  "offline": "Updated UI and saved synthetic ledger reload offline under /jyot-khata/",
+  "errors": []
+}

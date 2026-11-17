@@ -1,0 +1,17 @@
+{
+  "storage": "byte-identical",
+  "money": "byte-identical",
+  "messages/share": "byte-identical",
+  "history": "byte-identical",
+  "receipt/PDF/share": "byte-identical",
+  "statement canvas": "byte-identical",
+  "backup/events": "byte-identical",
+  "router": "byte-identical",
+  "Day Book filter logic": "byte-identical",
+  "function clientForm(": "handlers/submit/autofocus byte-identical",
+  "function entryForm(": "handlers/submit/autofocus byte-identical",
+  "function entrySheet(": "handlers/submit/autofocus byte-identical",
+  "remaining JavaScript": "byte-identical outside the five presentation functions; appearance controller also identical",
+  "syntax": "both scripts pass node --check",
+  "CSS variables": "all resolve"
+}
